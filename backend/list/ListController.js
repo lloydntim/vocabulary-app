@@ -1,51 +1,41 @@
 import List from './ListModel';
+import xlsx from 'node-xlsx';
 
-const ListController = () => ({
-  getList: (parent, args) => {
-    try {
-      return args.id ? List.findById(args.id) : List.findOne({ name: args.name });
-    } catch (error) {
-      throw new Error(`List with id ${args.id} could not be retrieved`);
-    }
-  },
-  getLists: async () => {
-    try {
-      return await List.find({});
-    } catch (error) {
-      throw new Error('Lists could not be retrieved');
-    }
-  },
-  addList: async (parent, args) => {
-    try {
-      const { stream, filename, mimetype, encoding } = await args.input.file;
+export const getList = (parent, args) => {
+  const { id, name } = args;
+  return id ? List.findById(id) : List.findOne({ name });
+};
 
-      console.log("args.input", args.input);
-      console.log("stream", stream);
-      console.log("filename", filename);
-      console.log("encoding", encoding);
-      console.log("mimetype", mimetype);
+export const getLists = () => List.find({});
 
-      //const newList = List.create(args.input);
-      return { message: `New List created with id ${newList.id}` };
-    } catch (error) {
-      throw new Error('List could not be added');
-    }
-  },
-  updateList: async (parent, args) => {
-    try {
-      return await List
-        .findByIdAndUpdate(args.id, { $set: args.input }, { new: true })
-    } catch (error) {
-      throw new Error('List could not be updated');
-    }
-  },
-  removeList: async (parent, args) => {
-    try {
-      return await List.findOneAndRemove({ _id: args.id });
-    } catch (error) {
-      throw new Error('List could not be updated');
-    }
-  }
-});
+export const addList = (parent, args) => args.input.file.then(file => {
+  file.createReadStream()
+    .on('data', (data) => {
+      const l = xlsx.parse(data);
+      List.create({ name: args.input.name, data: l.data });
+    })
+    .on('end', () => {
+      console.log('CSV file successfully processed');
+    });
+    return file;
+  }).catch((error) => {
+    console.log('error', error);
+  });
 
-export default ListController;
+export const updateList = (parent, args) => {
+  const { id, input } = args;
+
+  return List.findByIdAndUpdate(id, { $set: input }, { new: true })
+};
+
+export const removeList = (parent, args) => {
+  return List.findOneAndRemove({ _id: args.id });
+};
+
+export default {
+  getList,
+  getLists,
+  addList,
+  updateList,
+  removeList
+};
