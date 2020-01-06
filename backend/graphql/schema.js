@@ -6,7 +6,6 @@ import {
   updateList,
   removeList
 } from '../list/ListController';
-
 export const typeDefs = gql`
   input ListInput {
     name: String

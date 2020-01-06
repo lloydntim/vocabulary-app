@@ -1,5 +1,5 @@
-import List from './ListModel';
 import xlsx from 'node-xlsx';
+import List from './ListModel';
 
 export const getList = (parent, args) => {
   const { id, name } = args;
@@ -8,19 +8,28 @@ export const getList = (parent, args) => {
 
 export const getLists = () => List.find({});
 
-export const addList = (parent, args) => args.input.file.then(file => {
-  file.createReadStream()
-    .on('data', (data) => {
-      const l = xlsx.parse(data);
-      List.create({ name: args.input.name, data: l.data });
-    })
-    .on('end', () => {
-      console.log('CSV file successfully processed');
-    });
-    return file;
-  }).catch((error) => {
-    console.log('error', error);
-  });
+export const addList = async (parent, args) => {
+  const {file, name } = args.input;
+  const { createReadStream } = await file;
+  const bufferArray = [];
+
+  await new Promise((res) => (
+    createReadStream()
+      .on('data', (chunk) => {
+        bufferArray.push( chunk );
+      })
+      .on('error', (error) => {
+        console.log('error', error);
+      })
+      .on('end', () => {
+        console.log('File successfully processed');
+        const buffer = Buffer.concat(bufferArray);
+        const { data } = xlsx.parse(buffer);
+        List.create({ name, data });
+      })
+    )
+  );
+};
 
 export const updateList = (parent, args) => {
   const { id, input } = args;
