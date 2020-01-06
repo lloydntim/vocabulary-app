@@ -3,7 +3,7 @@ import Express from 'express';
 import mongoose from 'mongoose';
 import { typeDefs, resolvers } from '../graphql/schema';
 
-const basePort = 3000;
+const basePort = process.env.PORT || 3000;
 const app = new Express();
 const server = new ApolloServer({
   typeDefs,

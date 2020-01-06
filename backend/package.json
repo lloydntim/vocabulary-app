@@ -6,7 +6,7 @@
   "scripts": {
     "build:dev": "NODE_ENV=development webpack --config config/webpack.config.js --mode=development -w",
     "build:prod": "NODE_ENV=production webpack --config config/webpack.config.js --mode=production",
-    "start:prod": "nodemon ./server-dist/index.js",
+    "start:prod": "node ./server-dist/index.js",
     "start": "npm run build:prod && npm run start:prod",
     "dev": "nodemon --exec babel-node ./server/index.js"
   },

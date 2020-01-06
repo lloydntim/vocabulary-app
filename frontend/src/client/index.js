@@ -12,7 +12,7 @@ import Layout from '../shared/routes/Layout';
 
 const cache = new InMemoryCache();
 const link = createUploadLink({
-  uri: 'http://localhost:3000/graphql',
+  uri: 'https://vocab-list-app.herokuapp.com/graphql',
 });
 
 const client = new ApolloClient({
