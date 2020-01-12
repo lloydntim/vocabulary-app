@@ -1,44 +1,76 @@
+import { AuthenticationError } from 'apollo-server-express';
 import xlsx from 'node-xlsx';
 import List from './ListModel';
 
-export const getList = (parent, args) => {
-  const { id, name } = args;
-  return id ? List.findById(id) : List.findOne({ name });
+export const getList = async (parent, args, { currentUser }) => {
+  if (!currentUser.loggedIn) throw new AuthenticationError('User must be logged in!');
+  try {
+    const { id, name } = args;
+    return id ? await List.findById(id) : await List.findOne({ name });
+  } catch (error) {
+    throw new Error(`List with id ${id} could not be retrieved`);
+  }
 };
 
-export const getLists = () => List.find({});
-
-export const addList = async (parent, args) => {
-  const {file, name } = args.input;
-  const { createReadStream } = await file;
-  const bufferArray = [];
-
-  await new Promise((res) => (
-    createReadStream()
-      .on('data', (chunk) => {
-        bufferArray.push( chunk );
-      })
-      .on('error', (error) => {
-        console.log('error', error);
-      })
-      .on('end', () => {
-        console.log('File successfully processed');
-        const buffer = Buffer.concat(bufferArray);
-        const { data } = xlsx.parse(buffer);
-        List.create({ name, data });
-      })
-    )
-  );
+export const getLists = async (parent, args, { currentUser }) => {
+  if (!currentUser.loggedIn) throw new AuthenticationError('User must be logged in!');
+  try {
+    const { creatorId } = args;
+    return await List.find({ creatorId });
+  } catch (error) {
+    throw new Error('Lists could not be retrieved');
+  }
 };
 
-export const updateList = (parent, args) => {
-  const { id, input } = args;
+export const addList = async (parent, args, { currentUser }) => {
+  if (!currentUser.loggedIn) throw new AuthenticationError('User must be logged in!');
+  try {
+    const { file, name, creatorId } = args;
+    const { createReadStream } = await file;
+    const bufferArray = [];
 
-  return List.findByIdAndUpdate(id, { $set: input }, { new: true })
+    const newList = await new Promise((res) => (
+      createReadStream()
+        .on('data', (chunk) => {
+          bufferArray.push( chunk );
+        })
+        .on('error', (error) => {
+          throw new Error(error);
+        })
+        .on('end', () => {
+          console.info('File successfully processed');
+          const buffer = Buffer.concat(bufferArray);
+          const [ list ] = xlsx.parse(buffer);
+          res(List.create({ name, data: list.data, creatorId }));
+        })
+        .on('close', (e) => {
+          console.log('File stream closed.')
+        })
+      )
+    );
+    return newList;
+  } catch (error) {
+    throw new Error ('List could not be added.');
+  };  
 };
 
-export const removeList = (parent, args) => {
-  return List.findOneAndRemove({ _id: args.id });
+export const updateList = async (parent, args, { currentUser }) => {
+  if (!currentUser.loggedIn) throw new AuthenticationError('User must be logged in!');
+  try {
+    const { id, name } = args;
+    return await List.findByIdAndUpdate(id, { $set: { name } }, { new: true });
+  } catch (error) {
+    throw new Error('List could not be updated');
+  };
+};
+
+export const removeList = async (parent, args, { currentUser }) => {
+  if (!currentUser.loggedIn) throw new AuthenticationError('User must be logged in!');
+  try {
+    return await List.findOneAndDelete({ _id: args.id });
+  } catch (error) {
+    throw new Error('List could not be removed');
+  };
 };
 
 export default {

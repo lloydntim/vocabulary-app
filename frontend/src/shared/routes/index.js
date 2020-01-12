@@ -1,18 +1,54 @@
-// ./routes/index.js
-import MainPage from './MainPage';
-import AnotherPage from './AnotherPage';
+import {
+  MainPage,
+  VocabListPage,
+  AboutPage,
+  SignUpPage,
+  LoginPage,
+  LogoutPage,
+  UsersPage,
+  UserPage,
+} from '../pages';
 
 const routes = [
   {
-    path: '/another',
+    path: '/users',
+    name: 'users',
+    component: UsersPage,
+  },
+  {
+    path: '/user/:id',
+    name: 'user',
+    component: UserPage,
+  },
+  {
+    path: '/home',
     name: 'home',
-    exact: true,
     component: MainPage,
   },
   {
+    path: '/about',
+    name: 'about',
+    component: AboutPage,
+  },
+  {
+    path: '/vocablist/:id',
+    name: 'vocablist',
+    component: VocabListPage,
+  },
+  {
+    path: '/signup',
+    name: 'signup',
+    component: SignUpPage,
+  },
+  {
+    path: '/logout',
+    name: 'logout',
+    component: LogoutPage,
+  },
+  {
     path: '/',
-    name: 'another',
-    component: AnotherPage,
+    name: ' login',
+    component: LoginPage,
   },
 ];
 

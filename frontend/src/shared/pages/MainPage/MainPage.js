@@ -1,52 +1,58 @@
 import React from 'react';
 import gql from 'graphql-tag';
 import { useQuery, useMutation } from '@apollo/react-hooks';
+import { Link, Redirect } from 'react-router-dom';
+import jwtDecode from 'jwt-decode';
 
-import './AnotherPage.scss';
+import './MainPage.scss';
 
 export const ADD_LIST = gql`
-  mutation AddList($input: ListInput!) {
-    addList(input: $input) {
+  mutation AddList($name: String!, $file: Upload!, $creatorId: ID!) {
+    addList(name: $name, file: $file, creatorId: $creatorId) {
       name
-    }
-  }
-`;
-
-export const GET_LIST = gql`
-  query GetList($id: ID, $name: String) {
-    getList(id: $id,  name: $name) {
-      name
-      data
     }
   }
 `;
 
 export const GET_LISTS = gql`
-  query {
-    getLists {
+  query GetLists($creatorId: ID) {
+    getLists(creatorId: $creatorId) {
       name
       id
     }
   }
 `;
 
-const AnotherPage = () => {
-  const { loading, error, data } = useQuery(GET_LISTS);
+const MainPage = () => {
+  /* eslint-disable  no-undef */
+  const token = localStorage.getItem('token');
+
+  if (!token) {
+    return <Redirect to="/" />;
+  }
+
+  const creatorId = jwtDecode(token).id;
   const fileInput = React.createRef();
   const titleInput = React.createRef();
-  const [addList] = useMutation(ADD_LIST);
+  const { loading, error, data } = useQuery(GET_LISTS, { variables: { creatorId } });
+  const [addList] = useMutation(ADD_LIST,
+    { refetchQueries: [{ query: GET_LISTS, variables: { creatorId } }] });
 
   if (loading) return 'Loading...';
   if (error) return `Error! ${error.message}`;
 
   return (
-    <div className="test">
+    <div className="home-page">
+      <Link to="/logout">Logout</Link>
+
       <h1>Upload List</h1>
 
       <ul>
         {data.getLists.map((list) => (
           <li key={list.id}>
-            {list.name}
+            <Link to={`/vocablist/${list.id}`}>
+              <span>{list.name}</span>
+            </Link>
           </li>
         ))}
       </ul>
@@ -56,7 +62,7 @@ const AnotherPage = () => {
           e.preventDefault();
           const file = fileInput.current.files[0];
           const name = titleInput.current.value;
-          addList({ variables: { input: { file, name } } });
+          addList({ variables: { name, file, creatorId } });
           fileInput.current.value = '';
           titleInput.current.value = '';
         }}
@@ -75,4 +81,4 @@ const AnotherPage = () => {
     </div>
   );
 };
-export default AnotherPage;
+export default MainPage;

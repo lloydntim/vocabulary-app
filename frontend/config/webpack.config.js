@@ -1,6 +1,7 @@
 const { resolve } = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
   entry: '../src/client/index.js',
@@ -9,6 +10,9 @@ module.exports = {
     path: resolve(__dirname, '../dist'),
     publicPath: '/',
     filename: '[name].bundle.js',
+  },
+  devServer: {
+    historyApiFallback: true,
   },
   module: {
     rules: [
@@ -34,7 +38,7 @@ module.exports = {
         test: /\.scss$/,
         use: [
           {
-            loader: 'style-loader' // creates style nodes from JS strings
+            loader: process.env.NODE_ENV !== 'production' ? 'style-loader' : MiniCssExtractPlugin.loader
           },
           {
             loader: 'css-loader' // translates CSS into CommonJS
