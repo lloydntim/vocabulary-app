@@ -11,11 +11,9 @@ import { ApolloProvider } from '@apollo/react-hooks';
 
 import { MainLayout as Layout } from '../shared/layouts';
 
+const uri = process.env.NODE_ENV === 'development' ? 'http://localhost:3000/graphql' : 'https://vocab-list-app.herokuapp.com/graphql';
 const cache = new InMemoryCache();
-const link = createUploadLink({
-  uri: 'http://localhost:3000/graphql',
-  // uri: 'https://vocab-list-app.herokuapp.com/graphql',
-});
+const link = createUploadLink({ uri });
 
 const authLink = setContext((parent, { headers }) => {
   /* eslint-disable no-undef */
