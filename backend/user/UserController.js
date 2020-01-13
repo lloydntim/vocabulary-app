@@ -1,6 +1,4 @@
-import { AuthenticationError, ApolloError } from 'apollo-server-express';
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
+import { AuthenticationError } from 'apollo-server-express';
 import User from './UserModel';
 
 export const getUser = async (parent, args, { currentUser }) => {
