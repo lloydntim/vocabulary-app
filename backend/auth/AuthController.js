@@ -1,5 +1,6 @@
 
 import { ApolloError } from 'apollo-server-express';
+import dotEnv from 'dotenv';
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
@@ -7,23 +8,25 @@ import nodemailer from 'nodemailer';
 import mg from 'nodemailer-mailgun-transport';
 import User from '../user/UserModel';
 
+dotEnv.config();
+
+const {
+  NODE_ENV,
+  HOST,
+  PORT,
+  CLIENT_DEV_PORT,
+  CLIENT_HOST,
+  JWT_SECRET,
+  NODEMAILER_DOMAIN,
+  NODEMAILER_API_KEY,
+} = process.env;
 const nodemailerAuthConfig = {
   auth: {
-    api_key: 'key-08d3beabf114aa5bf6272e268568ad09',
-    domain: 'mg.test.lloydntim.com',
+    api_key: NODEMAILER_API_KEY,
+    domain: NODEMAILER_DOMAIN,
   },
 };
 const nodemailerMailgun = nodemailer.createTransport(mg(nodemailerAuthConfig));
-
-const createToken = new Promise((resolve, reject) => {
-  crypto.randomBytes(20, (err, buffer) => {
-    if (err) {
-      reject(err);
-    }
-    const token = buffer.toString('hex');
-    resolve(token);
-  });
-});
 
 export const register = async (parent, { username, email, password }) => {
   try {
@@ -34,7 +37,6 @@ export const register = async (parent, { username, email, password }) => {
     throw new Error('User could not be added', error);
   }
 };
-
 
 export const login = async (parent, args) => {
   const { username, password } = args;
@@ -52,7 +54,7 @@ export const login = async (parent, args) => {
           id: user.id,
           username: user.username,
         },
-        process.env.JWT_SECRET,
+        JWT_SECRET,
         { expiresIn: 60 * 10 }),
     };
   } catch (error) {
@@ -63,10 +65,7 @@ export const login = async (parent, args) => {
 export const createPasswordToken = async (parent, args) => {
   const { email } = args;
   try {
-    // const resetPasswordToken = await createToken;
     const resetPasswordToken = crypto.randomBytes(20).toString('hex');
-    // console.log('crypto1', crypto.randomBytes(20).toString('hex'))
-    // console.log('crypto2', resetPasswordToken)
     const currentUser = await User.findOneAndUpdate(
       { email },
       { resetPasswordToken, resetPasswordExpires: Date.now() + 3600000 },
@@ -74,12 +73,13 @@ export const createPasswordToken = async (parent, args) => {
 
     if (!currentUser) throw new ApolloError(`Could not update user with email ${currentUser.email}.`);
 
+    const domain = NODE_ENV === 'development' ? `http://${HOST}:${CLIENT_DEV_PORT}` : CLIENT_HOST;
     const mailOptions = {
       to: currentUser.email,
       from: 'password-reset@lloydntim.com',
       subject: 'Password Reset',
       text: `Please find below the link you have requested to reset your password.
-    \nhttp://${process.env.HOST}:${process.env.PORT}/reset/${currentUser.resetPasswordToken}\n\n
+    \n${domain}/reset/${currentUser.resetPasswordToken}\n\n
     If you did not request this email and remember it your password ignore this email.`,
     };
     return await nodemailerMailgun.sendMail(mailOptions);
@@ -128,7 +128,10 @@ export const updatePassword = async (parents, args) => {
       text: `Hello,\n\n
       This is a confirmation that the password for your account ${email} has just been changed.\n`,
     };
-    return nodemailerMailgun.sendMail(mailOptions);
+    nodemailerMailgun.sendMail(mailOptions);
+    return {
+      token
+    };
   } catch (error) {
     throw error.message;
   };

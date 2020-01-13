@@ -7,7 +7,7 @@ import { getCurrentUser } from '../middleware';
 
 dotEnv.config();
 
-const basePort = process.env.PORT || 3000;
+const { HOST, PORT, MONGODB_URI } = process.env;
 const app = new Express();
 const server = new ApolloServer({
   typeDefs,
@@ -25,14 +25,13 @@ const server = new ApolloServer({
   },
 });
 
-
 server.applyMiddleware({ app, path: '/graphql' });
 
-app.listen(basePort, () => console.log( // eslint-disable-line no-console
-  `app Server is now running on http://localhost:${basePort}`,
+app.listen(PORT, () => console.log( // eslint-disable-line no-console
+  `app Server is now running on http://${HOST}:${PORT}`,
 ));
 
-mongoose.connect('mongodb://admin:admin12@ds259738.mlab.com:59738/heroku_1283rdnq');
+mongoose.connect(MONGODB_URI);
 mongoose.connection.once('open', () => {
   console.log('Database connected');
 });

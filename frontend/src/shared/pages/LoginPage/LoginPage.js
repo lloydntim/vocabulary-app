@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import gql from 'graphql-tag';
 import { useMutation } from '@apollo/react-hooks';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 
 import './LoginPage.scss';
 
@@ -29,7 +29,7 @@ const LoginPage = () => {
   }
 
   return (
-    <div className=" login-page">
+    <div className="login-page">
       <h1>Login</h1>
 
       <form
@@ -64,6 +64,8 @@ const LoginPage = () => {
         </label>
         <button type="submit">Login</button>
       </form>
+
+      <Link to="/forgot">Forgot Password</Link>
 
       { loading && <p>Loading...</p> }
       { error && <p>Error :( Please try again</p> }

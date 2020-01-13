@@ -6,6 +6,8 @@ import LoginPage from './LoginPage/LoginPage';
 import LogoutPage from './LogoutPage/LogoutPage';
 import UsersPage from './UsersPage/UsersPage';
 import UserPage from './UserPage/UserPage';
+import ForgotPasswordPage from './ForgotPasswordPage/ForgotPasswordPage';
+import ResetPasswordPage from './ResetPasswordPage/ResetPasswordPage';
 
 export {
   MainPage,
@@ -16,4 +18,6 @@ export {
   LogoutPage,
   UsersPage,
   UserPage,
+  ForgotPasswordPage,
+  ResetPasswordPage,
 };

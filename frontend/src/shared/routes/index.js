@@ -1,12 +1,14 @@
 import {
-  MainPage,
-  VocabListPage,
-  AboutPage,
-  SignUpPage,
-  LoginPage,
-  LogoutPage,
   UsersPage,
   UserPage,
+  MainPage,
+  AboutPage,
+  VocabListPage,
+  ResetPasswordPage,
+  ForgotPasswordPage,
+  SignUpPage,
+  LogoutPage,
+  LoginPage,
 } from '../pages';
 
 const routes = [
@@ -34,6 +36,16 @@ const routes = [
     path: '/vocablist/:id',
     name: 'vocablist',
     component: VocabListPage,
+  },
+  {
+    path: '/reset/:token',
+    name: 'reset',
+    component: ResetPasswordPage,
+  },
+  {
+    path: '/forgot',
+    name: 'forgot',
+    component: ForgotPasswordPage,
   },
   {
     path: '/signup',
