@@ -1,0 +1,68 @@
+@import '../../../client/styles.scss';
+
+.dialog {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  color: $dark-green;
+  height: 100%;
+  width: 100%;
+  z-index: 2;
+  flex-direction: column;
+  justify-content: center;
+
+  &:after {
+    content: "";
+    position: absolute;
+    background-color: $dark-green;
+    opacity: .75;
+    color: $dark-green;
+    height: 100%;
+    width: 100%;
+    z-index: 2;
+  }
+
+  .content {
+    position: relative;
+    z-index: 3;
+    width: calc(100% - 48px);
+    max-width: 408px;
+    flex-direction: column;
+    padding: 28px;
+    background-color: $white;
+    align-self: center;
+
+    h3 {
+      text-align: left;
+    }
+
+    p {
+      margin: 0 0 36px;
+    }
+
+    .button-group {
+      display: flex;
+      justify-content: flex-end;
+
+      .button {
+        width: 35%;
+        padding: 8px;
+        margin: 0 0 0 8px;
+        align-self: flex-end;
+      }
+    }
+
+    svg {
+      height: 24px;
+    }
+
+    a {
+      color: $dark-green;
+    }   
+  } 
+
+  &.is-visible {
+    display: flex;
+  }
+}

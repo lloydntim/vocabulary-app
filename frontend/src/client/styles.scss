@@ -1,0 +1,239 @@
+// Color
+$green: #006462;
+$dark-green: #003635;
+$blue: #0087BA;
+$dark-blue: #004964;
+$light-blue: #CBE9F5;
+$yellow: #F7CE00;
+$dark-yellow: #887100;
+$light-yellow: #f5eec6;
+$red: #B10000;
+$light-red: #F6C3C3;
+$dark-red: #360000;
+$white: #FFF;
+$grey: #EEE;
+
+// fonts
+
+$bold: 700;
+
+body {
+  background-color: $green;
+  color: $white;
+  font-family: Arial, Helvetica, sans-serif;
+
+  * {
+    box-sizing: border-box;
+
+    &:after,
+    &:before {
+      box-sizing: border-box;
+    }
+  };
+
+  a {
+    color: $white;
+    text-decoration: underline;
+  }
+
+  label span {
+    display: none;
+  }
+  
+  textarea,
+  input[type=text],
+  input[type=email],
+  input[type=password] {
+    outline: none;
+    background-color: $green;
+    border: 1px solid $white;
+    border-radius: 8px;
+    padding: 12px;
+    margin: 0 0 16px;
+    font-size: 18px;
+    width: 100%;
+    color: $white;
+  
+    &::placeholder {
+      color: $white;
+    }
+  }
+
+  button[type=submit] {
+    outline: none;
+    color: $green;
+    padding: 12px;
+    border-radius: 8px;
+    margin: 0 0 16px;
+    border: 0;
+    font-size: 18px;
+    width: 100%;
+  }
+
+  .page {
+    display: flex;
+    flex-direction: column;
+    padding: 0 12px;
+    max-width: 464px;
+    margin: 0 auto;
+  }
+
+  .content {
+    background-color: $white;
+    border-radius: 8px;
+    padding: 24px 16px;
+    color: $dark-green;
+    box-shadow: 0 2px 4px $dark-green;
+
+    h1, h3, h4, h5 {
+      text-align: center;
+      border-bottom: $grey 1px solid;
+    }
+
+    h1 {
+      padding: 0 0 20px;
+      margin: 0 0 12px;
+    }
+
+    h3 {
+      padding: 0 0 16px;
+      margin: 0 0 20px;
+    }
+
+    p {
+      margin: 0 8px;
+    }
+  }
+
+  .button {
+    outline: none;
+    color: $green;
+    padding: 12px;
+    border-radius: 8px;
+    margin: 0 0 16px;
+    border: 1px solid;
+    font-size: 18px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+
+    &.button-primary {
+      color: $green;
+      background-color: $white;
+    }
+
+    &.button-secondary {
+      color: $white;
+      background-color: $green;
+      border-color: $dark-green;
+    }
+
+    &.button-tertiary {
+      color: $white;
+      background-color: $dark-blue;
+    }
+  }
+
+  .button-circle {
+    outline: none;
+    padding: 12px;
+    border-radius: 100%;
+    border: solid 1px $green;
+    cursor: pointer;
+
+    &.button-circle-primary {
+      border-color: $dark-green;
+      background-color: $green;
+      color: $white;
+
+      path,
+      polygon {
+        fill: $white;
+      }
+    }
+
+    &.button-circle-secondary {
+      border: solid 1px $green;
+      color: $green;
+      background-color: transparent;
+
+      path,
+      polygon {
+        fill: $green;
+      }
+    }
+  }
+
+  .message {
+    background-color: $green;
+    border: 1px solid $white;
+    border-radius: 8px;
+    padding: 12px;
+    margin: 0 0 16px;
+    font-size: 18px;
+    width: 100%;
+    text-align: center;
+
+    &.message-success {
+      color: $blue;
+      background-color: $light-blue;
+      border-color : $blue;
+    }
+
+    &.message-info {
+      color: $yellow;
+      background-color: $light-yellow;
+      border-color : $yellow;
+    }
+
+    &.message-error {
+      color: $red;
+      background-color: $light-red;
+      border-color: $red;
+    }
+  }
+
+  .logo {
+    display: flex;
+    flex-direction: column;
+    margin: 72px auto 0;
+
+    .logo-graphic {
+      text-align: center;
+      color: $white;
+      border: solid 4px $white;
+      width: 112px;
+      height: 72px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 50%;
+      margin: 0 auto 12px;
+      box-shadow: 2px 2px 6px $dark-green, 2px 2px 6px inset $dark-green;
+
+      &:after {
+        content: ".";
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        background-color: $white;
+        box-shadow: 2px 2px 6px $dark-green;
+      }
+    }
+
+    .logo-text {
+      font-size: 36px;
+      text-align: center;
+
+      span {
+        &:nth-of-type(2) {
+          color: $dark-green;
+          font-weight: $bold;
+        }
+      }
+    }
+  }
+}
+

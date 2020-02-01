@@ -1,0 +1,32 @@
+@import '../../../client/styles.scss';
+
+.overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: $white;
+  color: $dark-green;
+  height: 100%;
+  width: 100%;
+  z-index: 3;
+  flex-direction: column;
+  padding: 28px;
+
+  .button-circle {
+    padding: 8px;
+    align-self: flex-end;
+  }
+
+  svg {
+    height: 24px;
+  }
+
+  a {
+    color: $dark-green;
+  }
+
+  &.is-visible {
+    display: flex;
+  }
+}
