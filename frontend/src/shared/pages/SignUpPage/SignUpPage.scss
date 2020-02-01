@@ -1,8 +1,9 @@
-form {
-  display: flex;
-  flex-direction: column;
+@import '../../../client/styles.scss';
 
-  button[type="submit"] {
-    width: 200px;
-  } 
+.signup-page {
+  form {
+    input[type=password] {
+      margin: 0 0 24px 0;
+    }
+  }
 }

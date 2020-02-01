@@ -1,0 +1,85 @@
+@import '../../../client/styles.scss';
+
+.vocab-list-page {
+  .content {
+    h1 {
+      margin: 0;
+    }
+
+    h5 {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      margin: 0 0 12px;
+
+      button {
+        padding: 8px;
+        margin: 4px 0;
+
+        path {
+          fill: $dark-green;
+        }
+      }
+
+      span {
+        width: 42%;
+
+        &:nth-of-type(2) {
+          width: 16%;
+        }
+
+        &:last-of-type {
+          color: $green;
+        }
+      }
+    }
+  
+    small {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    
+    textarea {
+      background-color: $grey;
+      border: solid 1px $green;
+      resize: none;
+      outline: none;
+      color: $dark-green;
+      margin: 0 0 12px;
+
+      &::placeholder {
+        color: $green;
+      }
+    }
+
+    p {
+      font-size: 24px;
+      padding: 24px 0 48px;
+      margin: 0 0 12px;
+      border-bottom: $grey 1px solid;
+    }
+
+    ul {
+      list-style: none;
+      display: flex;
+      margin: 0;
+      padding: 0;
+      justify-content: space-between;
+
+      > li {
+        display: inline-flex;
+
+        .button-circle {
+          
+        }
+
+        svg {
+          path, g {
+            fill: $green;
+          }
+        }
+      }
+    }
+  }
+}

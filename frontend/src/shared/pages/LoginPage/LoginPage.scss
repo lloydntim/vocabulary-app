@@ -1,0 +1,23 @@
+@import '../../../client/styles.scss';
+
+.login-page {
+  form {
+    input[type=password] {
+      margin: 0 0 24px 0;
+    }
+  }
+
+  .link-group { 
+    display: flex;
+    justify-content: space-between;
+
+    a {
+      font-weight: $bold;
+      font-size: 12px;
+
+      &:last-of-type {
+        color: $dark-green;
+      }
+    }
+  }
+}

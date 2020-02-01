@@ -55,7 +55,7 @@ export const login = async (parent, args) => {
           username: user.username,
         },
         JWT_SECRET,
-        { expiresIn: 60 * 10 }),
+        { expiresIn: 60 * 30 }),
     };
   } catch (error) {
     throw error.message;

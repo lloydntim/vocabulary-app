@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import gql from 'graphql-tag';
 import { useQuery, useMutation } from '@apollo/react-hooks';
-import { useParams, Redirect, Link } from 'react-router-dom';
-import jwtDecode from 'jwt-decode';
+import { useParams, Redirect } from 'react-router-dom';
+
+import { ContentLayout, Overlay } from '../../layouts';
+import { Icon } from '../../components';
 
 import './VocabListPage.scss';
 
@@ -11,15 +13,6 @@ export const GET_LIST = gql`
     getList(id: $id,  name: $name) {
       name
       data
-    }
-  }
-`;
-
-export const GET_LISTS = gql`
-  query GetLists($creatorId: ID) {
-    getLists(creatorId: $creatorId) {
-      name
-      id
     }
   }
 `;
@@ -33,42 +26,26 @@ export const UPDATE_LIST = gql`
   }
 `;
 
-export const REMOVE_LIST = gql`
-  mutation RemoveList($id: ID!) {
-    removeList(id: $id) {
-      id
-      name
-    }
-  }
-`;
-
 const VocabListPage = () => {
   const [count, setCount] = useState(0);
   const [isLanguageSwitched, toggleLanguage] = useState(false);
+  const [isOverlayVisible, setOverlayVisibility] = useState(false);
   const [status, setStatusMessage] = useState('');
-  const [inputToText, handleInputToText] = useState('');
+  const [translationText, setTranslationText] = useState('');
+  const [newTitle, setTitle] = useState('');
   const { id } = useParams();
   const { loading, error, data } = useQuery(GET_LIST, { variables: { id } });
-  const titleInput = React.createRef();
 
   /* eslint-disable  no-undef */
-  const token = localStorage.getItem('token');
-  const creatorId = jwtDecode(token).id;
+  // const token = localStorage.getItem('token');
+  // const creatorId = jwtDecode(token).id;
 
   const [
     updateList,
-    { loading: mutationLoading, error: mutationError },
+    { loading: updateListMutationLoading, error: updateListMutationError },
   ] = useMutation(UPDATE_LIST, {
     refetchQueries: ['GetList'],
   });
-  const [
-    removeList,
-    { loading: removeMutationLoading, error: removeMutationError },
-  ] = useMutation(REMOVE_LIST,
-    {
-      refetchQueries: [{ query: GET_LIST, variables: { id } },
-        { query: GET_LISTS, variables: { creatorId } }],
-    });
 
   if (loading) return 'Loading...';
   if (error) return `Error! ${error.message}`;
@@ -97,122 +74,176 @@ const VocabListPage = () => {
   }
 
   return (
-    <div className="vocab-list-page">
-      <Link to="/logout">Logout</Link>
-
-      <h1>Vocab List</h1>
-
-      <h3>{title}</h3>
-
-      { translations ? (
-        <table>
-          <tbody>
-            <tr>
-              <td />
-              <td>{`${count + 1} of ${translations.length}`}</td>
-            </tr>
-            <tr>
-              <td>{transFromLang}</td>
-              <td>{transFromText}</td>
-            </tr>
-            <tr>
-              <td>{transToLang}</td>
-              <td><input type="text" id="translation" value={inputToText} onChange={({ target: { value } }) => handleInputToText(value)} /></td>
-            </tr>
-          </tbody>
-        </table>
-      ) : <p>No translations available</p> }
-
-      <p id="status">{status}</p>
-
-      <button
-        type="button"
-        onClick={
-          () => {
-            const statusMessage = transToText === inputToText ? 'Success' : 'Failure';
-            setStatusMessage(statusMessage);
+    <ContentLayout>
+      <div className="vocab-list-page page">
+        <Overlay
+          isVisible={isOverlayVisible}
+          onCloseButtonClick={
+            () => { setOverlayVisibility(false); }
           }
-        }
-      >
-        submit
-      </button>
-      <button
-        type="button"
-        onClick={
-          () => setStatusMessage('')
-        }
-      >
-        clear
-      </button>
-      <br />
-      <br />
-      <button
-        type="button"
-        onClick={
-          () => toggleLanguage(!isLanguageSwitched)
-        }
-      >
-        switch
-      </button>
-      <br />
-      <br />
-      <button
-        type="button"
-        onClick={
-          () => {
-            if (count > 0) {
-              setCount(count - 1);
-              handleInputToText('');
+        >
+          <h1>Vocab List Title</h1>
+
+          <form>
+            <label htmlFor="title">
+              <span>Title</span>
+              <input
+                autoComplete="title"
+                name="title"
+                type="text"
+                placeholder="Title"
+                value={newTitle}
+                onChange={
+                  ({ target: { value } }) => setTitle(value)
+                }
+              />
+            </label>
+            <button
+              className="button button-secondary"
+              type="button"
+              onClick={() => {
+                updateList({ variables: { id, name: newTitle } });
+                setOverlayVisibility(false);
+              }}
+            >
+              Update Title
+            </button>
+          </form>
+        </Overlay>
+
+        { translations ? (
+          <div className="content">
+            <h1>{title}</h1>
+            <h5>
+              <span>{transFromLang}</span>
+              <span>
+                <button
+                  className="button-circle button-circle-secondary"
+                  type="button"
+                  onClick={
+                    () => toggleLanguage(!isLanguageSwitched)
+                  }
+                >
+                  <Icon type="swap" />
+                </button>
+              </span>
+              <span>{transToLang}</span>
+            </h5>
+
+            <small>{`${count + 1} / ${translations.length}`}</small>
+
+            <p>{transFromText}</p>
+
+            <label htmlFor="translation">
+              <textarea
+                id="translation"
+                rows="4"
+                value={translationText}
+                placeholder="Enter translation"
+                onChange={
+                  ({ target: { value } }) => {
+                    setTranslationText(value);
+                    if (status) setStatusMessage('');
+                  }
+                }
+              />
+            </label>
+
+            {
+              status && (
+                <div className={`message message-${status === 'Success' ? 'success' : 'error'}`}>
+                  {status}
+                </div>
+              )
             }
-          }
-        }
-      >
-        backward
-      </button>
-      <button
-        type="button"
-        onClick={
-          () => {
-            if (count < translations.length - 1) {
-              setCount(count + 1);
-              handleInputToText('');
-            }
-          }
-        }
-      >
-        forward
-      </button>
 
-      <button
-        type="button"
-        onClick={() => {
-          removeList({ variables: { id } });
-        }}
-      >
-        delete
-      </button>
+            <button
+              className="button button-secondary"
+              type="button"
+              onClick={
+                () => {
+                  const statusMessage = transToText === translationText ? 'Success' : 'Failure';
+                  setStatusMessage(statusMessage);
+                }
+              }
+            >
+              Submit
+            </button>
 
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          let vocabListTitle = titleInput.current.value;
-          updateList({ variables: { id, name: vocabListTitle } });
-          vocabListTitle = '';
-        }}
-      >
-        <label htmlFor="title">
-          <span>Title</span>
-          <input name="title" type="text" ref={titleInput} />
-        </label>
-        <button type="submit">Update Title</button>
-      </form>
-      { mutationLoading && <p>Loading...</p> }
-      { mutationError && <p>Error :( Please try again</p> }
+            <ul>
+              <li>
+                <button
+                  className="button-circle button-circle-secondary"
+                  type="button"
+                  onClick={
+                    () => {
+                      if (count > 0) {
+                        setCount(count - 1);
+                        setTranslationText('');
+                      }
+                    }
+                  }
+                >
+                  <Icon type="backward" />
+                </button>
+              </li>
+              <li>
+                <button
+                  className="button-circle button-circle-secondary"
+                  type="button"
+                  onMouseDown={
+                    () => toggleLanguage(!isLanguageSwitched)
+                  }
+                  onMouseUp={
+                    () => toggleLanguage(!isLanguageSwitched)
+                  }
+                >
+                  <Icon type="view" />
+                </button>
+              </li>
+              <li>
+                <button
+                  className="button-circle button-circle-secondary"
+                  type="button"
+                  onClick={
+                    () => {
+                      setTranslationText('');
+                      setStatusMessage('');
+                    }
+                  }
+                >
+                  <Icon type="tick" />
+                </button>
+              </li>
+              <li>
+                <button
+                  className="button-circle button-circle-secondary"
+                  type="button"
+                  onClick={
+                    () => {
+                      if (count < translations.length - 1) {
+                        setCount(count + 1);
+                        setTranslationText('');
+                      }
+                    }
+                  }
+                >
+                  <Icon type="forward" />
+                </button>
+              </li>
+            </ul>
+          </div>
+        ) : (
+          <div className={`message message-${status === 'Success' ? 'success' : 'error'}`}>
+            {status}
+          </div>
+        )}
 
-      { removeMutationLoading && <p>Loading...</p> }
-      { removeMutationError && <p>Error :( Please try again</p> }
+        { updateListMutationLoading && <p className="message message-info">Loading...</p> }
+        { updateListMutationError && <p className="message message-error">Error - Please try again</p> }
 
-    </div>
+      </div>
+    </ContentLayout>
   );
 };
 export default VocabListPage;

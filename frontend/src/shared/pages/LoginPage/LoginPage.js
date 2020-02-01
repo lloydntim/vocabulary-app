@@ -4,6 +4,8 @@ import gql from 'graphql-tag';
 import { useMutation } from '@apollo/react-hooks';
 import { Redirect, Link } from 'react-router-dom';
 
+import { InitLayout } from '../../layouts';
+
 import './LoginPage.scss';
 
 export const LOGIN = gql`
@@ -29,47 +31,55 @@ const LoginPage = () => {
   }
 
   return (
-    <div className="login-page">
-      <h1>Login</h1>
+    <InitLayout>
+      <div className="login-page page">
 
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          login({ variables: { username, password } });
-        }}
-      >
-        <label htmlFor="username">
-          <span>Username</span>
-          <input
-            autoComplete="username"
-            name="username"
-            type="text"
-            value={username}
-            onChange={
-              ({ target: { value } }) => setUsername(value)
-            }
-          />
-        </label>
-        <label htmlFor="password">
-          <span>Password</span>
-          <input
-            autoComplete="current-password"
-            name="password"
-            type="password"
-            value={password}
-            onChange={
-              ({ target: { value } }) => setPassword(value)
-            }
-          />
-        </label>
-        <button type="submit">Login</button>
-      </form>
+        <h1>Login</h1>
 
-      <Link to="/forgot">Forgot Password</Link>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            login({ variables: { username, password } });
+          }}
+        >
+          <label htmlFor="username">
+            <span>Username</span>
+            <input
+              autoComplete="username"
+              name="username"
+              type="text"
+              placeholder="Username"
+              value={username}
+              onChange={
+                ({ target: { value } }) => setUsername(value)
+              }
+            />
+          </label>
+          <label htmlFor="password">
+            <span>Password</span>
+            <input
+              autoComplete="current-password"
+              name="password"
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={
+                ({ target: { value } }) => setPassword(value)
+              }
+            />
+          </label>
+          <button type="submit">Login</button>
+        </form>
 
-      { loading && <p>Loading...</p> }
-      { error && <p>Error :( Please try again</p> }
-    </div>
+        <div className="link-group">
+          <Link to="/signup">Sign Up</Link>
+          <Link to="/forgot">Forgot Password</Link>
+        </div>
+
+        { loading && <p>Loading...</p> }
+        { error && <p>Error :( Please try again</p> }
+      </div>
+    </InitLayout>
   );
 };
 
