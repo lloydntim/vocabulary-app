@@ -191,12 +191,10 @@ const VocabListPage = () => {
                 <button
                   className="button-circle button-circle-secondary"
                   type="button"
-                  onMouseDown={
-                    () => toggleLanguage(!isLanguageSwitched)
-                  }
-                  onMouseUp={
-                    () => toggleLanguage(!isLanguageSwitched)
-                  }
+                  onMouseDown={() => toggleLanguage(!isLanguageSwitched)}
+                  onTouchStart={() => toggleLanguage(!isLanguageSwitched)}
+                  onMouseUp={() => toggleLanguage(!isLanguageSwitched)}
+                  onTouchEnd={() => toggleLanguage(!isLanguageSwitched)}
                 >
                   <Icon type="view" />
                 </button>
