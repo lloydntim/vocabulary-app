@@ -28,14 +28,25 @@ export const UPDATE_LIST = gql`
 
 const VocabListPage = () => {
   const [count, setCount] = useState(0);
+  const [translations, setTranslations] = useState([['SourceLanguage Placeholder', 'TargetLanguage Placeholder', 'SourceText', 'TargetText']]);
   const [isLanguageSwitched, toggleLanguage] = useState(false);
   const [isOverlayVisible, setOverlayVisibility] = useState(false);
   const [status, setStatusMessage] = useState('');
   const [translationText, setTranslationText] = useState('');
   const [newTitle, setTitle] = useState('');
   const { id } = useParams();
-  const { loading, error, data } = useQuery(GET_LIST, { variables: { id } });
-
+  const { loading, error, data } = useQuery(
+    GET_LIST,
+    {
+      variables: { id },
+      onCompleted: (data) => {
+        const { data: translationsData } = data.getList;
+        setCount(2);
+        const shuffledData = translationsData.sort(() => (0.5 - Math.random()));
+        setTranslations(shuffledData);
+      },
+    },
+  );
   /* eslint-disable  no-undef */
   // const token = localStorage.getItem('token');
   // const creatorId = jwtDecode(token).id;
@@ -52,8 +63,9 @@ const VocabListPage = () => {
   if (typeof data.getList === 'undefined' || data.getList === null) return <Redirect to="/home" />;
 
   const list = data.getList;
-  const { name: title, data: translationsData } = list;
-  const translations = translationsData || [['SourceLanguage Placeholder', 'TargetLanguage Placeholder', 'SourceText', 'TargetText']];
+  const { name: title/* , data: translationsData */ } = list;
+  // const translations = translationsData || [['SourceLanguage Placeholder',
+  // 'TargetLanguage Placeholder', 'SourceText', 'TargetText']];
 
   const [langA, langB, textA, textB] = translations[count];
   let transFromLang;
