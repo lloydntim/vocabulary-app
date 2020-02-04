@@ -120,9 +120,7 @@ const VocabListPage = () => {
                 <button
                   className="button-circle button-circle-secondary"
                   type="button"
-                  onClick={
-                    () => toggleLanguage(!isLanguageSwitched)
-                  }
+                  onClick={() => toggleLanguage(!isLanguageSwitched)}
                 >
                   <Icon type="swap" />
                 </button>
@@ -137,9 +135,13 @@ const VocabListPage = () => {
             <label htmlFor="translation">
               <textarea
                 id="translation"
+                className={`message message-${status}`}
                 rows="4"
                 value={translationText}
                 placeholder="Enter translation"
+                onFocus={() => {
+                  if (status) setStatusMessage('');
+                }}
                 onChange={
                   ({ target: { value } }) => {
                     setTranslationText(value);
@@ -149,20 +151,13 @@ const VocabListPage = () => {
               />
             </label>
 
-            {
-              status && (
-                <div className={`message message-${status === 'Success' ? 'success' : 'error'}`}>
-                  {status}
-                </div>
-              )
-            }
-
             <button
-              className="button button-secondary"
+              className={`button button-secondary ${translationText < 1 ? 'is-disabled' : ''}`}
+              disabled={translationText < 1}
               type="button"
               onClick={
                 () => {
-                  const statusMessage = transToText === translationText ? 'Success' : 'Failure';
+                  const statusMessage = transToText === translationText ? 'success' : 'error';
                   setStatusMessage(statusMessage);
                 }
               }
@@ -207,6 +202,7 @@ const VocabListPage = () => {
                     () => {
                       setTranslationText('');
                       setStatusMessage('');
+                      setStatusMessage('');
                     }
                   }
                 >
@@ -215,13 +211,15 @@ const VocabListPage = () => {
               </li>
               <li>
                 <button
-                  className="button-circle button-circle-secondary"
+                  className={`button-circle button-circle-secondary ${status !== 'success' ? 'is-disabled' : ''}`}
                   type="button"
+                  disabled={status !== 'success'}
                   onClick={
                     () => {
                       if (count < translations.length - 1) {
                         setCount(count + 1);
                         setTranslationText('');
+                        setStatusMessage('');
                       }
                     }
                   }

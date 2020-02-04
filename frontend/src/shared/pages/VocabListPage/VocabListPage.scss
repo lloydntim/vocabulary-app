@@ -51,7 +51,21 @@
       &::placeholder {
         color: $green;
       }
+
+      &.message {
+        text-align: left;
+
+        &.message-success {
+          pointer-events: none;
+        }
+
+        &::placeholder {
+          color: inherit;
+        }
+      }
     }
+
+    
 
     p {
       font-size: 24px;
@@ -69,10 +83,6 @@
 
       > li {
         display: inline-flex;
-
-        .button-circle {
-          
-        }
 
         svg {
           path, g {

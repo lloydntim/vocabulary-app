@@ -118,6 +118,10 @@ body {
     justify-content: center;
     cursor: pointer;
 
+    &.is-disabled {
+      opacity: .5;
+    }
+
     &.button-primary {
       color: $green;
       background-color: $white;
@@ -141,6 +145,10 @@ body {
     border-radius: 100%;
     border: solid 1px $green;
     cursor: pointer;
+
+    &.is-disabled {
+      opacity: .5;
+    }
 
     &.button-circle-primary {
       border-color: $dark-green;
