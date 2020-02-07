@@ -3,8 +3,12 @@ import gql from 'graphql-tag';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import { useParams, Redirect } from 'react-router-dom';
 
-import { ContentLayout, Overlay } from '../../layouts';
-import { Icon } from '../../components';
+import { ContentLayout } from '../../layouts';
+import { IconButton } from '../../components';
+
+import VocabListSessionHeader from './VocabListSessionHeader';
+import VocabListSessionBody from './VocabListSessionBody';
+import VocabListEditOverlay from './VocabListEditOverlay';
 
 import './VocabListPage.scss';
 
@@ -33,7 +37,7 @@ const VocabListPage = () => {
   const [isOverlayVisible, setOverlayVisibility] = useState(false);
   const [status, setStatusMessage] = useState('');
   const [translationText, setTranslationText] = useState('');
-  const [newTitle, setTitle] = useState('');
+  const [newTitle, setNewTitle] = useState('');
   const { id } = useParams();
   const { loading, error, data } = useQuery(
     GET_LIST,
@@ -41,7 +45,6 @@ const VocabListPage = () => {
       variables: { id },
       onCompleted: (data) => {
         const { data: translationsData } = data.getList;
-        setCount(2);
         const shuffledData = translationsData.sort(() => (0.5 - Math.random()));
         setTranslations(shuffledData);
       },
@@ -63,9 +66,7 @@ const VocabListPage = () => {
   if (typeof data.getList === 'undefined' || data.getList === null) return <Redirect to="/home" />;
 
   const list = data.getList;
-  const { name: title/* , data: translationsData */ } = list;
-  // const translations = translationsData || [['SourceLanguage Placeholder',
-  // 'TargetLanguage Placeholder', 'SourceText', 'TargetText']];
+  const { name: title } = list;
 
   const [langA, langB, textA, textB] = translations[count];
   let transFromLang;
@@ -88,100 +89,49 @@ const VocabListPage = () => {
   return (
     <ContentLayout>
       <div className="vocab-list-page page">
-        <Overlay
+        <VocabListEditOverlay
+          newTitle={newTitle}
           isVisible={isOverlayVisible}
-          onCloseButtonClick={
-            () => { setOverlayVisibility(false); }
-          }
-        >
-          <h1>Vocab List Title</h1>
-
-          <form>
-            <label htmlFor="title">
-              <span>Title</span>
-              <input
-                autoComplete="title"
-                name="title"
-                type="text"
-                placeholder="Title"
-                value={newTitle}
-                onChange={
-                  ({ target: { value } }) => setTitle(value)
-                }
-              />
-            </label>
-            <button
-              className="button button-secondary"
-              type="button"
-              onClick={() => {
-                updateList({ variables: { id, name: newTitle } });
-                setOverlayVisibility(false);
-              }}
-            >
-              Update Title
-            </button>
-          </form>
-        </Overlay>
+          onCloseButtonClick={() => { setOverlayVisibility(false); }}
+          onNewTitleInputChange={({ target: { value } }) => setNewTitle(value)}
+          onUpdateTitleButtonClick={() => {
+            updateList({ variables: { id, name: newTitle } });
+            setOverlayVisibility(false);
+          }}
+        />
 
         { translations ? (
           <div className="content">
-            <h1>{title}</h1>
-            <h5>
-              <span>{transFromLang}</span>
-              <span>
-                <button
-                  className="button-circle button-circle-secondary"
-                  type="button"
-                  onClick={() => toggleLanguage(!isLanguageSwitched)}
-                >
-                  <Icon type="swap" />
-                </button>
-              </span>
-              <span>{transToLang}</span>
-            </h5>
-
-            <small>{`${count + 1} / ${translations.length}`}</small>
-
-            <p>{transFromText}</p>
-
-            <label htmlFor="translation">
-              <textarea
-                id="translation"
-                className={`message message-${status}`}
-                rows="4"
-                value={translationText}
-                placeholder="Enter translation"
-                onFocus={() => {
-                  if (status) setStatusMessage('');
-                }}
-                onChange={
-                  ({ target: { value } }) => {
-                    setTranslationText(value);
-                    if (status) setStatusMessage('');
-                  }
-                }
-              />
-            </label>
-
-            <button
-              className={`button button-secondary ${translationText < 1 ? 'is-disabled' : ''}`}
-              disabled={translationText < 1}
-              type="button"
-              onClick={
-                () => {
-                  const statusMessage = transToText === translationText ? 'success' : 'error';
-                  setStatusMessage(statusMessage);
-                }
-              }
-            >
-              Submit
-            </button>
+            <VocabListSessionHeader
+              title={title}
+              sourceLanguage={transFromLang}
+              targetLanguage={transToLang}
+              onToggleLanguageButtonClick={() => toggleLanguage(!isLanguageSwitched)}
+            />
+            <VocabListSessionBody
+              vocabsTotalCount={translations.length}
+              currentVocab={count + 1}
+              vocabSourceText={transFromText}
+              vocabTranslationInputValue={translationText}
+              vocabTranslationStatusMessage={status}
+              onVocabTranslationInputChange={(event) => {
+                setTranslationText(event.target.value);
+                if (status) setStatusMessage('');
+              }}
+              onVocabTranslationInputFocus={() => {
+                if (status) setStatusMessage('');
+              }}
+              onVocabTranslationSubmitButtonClick={() => {
+                const statusMessage = transToText === translationText ? 'success' : 'error';
+                setStatusMessage(statusMessage);
+              }}
+            />
 
             <ul>
               <li>
-                <button
-                  className="button-circle button-circle-secondary"
-                  type="button"
+                <IconButton
+                  type="secondary"
+                  icon="backward"
                   onClick={
                     () => {
                       if (count > 0) {
@@ -190,41 +140,34 @@ const VocabListPage = () => {
                       }
                     }
                   }
-                >
-                  <Icon type="backward" />
-                </button>
+                />
               </li>
               <li>
-                <button
-                  className="button-circle button-circle-secondary"
-                  type="button"
+                <IconButton
+                  type="secondary"
+                  icon="view"
                   onMouseDown={() => toggleLanguage(!isLanguageSwitched)}
                   onTouchStart={() => toggleLanguage(!isLanguageSwitched)}
                   onMouseUp={() => toggleLanguage(!isLanguageSwitched)}
                   onTouchEnd={() => toggleLanguage(!isLanguageSwitched)}
-                >
-                  <Icon type="view" />
-                </button>
+                />
               </li>
               <li>
-                <button
-                  className="button-circle button-circle-secondary"
-                  type="button"
+                <IconButton
+                  type="secondary"
+                  icon="tick"
                   onClick={
                     () => {
                       setTranslationText('');
                       setStatusMessage('');
-                      setStatusMessage('');
                     }
                   }
-                >
-                  <Icon type="tick" />
-                </button>
+                />
               </li>
               <li>
-                <button
-                  className={`button-circle button-circle-secondary ${status !== 'success' ? 'is-disabled' : ''}`}
-                  type="button"
+                <IconButton
+                  type="secondary"
+                  icon="forward"
                   disabled={status !== 'success'}
                   onClick={
                     () => {
@@ -235,9 +178,7 @@ const VocabListPage = () => {
                       }
                     }
                   }
-                >
-                  <Icon type="forward" />
-                </button>
+                />
               </li>
             </ul>
           </div>
