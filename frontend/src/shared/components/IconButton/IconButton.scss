@@ -1,0 +1,46 @@
+@import '../../../client/styles.scss';
+
+.icon-button {
+  outline: none;
+  padding: 12px;
+  border-radius: 100%;
+  border: solid 1px $green;
+  cursor: pointer;
+
+  &.is-disabled {
+    opacity: .5;
+  }
+
+  &.icon-button-type-primary {
+    border-color: $dark-green;
+    background-color: $green;
+    color: $white;
+
+    path,
+    polygon {
+      fill: $white;
+    }
+  }
+
+  &.icon-button-type-secondary {
+    border: solid 1px $green;
+    color: $green;
+    background-color: transparent;
+
+    path,
+    polygon {
+      fill: $green;
+    }
+  }
+  
+  &.icon-button-type-tertiary {
+    border: none;
+    color: $dark-green;
+    background-color: transparent;
+
+    path,
+    polygon {
+      fill: $dark-green;
+    }
+  }
+}

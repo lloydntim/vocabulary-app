@@ -1,0 +1,32 @@
+@import '../../../client/styles.scss';
+
+.tabs {
+  width: 100%;
+
+  .tab-titles {
+    width: 100%;
+    margin: 0 0 16px;
+
+    .tab-title {
+      background-color: transparent;
+      border: none;
+      outline: 0;
+      font-size: 26px;
+      color: $green;
+      padding: 8px 16px;
+  
+      &.is-selected {
+        color: $dark-green;
+        border-bottom: $green solid 2px;
+      }
+    }
+  }
+
+  .tab-content {
+    display: none;
+
+    &.is-selected {
+      display: block;
+    }
+  }
+}

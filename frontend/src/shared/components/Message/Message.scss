@@ -1,0 +1,28 @@
+.message {
+  background-color: $green;
+  border: 1px solid $white;
+  border-radius: 8px;
+  padding: 12px;
+  margin: 0 0 16px;
+  font-size: 18px;
+  width: 100%;
+  text-align: center;
+
+  &.message-success {
+    color: $blue;
+    background-color: $light-blue;
+    border-color : $blue;
+  }
+
+  &.message-info {
+    color: $yellow;
+    background-color: $light-yellow;
+    border-color : $yellow;
+  }
+
+  &.message-error {
+    color: $red;
+    background-color: $light-red;
+    border-color: $red;
+  }
+}
