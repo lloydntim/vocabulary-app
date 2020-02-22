@@ -5,13 +5,18 @@ import { Link, Redirect } from 'react-router-dom';
 import jwtDecode from 'jwt-decode';
 
 import { ContentLayout, Overlay } from '../../layouts';
-import { Icon, Dialog } from '../../components';
+import {
+  IconButton,
+  Icon,
+  Dialog,
+  Message,
+} from '../../components';
 
 import './MainPage.scss';
 
 export const ADD_LIST = gql`
-  mutation AddList($name: String!, $file: Upload!, $creatorId: ID!) {
-    addList(name: $name, file: $file, creatorId: $creatorId) {
+  mutation AddList($name: String!, $file: Upload, $data: [[String]], $creatorId: ID!) {
+    addList(name: $name, file: $file, data: $data, creatorId: $creatorId) {
       name
     }
   }
@@ -23,6 +28,16 @@ export const GET_LISTS = gql`
       name
       data
       id
+    }
+  }
+`;
+
+export const UPDATE_LIST = gql`
+  mutation UpdateList($id: ID!, $name: String, $file: Upload, $data: [[String]]) {
+    updateList(id: $id, name: $name, file: $file, data: $data) {
+      id
+      name
+      data
     }
   }
 `;
@@ -47,13 +62,19 @@ const MainPage = () => {
   const creatorId = jwtDecode(token).id;
   const [file, setFile] = useState('');
   const [title, setTitle] = useState('');
-  const [deletedListId, setDeletedListId] = useState('');
-  const [deletedListTitle, setDeletedListTitle] = useState('');
+  const [isEditTitleMode, setEditTitleMode] = useState(false);
+  const [currentList, setCurrentList] = useState({});
   const [isDialogVisible, setDialogVisibility] = useState(false);
   const [isOverlayVisible, setOverlayVisibility] = useState(false);
   const { loading, error, data } = useQuery(GET_LISTS, { variables: { creatorId } });
   const [addList] = useMutation(ADD_LIST,
     { refetchQueries: [{ query: GET_LISTS, variables: { creatorId } }] });
+  const [
+    updateList,
+    { loading: updateListMutationLoading, error: updateListMutationError },
+  ] = useMutation(UPDATE_LIST, {
+    refetchQueries: [{ query: GET_LISTS, variables: { creatorId } }],
+  });
   const [
     removeList,
     { loading: removeMutationLoading, error: removeMutationError },
@@ -69,60 +90,70 @@ const MainPage = () => {
       <div className="home-page page">
         <Dialog
           title="Delete List Item"
-          message={`You'll lose all data of list "${deletedListTitle}"`}
+          message={`You'll lose all data of list "${currentList.name}"`}
           cancelButtonText="Cancel"
           continueButtonText="Ok"
           isVisible={isDialogVisible}
           onCancelButtonClick={() => setDialogVisibility(false)}
-          onContinueButtonClick={
-            () => {
-              removeList({ variables: { id: deletedListId } });
-              setDialogVisibility(false);
-              setDeletedListId('');
-              setDeletedListTitle('');
-            }
-          }
+          onContinueButtonClick={() => {
+            removeList({ variables: { id: currentList.id } });
+            setDialogVisibility(false);
+            setCurrentList({});
+          }}
         />
         <Overlay
           isVisible={isOverlayVisible}
-          onCloseButtonClick={
-            () => { setOverlayVisibility(false); }
-          }
+          onCloseButtonClick={() => {
+            setTitle('');
+            setFile('');
+            setEditTitleMode(false);
+            setOverlayVisibility(false);
+          }}
         >
-          <h1>New Vocab List</h1>
+          <h1>{isEditTitleMode ? 'Edit Vocab List Title' : 'New Vocab List'}</h1>
 
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              addList({ variables: { name: title, file, creatorId } });
-              setTitle('');
-              setFile('');
-              setOverlayVisibility(false);
-            }}
-          >
+          <form>
             <label htmlFor="title">
               <span>Title</span>
               <input
                 name="title"
                 type="text"
-                placeholder="Title"
-                onChange={
-                  ({ target: { value } }) => setTitle(value)
-                }
+                placeholder="Enter Title"
+                value={title}
+                onChange={({ target: { value } }) => setTitle(value)}
               />
             </label>
+            {!isEditTitleMode && (
+              <>
+                <label htmlFor="document">
+                  <input
+                    name="document"
+                    type="file"
+                    onChange={({ target: { files } }) => setFile(files[0])}
+                  />
+                </label>
+                {file.name && <Message type="info" content={file.name} />}
+              </>
+            )}
 
-            <label htmlFor="document">
-              <input
-                name="document"
-                type="file"
-                onChange={
-                  ({ target: { files } }) => setFile(files[0])
+            <button
+              className="button button-secondary"
+              type="button"
+              onClick={() => {
+                if (isEditTitleMode) {
+                  updateList({ variables: { id: currentList.id, name: title } });
+                  setEditTitleMode(false);
+                } else {
+                  addList({ variables: { name: title, file, creatorId } });
                 }
-              />
-            </label>
 
-            <button className="button button-secondary" type="submit">Add List</button>
+                setTitle('');
+                setFile('');
+                setOverlayVisibility(false);
+              }}
+            >
+              {isEditTitleMode ? 'Edit' : 'Add'}
+            </button>
           </form>
         </Overlay>
 
@@ -131,38 +162,43 @@ const MainPage = () => {
 
           <div className="sub-header">
             <h3>Vocabulary Lists</h3>
-            <button
-              className="button-circle button-circle-primary"
-              type="button"
-              onClick={
-                () => {
-                  setTitle('');
-                  setOverlayVisibility(true);
-                }
-              }
-            >
-              <Icon type="plus" />
-            </button>
+            <IconButton
+              icon="add-list"
+              type="primary"
+              onClick={() => {
+                setTitle('');
+                setOverlayVisibility(true);
+              }}
+            />
           </div>
 
-          { removeMutationLoading && <p className="message message-info">Loading...</p> }
-          { removeMutationError && <p className="message message-error">Error - Please try again</p> }
+          {updateListMutationLoading && <Message type="info" content="Loading..." /> }
+          {updateListMutationError && <Message type="error" content="Please try again" />}
+          {removeMutationLoading && <Message type="info" content="Loading..." /> }
+          {removeMutationError && <Message type="error" content="Please try again" />}
 
           <ul className="list">
             {data.getLists.map((list) => (
               <li className="list-item" key={list.id}>
                 <div className="button-group">
-                  <button
-                    className="button-circle button-circle-secondary"
-                    type="button"
+                  <IconButton
+                    icon="edit"
+                    type="secondary"
                     onClick={() => {
-                      setDeletedListId(list.id);
-                      setDeletedListTitle(list.name);
+                      setTitle(list.name);
+                      setCurrentList(list);
+                      setEditTitleMode(true);
+                      setOverlayVisibility(true);
+                    }}
+                  />
+                  <IconButton
+                    icon="delete"
+                    type="secondary"
+                    onClick={() => {
+                      setCurrentList(list);
                       setDialogVisibility(true);
                     }}
-                  >
-                    <Icon type="delete" />
-                  </button>
+                  />
                 </div>
                 <Link to={`/vocablist/${list.id}`}>
                   <div className="list-item-link-content">

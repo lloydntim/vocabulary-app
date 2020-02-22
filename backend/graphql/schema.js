@@ -64,8 +64,8 @@ export const typeDefs = gql`
     updateUser(id: ID, username: String, password: String): User
     removeUser(id: ID): User
 
-    addList(name: String!, file: Upload!, creatorId: ID!): List
-    updateList(id: ID!, name: String!): List
+    addList(name: String!, file: Upload, data: [[String]], creatorId: ID!): List
+    updateList(id: ID!, name: String, file: Upload, data: [[String]]): List
     removeList(id: ID!): List
   }
 `;

@@ -1,16 +1,27 @@
 import React, { useState } from 'react';
 import gql from 'graphql-tag';
 import { useQuery, useMutation } from '@apollo/react-hooks';
-import { useParams, Redirect } from 'react-router-dom';
+import { useParams, Redirect, useHistory } from 'react-router-dom';
+import jwtDecode from 'jwt-decode';
 
 import { ContentLayout } from '../../layouts';
-import { IconButton } from '../../components';
+import { Message } from '../../components';
 
-import VocabListSessionHeader from './VocabListSessionHeader';
-import VocabListSessionBody from './VocabListSessionBody';
+import VocabListSessionContainer from './VocabListSessionContainer';
 import VocabListEditOverlay from './VocabListEditOverlay';
+import VocabListEditContainer from './VocabListEditContainer';
 
 import './VocabListPage.scss';
+
+export const GET_LISTS = gql`
+  query GetLists($creatorId: ID) {
+    getLists(creatorId: $creatorId) {
+      name
+      data
+      id
+    }
+  }
+`;
 
 export const GET_LIST = gql`
   query GetList($id: ID, $name: String) {
@@ -22,69 +33,79 @@ export const GET_LIST = gql`
 `;
 
 export const UPDATE_LIST = gql`
-  mutation UpdateList($id: ID!, $name: String!) {
-    updateList(id: $id, name: $name) {
+  mutation UpdateList($id: ID!, $name: String, $file: Upload, $data: [[String]]) {
+    updateList(id: $id, name: $name, file: $file, data: $data) {
       id
+      name
+      data
+    }
+  }
+`;
+
+export const ADD_LIST = gql`
+  mutation AddList($name: String!, $file: Upload, $data: [[String]], $creatorId: ID!) {
+    addList(name: $name, file: $file, data: $data, creatorId: $creatorId) {
       name
     }
   }
 `;
 
 const VocabListPage = () => {
-  const [count, setCount] = useState(0);
-  const [translations, setTranslations] = useState([['SourceLanguage Placeholder', 'TargetLanguage Placeholder', 'SourceText', 'TargetText']]);
-  const [isLanguageSwitched, toggleLanguage] = useState(false);
+  const [isEditMode, setEditMode] = useState(true);
+  const [translations, setTranslations] = useState([]);
+
   const [isOverlayVisible, setOverlayVisibility] = useState(false);
-  const [status, setStatusMessage] = useState('');
-  const [translationText, setTranslationText] = useState('');
+
   const [newTitle, setNewTitle] = useState('');
   const { id } = useParams();
+  const { push } = useHistory();
   const { loading, error, data } = useQuery(
     GET_LIST,
     {
       variables: { id },
       onCompleted: (data) => {
         const { data: translationsData } = data.getList;
-        const shuffledData = translationsData.sort(() => (0.5 - Math.random()));
+        const shuffledData = translationsData
+          ? translationsData
+            .map((translation) => translation)
+            .sort(() => (0.5 - Math.random())) : [];
         setTranslations(shuffledData);
       },
     },
   );
   /* eslint-disable  no-undef */
-  // const token = localStorage.getItem('token');
-  // const creatorId = jwtDecode(token).id;
+  const token = localStorage.getItem('token');
+  const creatorId = jwtDecode(token).id;
+
+  const [
+    addList,
+    { loading: addListMutationLoading, error: addListMutationError },
+  ] = useMutation(ADD_LIST, { onCompleted: () => push('/home') }, {
+    refetchQueries: [{ query: GET_LISTS, variables: { creatorId } }],
+  });
 
   const [
     updateList,
     { loading: updateListMutationLoading, error: updateListMutationError },
   ] = useMutation(UPDATE_LIST, {
-    refetchQueries: ['GetList'],
+    refetchQueries: [{ query: GET_LIST, variables: { id } }],
   });
 
-  if (loading) return 'Loading...';
-  if (error) return `Error! ${error.message}`;
+  if (!data) {
+    return (
+      <ContentLayout>
+        <div className="vocab-list-page page">
+          {loading && <Message type="info" content="Loading..." />}
+          {error && <Message type="error" content={`Error! ${error.message}`} />}
+        </div>
+      </ContentLayout>
+    );
+  }
+
   if (typeof data.getList === 'undefined' || data.getList === null) return <Redirect to="/home" />;
 
-  const list = data.getList;
-  const { name: title } = list;
-
-  const [langA, langB, textA, textB] = translations[count];
-  let transFromLang;
-  let transToLang;
-  let transFromText;
-  let transToText;
-
-  if (isLanguageSwitched) {
-    transFromLang = langA;
-    transToLang = langB;
-    transFromText = textA;
-    transToText = textB;
-  } else {
-    transFromLang = langB;
-    transToLang = langA;
-    transFromText = textB;
-    transToText = textA;
-  }
+  const { name: title, data: list } = data.getList;
+  const vocabList = list || [];
 
   return (
     <ContentLayout>
@@ -99,98 +120,33 @@ const VocabListPage = () => {
             setOverlayVisibility(false);
           }}
         />
-
-        { translations ? (
-          <div className="content">
-            <VocabListSessionHeader
-              title={title}
-              sourceLanguage={transFromLang}
-              targetLanguage={transToLang}
-              onToggleLanguageButtonClick={() => toggleLanguage(!isLanguageSwitched)}
+        <div className="content">
+          <h1>{title}</h1>
+          <label className="edit-mode-checkbox" htmlFor="edit-mode">
+            <span>Edit Mode</span>
+            <input
+              id="edit-mode"
+              type="checkbox"
+              checked={isEditMode}
+              onChange={({ target }) => setEditMode(target.checked)}
             />
-            <VocabListSessionBody
-              vocabsTotalCount={translations.length}
-              currentVocab={count + 1}
-              vocabSourceText={transFromText}
-              vocabTranslationInputValue={translationText}
-              vocabTranslationStatusMessage={status}
-              onVocabTranslationInputChange={(event) => {
-                setTranslationText(event.target.value);
-                if (status) setStatusMessage('');
-              }}
-              onVocabTranslationInputFocus={() => {
-                if (status) setStatusMessage('');
-              }}
-              onVocabTranslationSubmitButtonClick={() => {
-                const statusMessage = transToText === translationText ? 'success' : 'error';
-                setStatusMessage(statusMessage);
-              }}
-            />
+          </label>
 
-            <ul>
-              <li>
-                <IconButton
-                  type="secondary"
-                  icon="backward"
-                  onClick={
-                    () => {
-                      if (count > 0) {
-                        setCount(count - 1);
-                        setTranslationText('');
-                      }
-                    }
-                  }
-                />
-              </li>
-              <li>
-                <IconButton
-                  type="secondary"
-                  icon="view"
-                  onMouseDown={() => toggleLanguage(!isLanguageSwitched)}
-                  onTouchStart={() => toggleLanguage(!isLanguageSwitched)}
-                  onMouseUp={() => toggleLanguage(!isLanguageSwitched)}
-                  onTouchEnd={() => toggleLanguage(!isLanguageSwitched)}
-                />
-              </li>
-              <li>
-                <IconButton
-                  type="secondary"
-                  icon="tick"
-                  onClick={
-                    () => {
-                      setTranslationText('');
-                      setStatusMessage('');
-                    }
-                  }
-                />
-              </li>
-              <li>
-                <IconButton
-                  type="secondary"
-                  icon="forward"
-                  disabled={status !== 'success'}
-                  onClick={
-                    () => {
-                      if (count < translations.length - 1) {
-                        setCount(count + 1);
-                        setTranslationText('');
-                        setStatusMessage('');
-                      }
-                    }
-                  }
-                />
-              </li>
-            </ul>
-          </div>
-        ) : (
-          <div className={`message message-${status === 'Success' ? 'success' : 'error'}`}>
-            {status}
-          </div>
-        )}
-
-        { updateListMutationLoading && <p className="message message-info">Loading...</p> }
-        { updateListMutationError && <p className="message message-error">Error - Please try again</p> }
-
+          {!isEditMode ? <VocabListSessionContainer list={translations} />
+            : (
+              <VocabListEditContainer
+                id={id}
+                creatorId={creatorId}
+                list={vocabList}
+                addList={addList}
+                updateList={updateList}
+              />
+            )}
+        </div>
+        {addListMutationLoading && <Message type="info" content="Loading..." /> }
+        {addListMutationError && <Message type="error" content="Please try again" />}
+        {updateListMutationLoading && <Message type="info" content="Loading..." /> }
+        {updateListMutationError && <Message type="error" content="Please try again" />}
       </div>
     </ContentLayout>
   );

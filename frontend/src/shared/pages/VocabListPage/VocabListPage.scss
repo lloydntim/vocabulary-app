@@ -2,6 +2,45 @@
 
 .vocab-list-page {
   .content {
+    .edit-mode-checkbox {
+      font-size: 11px;
+      display: flex;
+      justify-content: flex-end;
+      padding: 8px 16px;
+      margin: 0 0 4px;
+      border-bottom: 1px solid $grey;
+      align-items: center;
+
+      span {
+        margin: 0 8px 0 0;
+        display: block;
+      }
+    }
+
+    input[type="file"] {
+      width: 100%;
+      height: 60px;
+      overflow: hidden;
+      outline: none;
+    
+      &:before {
+        content: "Upload File";
+        outline: none;
+        color: $white;
+        padding: 12px;
+        border-radius: 8px;
+        margin: 0 0 16px;
+        border: 1px solid;
+        font-size: 18px;
+        width: 100%;
+        background-color: $dark-blue;
+        display: flex;
+        justify-content: center;
+        cursor: pointer;
+        position: relative;
+      }
+    }
+
     h1 {
       margin: 0;
     }
@@ -89,6 +128,65 @@
             fill: $green;
           }
         }
+      }
+    }
+
+    .list {
+      display: flex;
+      flex-direction: column;
+
+      .list-item {
+        position: relative;
+        display: flex;
+        align-content: center;
+        border: 1px solid $green;
+        border-radius: 8px;
+        padding: 12px;
+        margin: 0 0 8px;
+
+        .checkbox {
+          display: flex;
+          align-self: center;
+          margin: 0 24px 0 0;
+        }
+
+        .vocab-content {
+          display: flex;
+          flex-direction: column;
+          
+          small {
+            justify-content: flex-start;
+            margin: 0 0 4px;
+          }
+          span {
+            font-size: 20px;
+            margin: 0 0 12px;
+          }
+        }
+
+        .icon-button {
+          position: absolute;
+          right: 16px;
+          display: flex;
+          align-self: center;
+        }
+      }
+    }
+  }
+}
+
+.overlay {
+  form {
+    input[type="text"] {
+      background-color: $grey;
+      border: solid 1px $green;
+      resize: none;
+      outline: none;
+      color: $dark-green;
+      margin: 0 0 12px;
+
+      &::placeholder {
+        color: $green;
       }
     }
   }

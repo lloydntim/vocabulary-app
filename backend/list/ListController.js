@@ -25,30 +25,34 @@ export const getLists = async (parent, args, { currentUser }) => {
 export const addList = async (parent, args, { currentUser }) => {
   if (!currentUser.loggedIn) throw new AuthenticationError('User must be logged in!');
   try {
-    const { file, name, creatorId } = args;
-    const { createReadStream } = await file;
-    const bufferArray = [];
+    const { file, name, data, creatorId } = args;
+    const listData = data || [];
 
-    const newList = await new Promise((res) => (
-      createReadStream()
-        .on('data', (chunk) => {
-          bufferArray.push( chunk );
-        })
-        .on('error', (error) => {
-          throw new Error(error);
-        })
-        .on('end', () => {
-          console.info('File successfully processed');
-          const buffer = Buffer.concat(bufferArray);
-          const [ list ] = xlsx.parse(buffer);
-          res(List.create({ name, data: list.data, creatorId }));
-        })
-        .on('close', (e) => {
-          console.log('File stream closed.')
-        })
-      )
-    );
-    return newList;
+    if (typeof file === 'undefined') {
+      return await List.create({ name, data: listData, creatorId });
+    } else {
+      const { createReadStream } = await file;
+      const bufferArray = [];
+      return await new Promise((res) => (
+        createReadStream()
+          .on('data', (chunk) => {
+            bufferArray.push( chunk );
+          })
+          .on('error', (error) => {
+            throw new Error(error);
+          })
+          .on('end', () => {
+            console.info('File successfully processed');
+            const buffer = Buffer.concat(bufferArray);
+            const [ list ] = xlsx.parse(buffer);
+            res(List.create({ name, data: list.data, creatorId }));
+          })
+          .on('close', (e) => {
+            console.log('File stream closed.')
+          })
+        )
+      );
+    }
   } catch (error) {
     throw new Error ('List could not be added.');
   };  
@@ -57,8 +61,38 @@ export const addList = async (parent, args, { currentUser }) => {
 export const updateList = async (parent, args, { currentUser }) => {
   if (!currentUser.loggedIn) throw new AuthenticationError('User must be logged in!');
   try {
-    const { id, name } = args;
-    return await List.findByIdAndUpdate(id, { $set: { name } }, { new: true });
+    let $set = {};
+    const { id, name, data, file } = args;
+    if (name) $set.name = name;
+    if (file) {
+      const { createReadStream } = await file;
+      const bufferArray = [];
+      const { data: listData } = await List.findById(id);
+      const existingData = listData || [];
+
+      $set.data = file ? await new Promise((res) => (
+        createReadStream()
+          .on('data', (chunk) => {
+            bufferArray.push( chunk );
+          })
+          .on('error', (error) => {
+            throw new Error(error);
+          })
+          .on('end', () => {
+            console.info('File successfully processed');
+            const buffer = Buffer.concat(bufferArray);
+            const [ list ] = xlsx.parse(buffer);
+            res(existingData.concat(list.data));
+          })
+          .on('close', (e) => {
+            console.log('File stream closed.')
+          })
+        )) : data;
+    } 
+    if (data) {
+      $set.data = data;
+    }
+    return await List.findByIdAndUpdate(id, { $set }, { new: true });
   } catch (error) {
     throw new Error('List could not be updated');
   };

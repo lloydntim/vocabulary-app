@@ -11,6 +11,7 @@ import IconEdit from './IconEdit';
 import IconPlus from './IconPlus';
 import IconMenu from './IconMenu';
 import IconClose from './IconClose';
+import IconAddList from './IconAddList';
 
 const Icon = ({ type }) => {
   switch (type) {
@@ -46,6 +47,9 @@ const Icon = ({ type }) => {
     }
     case 'close': {
       return <IconClose />;
+    }
+    case 'add-list': {
+      return <IconAddList />;
     }
     default: {
       return <div>Please select valid icon.</div>;
