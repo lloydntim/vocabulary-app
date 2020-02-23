@@ -33,7 +33,7 @@ const VocabListSessionFooter = ({
       <li>
         <IconButton
           type="secondary"
-          icon="tick"
+          icon="refresh"
           onClick={onRestartSessionButtonClick}
         />
       </li>

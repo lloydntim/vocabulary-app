@@ -10,11 +10,6 @@ const VocabListEditHeader = ({
   onAddVocabButtonClick,
 }) => (
   <div className="header">
-    <IconButton
-      icon="plus"
-      type="secondary"
-      onClick={onAddVocabButtonClick}
-    />
     {selectedVocabs.length > 0
     && (
       <>
@@ -30,6 +25,11 @@ const VocabListEditHeader = ({
         />
       </>
     )}
+    <IconButton
+      icon="plus"
+      type="secondary"
+      onClick={onAddVocabButtonClick}
+    />
   </div>
 );
 

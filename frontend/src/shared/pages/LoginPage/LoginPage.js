@@ -27,7 +27,7 @@ const LoginPage = () => {
   /* eslint-disable no-undef */
   if (data) {
     localStorage.setItem('token', data.login.token);
-    return <Redirect to="/home" />;
+    return <Redirect to="/vocablists" />;
   }
 
   return (

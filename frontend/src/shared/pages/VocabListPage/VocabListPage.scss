@@ -2,20 +2,32 @@
 
 .vocab-list-page {
   .content {
-    .edit-mode-checkbox {
-      font-size: 11px;
+    .sub-header {
       display: flex;
-      justify-content: flex-end;
+      justify-content: space-between;
       padding: 8px 16px;
       margin: 0 0 4px;
       border-bottom: 1px solid $grey;
-      align-items: center;
+      
+      .edit-mode-checkbox {
+        font-size: 11px;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
 
-      span {
-        margin: 0 8px 0 0;
-        display: block;
+        span {
+          margin: 0 8px 0 0;
+          display: block;
+        }
+      }
+
+     .icon svg {
+        height: 28px;
+        fill: $green;
       }
     }
+
+    
 
     input[type="file"] {
       width: 100%;

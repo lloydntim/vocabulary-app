@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { oneOfType, arrayOf, node } from 'prop-types';
+import jwtDecode from 'jwt-decode';
 
 import { Icon } from '../../components';
 import Overlay from '../Overlay/Overlay';
@@ -11,6 +12,10 @@ import './ContentLayout.scss';
 /* eslint-disable react/jsx-props-no-spreading */
 const ContentLayout = ({ children }) => {
   const [isOverlayVisible, setOverlayVisibility] = useState(false);
+
+  /* eslint-disable no-undef */
+  const token = localStorage.getItem('token');
+  const user = token ? jwtDecode(token) : {};
 
   return (
     <div>
@@ -26,20 +31,16 @@ const ContentLayout = ({ children }) => {
         <nav>
           <ul>
             <li>
-              <Link to="/home">Home</Link>
+              <Link to="/vocablists">Vocab Lists</Link>
             </li>
             <li>
               <Link to="/about">About</Link>
             </li>
-            <li>
-              <Link to="/signup">SignUp</Link>
-            </li>
-            <li>
-              <Link to="/">Login</Link>
-            </li>
-            <li>
-              <Link className="button button-secondary" to="/logout">Logout</Link>
-            </li>
+            {user.id && (
+              <li>
+                <Link className="button button-secondary" to="/logout">Logout</Link>
+              </li>
+            )}
           </ul>
         </nav>
       </Overlay>

@@ -28,7 +28,7 @@ export const addList = async (parent, args, { currentUser }) => {
     const { file, name, data, creatorId } = args;
     const listData = data || [];
 
-    if (typeof file === 'undefined') {
+    if (!file || typeof file === 'undefined') {
       return await List.create({ name, data: listData, creatorId });
     } else {
       const { createReadStream } = await file;

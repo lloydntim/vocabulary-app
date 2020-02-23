@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { string, arrayOf /* , func  */ } from 'prop-types';
+import { string, arrayOf } from 'prop-types';
 
 import VocabListSessionHeader from './VocabListSessionHeader';
 import VocabListSessionBody from './VocabListSessionBody';

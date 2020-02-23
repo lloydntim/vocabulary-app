@@ -1,4 +1,5 @@
 import React from 'react';
+import { Redirect } from 'react-router-dom';
 import gql from 'graphql-tag';
 import { useQuery } from '@apollo/react-hooks';
 import jwtDecode from 'jwt-decode';
@@ -33,11 +34,7 @@ const LogoutPage = () => {
 
   localStorage.setItem('token', '');
 
-  return (
-    <div className="logout-page">
-      <h1>You have been successfully logged out.</h1>
-    </div>
-  );
+  return <Redirect to="/vocablists" />;
 };
 
 export default LogoutPage;

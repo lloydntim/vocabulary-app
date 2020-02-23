@@ -39,7 +39,7 @@ const ResetPasswordPage = () => {
   /* eslint-disable no-undef */
   if (mutationData) {
     localStorage.setItem('token', mutationData.updatePassword.token);
-    return <Redirect to="/home" />;
+    return <Redirect to="/vocablists" />;
   }
 
   return (

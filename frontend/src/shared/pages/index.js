@@ -1,4 +1,4 @@
-import MainPage from './MainPage/MainPage';
+import VocabListsPage from './VocabListsPage/VocabListsPage';
 import VocabListPage from './VocabListPage/VocabListPage';
 import AboutPage from './AboutPage/AboutPage';
 import SignUpPage from './SignUpPage/SignUpPage';
@@ -10,7 +10,7 @@ import ForgotPasswordPage from './ForgotPasswordPage/ForgotPasswordPage';
 import ResetPasswordPage from './ResetPasswordPage/ResetPasswordPage';
 
 export {
-  MainPage,
+  VocabListsPage,
   VocabListPage,
   AboutPage,
   SignUpPage,

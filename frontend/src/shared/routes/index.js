@@ -1,7 +1,7 @@
 import {
   UsersPage,
   UserPage,
-  MainPage,
+  VocabListsPage,
   AboutPage,
   VocabListPage,
   ResetPasswordPage,
@@ -23,9 +23,9 @@ const routes = [
     component: UserPage,
   },
   {
-    path: '/home',
-    name: 'home',
-    component: MainPage,
+    path: '/vocablists',
+    name: 'vocablists',
+    component: VocabListsPage,
   },
   {
     path: '/about',

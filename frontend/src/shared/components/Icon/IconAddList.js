@@ -1,7 +1,7 @@
 import React from 'react';
 
 const IconAddList = () => (
-  <svg enableBackground="new 0 0 32 32" height="32px" version="1.1" viewBox="0 0 32 32" width="32px">
+  <svg enableBackground="new 0 0 32 32" height="24px" version="1.1" viewBox="0 0 32 32" width="24px">
     <g id="background">
       <rect fill="none" height="32" width="32" />
       <g id="document_x5F_text_x5F_add">

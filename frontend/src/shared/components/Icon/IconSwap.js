@@ -1,7 +1,7 @@
 import React from 'react';
 
 const IconSwap = () => (
-  <svg height="20px" version="1.1" viewBox="0 0 18 14" width="20px" xmlns="http://www.w3.org/2000/svg">
+  <svg height="24" version="1.1" viewBox="0 0 18 14" width="24" xmlns="http://www.w3.org/2000/svg">
     <title />
     <desc />
     <defs />

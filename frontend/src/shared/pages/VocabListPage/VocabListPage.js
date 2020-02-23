@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import gql from 'graphql-tag';
 import { useQuery, useMutation } from '@apollo/react-hooks';
-import { useParams, Redirect, useHistory } from 'react-router-dom';
+import { useParams, useHistory, Link } from 'react-router-dom';
 import jwtDecode from 'jwt-decode';
 
 import { ContentLayout } from '../../layouts';
-import { Message } from '../../components';
+import { Message, Icon } from '../../components';
 
 import VocabListSessionContainer from './VocabListSessionContainer';
 import VocabListEditOverlay from './VocabListEditOverlay';
@@ -45,6 +45,7 @@ export const UPDATE_LIST = gql`
 export const ADD_LIST = gql`
   mutation AddList($name: String!, $file: Upload, $data: [[String]], $creatorId: ID!) {
     addList(name: $name, file: $file, data: $data, creatorId: $creatorId) {
+      id
       name
     }
   }
@@ -80,7 +81,7 @@ const VocabListPage = () => {
   const [
     addList,
     { loading: addListMutationLoading, error: addListMutationError },
-  ] = useMutation(ADD_LIST, { onCompleted: () => push('/home') }, {
+  ] = useMutation(ADD_LIST, { onCompleted: (data) => push(`/vocablist/${data.addList.id}`) }, {
     refetchQueries: [{ query: GET_LISTS, variables: { creatorId } }],
   });
 
@@ -91,62 +92,63 @@ const VocabListPage = () => {
     refetchQueries: [{ query: GET_LIST, variables: { id } }],
   });
 
-  if (!data) {
-    return (
-      <ContentLayout>
-        <div className="vocab-list-page page">
-          {loading && <Message type="info" content="Loading..." />}
-          {error && <Message type="error" content={`Error! ${error.message}`} />}
-        </div>
-      </ContentLayout>
-    );
-  }
-
-  if (typeof data.getList === 'undefined' || data.getList === null) return <Redirect to="/home" />;
-
-  const { name: title, data: list } = data.getList;
-  const vocabList = list || [];
-
   return (
     <ContentLayout>
       <div className="vocab-list-page page">
-        <VocabListEditOverlay
-          newTitle={newTitle}
-          isVisible={isOverlayVisible}
-          onCloseButtonClick={() => { setOverlayVisibility(false); }}
-          onNewTitleInputChange={({ target: { value } }) => setNewTitle(value)}
-          onUpdateTitleButtonClick={() => {
-            updateList({ variables: { id, name: newTitle } });
-            setOverlayVisibility(false);
-          }}
-        />
-        <div className="content">
-          <h1>{title}</h1>
-          <label className="edit-mode-checkbox" htmlFor="edit-mode">
-            <span>Edit Mode</span>
-            <input
-              id="edit-mode"
-              type="checkbox"
-              checked={isEditMode}
-              onChange={({ target }) => setEditMode(target.checked)}
-            />
-          </label>
-
-          {!isEditMode ? <VocabListSessionContainer list={translations} />
-            : (
-              <VocabListEditContainer
-                id={id}
-                creatorId={creatorId}
-                list={vocabList}
-                addList={addList}
-                updateList={updateList}
+        {!data || data === 'undefined'
+          ? (
+            <>
+              {loading && <Message type="info" content="Loading..." />}
+              {error && <Message type="error" content={error.message.split(':')[1].trim()} />}
+            </>
+          )
+          : (
+            <>
+              <VocabListEditOverlay
+                newTitle={newTitle}
+                isVisible={isOverlayVisible}
+                onCloseButtonClick={() => { setOverlayVisibility(false); }}
+                onNewTitleInputChange={({ target: { value } }) => setNewTitle(value)}
+                onUpdateTitleButtonClick={() => {
+                  updateList({ variables: { id, name: newTitle } });
+                  setOverlayVisibility(false);
+                }}
               />
-            )}
-        </div>
-        {addListMutationLoading && <Message type="info" content="Loading..." /> }
-        {addListMutationError && <Message type="error" content="Please try again" />}
-        {updateListMutationLoading && <Message type="info" content="Loading..." /> }
-        {updateListMutationError && <Message type="error" content="Please try again" />}
+              <div className="content">
+                <h1>{data.getList.name}</h1>
+                <div className="sub-header">
+                  <Link to="/vocablists">
+                    <div className="icon">
+                      <Icon type="home" />
+                    </div>
+                  </Link>
+                  <label className="edit-mode-checkbox" htmlFor="edit-mode">
+                    <span>Edit Mode</span>
+                    <input
+                      id="edit-mode"
+                      type="checkbox"
+                      checked={isEditMode}
+                      onChange={({ target }) => setEditMode(target.checked)}
+                    />
+                  </label>
+                </div>
+                {!isEditMode ? <VocabListSessionContainer list={translations} />
+                  : (
+                    <VocabListEditContainer
+                      id={id}
+                      creatorId={creatorId}
+                      list={data.getList.data}
+                      addList={addList}
+                      updateList={updateList}
+                    />
+                  )}
+              </div>
+              {addListMutationLoading && <Message type="info" content="Loading..." /> }
+              {addListMutationError && <Message type="error" content="Please try again" />}
+              {updateListMutationLoading && <Message type="info" content="Loading..." /> }
+              {updateListMutationError && <Message type="error" content="Please try again" />}
+            </>
+          )}
       </div>
     </ContentLayout>
   );
