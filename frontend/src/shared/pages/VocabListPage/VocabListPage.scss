@@ -6,28 +6,20 @@
       display: flex;
       justify-content: space-between;
       padding: 8px 16px;
-      margin: 0 0 4px;
+      margin: 0;
       border-bottom: 1px solid $grey;
       
-      .edit-mode-checkbox {
-        font-size: 11px;
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-
-        span {
-          margin: 0 8px 0 0;
-          display: block;
-        }
-      }
-
      .icon svg {
         height: 28px;
         fill: $green;
       }
     }
 
-    
+    .header {
+      .icon-type-plus {
+        margin: 8px 0 0;
+      }
+    }
 
     input[type="file"] {
       width: 100%;
@@ -88,9 +80,9 @@
     small {
       display: flex;
       justify-content: flex-end;
+      margin: 0 0 8px 0;
     }
 
-    
     textarea {
       background-color: $grey;
       border: solid 1px $green;
@@ -146,6 +138,7 @@
     .list {
       display: flex;
       flex-direction: column;
+      margin: 8px 0;
 
       .list-item {
         position: relative;
@@ -156,7 +149,7 @@
         padding: 12px;
         margin: 0 0 8px;
 
-        .checkbox {
+        .checkbox-container {
           display: flex;
           align-self: center;
           margin: 0 24px 0 0;

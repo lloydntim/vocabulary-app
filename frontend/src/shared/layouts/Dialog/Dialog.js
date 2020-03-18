@@ -3,6 +3,9 @@ import {
   string,
   bool,
   func,
+  node,
+  arrayOf,
+  oneOfType,
 } from 'prop-types';
 
 import './Dialog.scss';
@@ -10,7 +13,7 @@ import './Dialog.scss';
 /* eslint-disable react/jsx-props-no-spreading */
 const Dialog = ({
   title,
-  message,
+  children,
   isVisible,
   cancelButtonText,
   continueButtonText,
@@ -20,7 +23,7 @@ const Dialog = ({
   <div className={`dialog ${isVisible ? 'is-visible' : 'is-hidden'}`}>
     <div className="content ">
       <h3>{title}</h3>
-      <p>{message}</p>
+      <div className="dialog-content">{children}</div>
       <div className="button-group">
         <button
           className="button button-primary"
@@ -41,11 +44,19 @@ const Dialog = ({
   </div>
 );
 
+Dialog.defaultProps = {
+  continueButtonText: 'Continue',
+  cancelButtonText: 'Cancel',
+};
+
 Dialog.propTypes = {
   title: string.isRequired,
-  message: string.isRequired,
-  cancelButtonText: string.isRequired,
-  continueButtonText: string.isRequired,
+  children: oneOfType([
+    arrayOf(node).isRequired,
+    node,
+  ]).isRequired,
+  cancelButtonText: string,
+  continueButtonText: string,
   isVisible: bool.isRequired,
   onCancelButtonClick: func.isRequired,
   onContinueButtonClick: func.isRequired,

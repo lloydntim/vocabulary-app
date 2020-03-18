@@ -7,7 +7,7 @@ import { getCurrentUser } from '../middleware';
 
 dotEnv.config();
 
-const { HOST, PORT, MONGODB_URI } = process.env;
+const { NODE_ENV, HOST, PORT, MONGODB_URI, MONGODB_DEV_URI } = process.env;
 const app = new Express();
 const server = new ApolloServer({
   typeDefs,
@@ -24,6 +24,7 @@ const server = new ApolloServer({
     throw Error(error.message);
   },
 });
+const mongoURI = NODE_ENV === 'development' ? MONGODB_DEV_URI : MONGODB_URI;
 
 server.applyMiddleware({ app, path: '/graphql' });
 
@@ -31,7 +32,12 @@ app.listen(PORT, () => console.log( // eslint-disable-line no-console
   `app Server is now running on http://${HOST}:${PORT}`,
 ));
 
-mongoose.connect(MONGODB_URI);
+mongoose.connect(mongoURI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useCreateIndex: true,
+  useFindAndModify: false,
+});
 mongoose.connection.once('open', () => {
   console.log('Database connected');
 });

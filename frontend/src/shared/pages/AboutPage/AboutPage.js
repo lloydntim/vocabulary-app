@@ -1,18 +1,21 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import './AboutPage.scss';
 
-const AboutPage = () => (
-  <div className="about-page page">
-    <div className="content">
-      <h1>About</h1>
-      <h3>Quick Introduction</h3>
-      <p>
-        This is an app that allows you to save interactive
-        vocabulary lists that are meant to help you memorise vocabulary.
-      </p>
+const AboutPage = () => {
+  const { t } = useTranslation();
+  return (
+    <div className="about-page page">
+      <div className="content">
+        <h1>{t('about_title')}</h1>
+        <h3>{t('about_subTitle')}</h3>
+        <p>
+          {t('about_introduction')}
+        </p>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default AboutPage;

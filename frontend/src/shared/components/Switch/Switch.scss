@@ -1,0 +1,51 @@
+@import '../../../client/styles.scss';
+
+.switch {
+  font-size: 11px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  cursor: pointer;
+
+  .switch-label-text {
+    margin: 0 8px 0 0;
+    display: block;
+  }
+
+  .switch-checkbox {
+    visibility: hidden;
+    position: absolute;
+    left: 0;
+    right: 0;
+
+    &~ .switch-background {
+      display: block;
+      position: relative;
+      border: solid $dark-grey 2px; 
+      border-radius: 10px;
+      background-color: $dark-grey;
+      width: 36px;
+      height: 20px;
+
+      &:after {
+        content: " ";
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        border-radius: 8px;
+        background-color: $white;
+        display: flex;
+      }
+    }
+
+    &:checked {
+      &~ .switch-background {
+        border-color: $green;
+        background-color: $green;
+        &:after {
+          left: 16px;
+        }
+      }  
+    }
+  }
+}

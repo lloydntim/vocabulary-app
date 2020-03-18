@@ -9,15 +9,15 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 
 import { ApolloProvider } from '@apollo/react-hooks';
 
-/* eslint-disable react/jsx-props-no-spreading */
+/* eslint-disable react/jsx-props-no-spreading, no-unused-vars, no-undef */
 import routes from '../shared/routes';
+import i18n from './i18n';
 
 const uri = process.env.NODE_ENV === 'development' ? 'http://localhost:3000/graphql' : 'https://vocab-list-app.herokuapp.com/graphql';
 const cache = new InMemoryCache();
 const link = createUploadLink({ uri });
 
 const authLink = setContext((parent, { headers }) => {
-  /* eslint-disable no-undef */
   const token = localStorage.getItem('token');
   return {
     headers: {
@@ -33,7 +33,6 @@ const client = new ApolloClient({
   connectToDevTools: true,
 });
 
-/* eslint-disable no-undef */
 const App = () => (
   <ApolloProvider client={client}>
     <Router>

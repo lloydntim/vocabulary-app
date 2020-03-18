@@ -1,11 +1,11 @@
-import InitLayout from './InitLayout/InitLayout';
-import ContentLayout from './ContentLayout/ContentLayout';
+import RootLayout from './RootLayout';
 import Overlay from './Overlay/Overlay';
 import Tabs from './Tabs/Tabs';
+import Dialog from './Dialog/Dialog';
 
 export {
-  ContentLayout,
-  InitLayout,
+  RootLayout,
   Overlay,
   Tabs,
+  Dialog,
 };

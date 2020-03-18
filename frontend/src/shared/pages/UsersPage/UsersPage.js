@@ -3,6 +3,9 @@ import gql from 'graphql-tag';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import { Link, Redirect } from 'react-router-dom';
 
+import { RootLayout, Dialog } from '../../layouts';
+import { Message } from '../../components';
+
 import './UsersPage.scss';
 
 export const GET_USERS = gql`
@@ -27,61 +30,87 @@ const UsersPage = () => {
   /* eslint-disable  no-undef */
   const token = localStorage.getItem('token');
 
-  if (!token) {
-    return <Redirect to="/" />;
-  }
+  if (!token) return <Redirect to="/" />;
 
-  const { loading, error, data } = useQuery(GET_USERS);
+  const [users, setUsers] = useState('');
+  const [currentUser, setCurrentUser] = useState({});
+  const [responseMessage, setResponseMessage] = useState('');
+  const [isDialogVisible, setDialogVisibility] = useState(false);
+  const { data, loading, error } = useQuery(
+    GET_USERS, {
+      refetchQueries: ['GetUsers'],
+      onCompleted: (data) => setUsers(data.getUsers),
+      onError: (error) => setResponseMessage(error.message),
+    },
+  );
   const [
-    removeUser,
-    {
+    removeUser, {
+      data: mutationData,
       loading: mutationLoading,
       error: mutationError,
-      data: mutationData,
     },
-  ] = useMutation(REMOVE_USER);
-
-  if (loading) return 'Loading...';
-  if (error) return `Error! ${error.message}`;
+  ] = useMutation(
+    REMOVE_USER, {
+      onCompleted: (data) => setCurrentUser(data.removeUser),
+      onError: (error) => setResponseMessage(error.message),
+    },
+  );
 
   return (
-    <div className="users-page">
-      <Link to="/logout">Logout</Link>
-
-      <h1>Users List</h1>
-
-      <ul>
-        {data.getUsers.map((user) => {
-          const { id, username, email } = user;
-
-          return (
-            <li key={id}>
-              <Link to={`/user/${id}`}>
-                <span>{username}</span>
-                <span> - </span>
-                <span>{email}</span>
-                <span> - </span>
-              </Link>
-              <button
-                type="button"
-                onClick={() => {
-                  removeUser({
-                    variables: { id },
-                    refetchQueries: ['GetUsers'],
-                  });
-                }}
-              >
-                delete
-              </button>
-            </li>
-          );
-        })}
-      </ul>
-
-      { mutationLoading && <p>Loading...</p> }
-      { mutationError && <p>Error :( Please try again</p> }
-      { mutationData && <p>{`user ${mutationData.removeUser.username} has been removed.`}</p> }
-    </div>
+    <RootLayout>
+      <Dialog
+        title="Delete User"
+        cancelButtonText="Cancel"
+        continueButtonText="Ok"
+        isVisible={isDialogVisible}
+        onCancelButtonClick={() => {
+          setDialogVisibility(false);
+          setCurrentUser({});
+        }}
+        onContinueButtonClick={() => {
+          removeUser({ variables: { id: currentUser.id } });
+          setDialogVisibility(false);
+          setCurrentUser({});
+        }}
+      >
+        {`You'll lose all data of user "${currentUser.username}"`}
+      </Dialog>
+      <div className="users-page page">
+        <div className="content">
+          <h1>Users List</h1>
+          {data
+            ? (
+              <>
+                <ul>
+                  {users.map((user) => (
+                    <li key={user.id}>
+                      <Link to={`/user/${user.id}`}>
+                        <span>{user.username}</span>
+                        <span> - </span>
+                        <span>{user.email}</span>
+                        <span> - </span>
+                      </Link>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setCurrentUser(user);
+                          setDialogVisibility(true);
+                        }}
+                      >
+                        delete
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )
+            : <p>There are no users.</p>}
+          {mutationData && <Message type="success" content={`User ${currentUser.username} has been removed.`} />}
+          {(loading || mutationLoading) && <Message type="info" content="...Loading" />}
+          {(error || mutationError) && <Message type="error" content={responseMessage} />}
+        </div>
+      </div>
+    </RootLayout>
   );
 };
 export default UsersPage;

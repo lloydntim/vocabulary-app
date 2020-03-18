@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import gql from 'graphql-tag';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import { useParams, useHistory, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import jwtDecode from 'jwt-decode';
 
-import { ContentLayout } from '../../layouts';
-import { Message, Icon } from '../../components';
+import { RootLayout } from '../../layouts';
+import { Switch, Message, Icon } from '../../components';
 
 import VocabListSessionContainer from './VocabListSessionContainer';
 import VocabListEditOverlay from './VocabListEditOverlay';
@@ -52,9 +53,10 @@ export const ADD_LIST = gql`
 `;
 
 const VocabListPage = () => {
+  const { t } = useTranslation();
   const [isEditMode, setEditMode] = useState(true);
-  const [translations, setTranslations] = useState([]);
-
+  const [{ name, list, shuffledList }, setVocabListData] = useState({ name: '', list: [], shuffledList: [] });
+  const [status, setStatusMessage] = useState('');
   const [isOverlayVisible, setOverlayVisibility] = useState(false);
 
   const [newTitle, setNewTitle] = useState('');
@@ -65,12 +67,12 @@ const VocabListPage = () => {
     {
       variables: { id },
       onCompleted: (data) => {
-        const { data: translationsData } = data.getList;
-        const shuffledData = translationsData
-          ? translationsData
+        const { data: list, name } = data.getList;
+        const shuffledList = list
+          ? list
             .map((translation) => translation)
             .sort(() => (0.5 - Math.random())) : [];
-        setTranslations(shuffledData);
+        setVocabListData({ name, list, shuffledList });
       },
     },
   );
@@ -89,68 +91,75 @@ const VocabListPage = () => {
     updateList,
     { loading: updateListMutationLoading, error: updateListMutationError },
   ] = useMutation(UPDATE_LIST, {
+    onCompleted: (data) => {
+      const { data: list } = data.updateList;
+      setVocabListData({ name, list, shuffledList });
+    },
     refetchQueries: [{ query: GET_LIST, variables: { id } }],
   });
 
   return (
-    <ContentLayout>
+    <RootLayout>
       <div className="vocab-list-page page">
-        {!data || data === 'undefined'
-          ? (
-            <>
-              {loading && <Message type="info" content="Loading..." />}
-              {error && <Message type="error" content={error.message.split(':')[1].trim()} />}
-            </>
-          )
-          : (
-            <>
-              <VocabListEditOverlay
-                newTitle={newTitle}
-                isVisible={isOverlayVisible}
-                onCloseButtonClick={() => { setOverlayVisibility(false); }}
-                onNewTitleInputChange={({ target: { value } }) => setNewTitle(value)}
-                onUpdateTitleButtonClick={() => {
-                  updateList({ variables: { id, name: newTitle } });
+        {data && (
+          <>
+            <VocabListEditOverlay
+              newTitle={newTitle}
+              isVisible={isOverlayVisible}
+              status={status}
+              onCloseButtonClick={() => {
+                setOverlayVisibility(false);
+                setStatusMessage('');
+              }}
+              onNewTitleInputChange={({ target: { value } }) => setNewTitle(value)}
+              onUpdateTitleButtonClick={() => {
+                const titleMinLength = 3;
+                const titleMaxLength = 35;
+                if (newTitle.length > titleMinLength || newTitle.length < titleMaxLength) {
+                  setStatusMessage(t('messages_error_titleMinMaxLength', { titleMinLength, titleMaxLength }));
+                } else if (newTitle.match(/^[A-Za-zÀ-ÖØ-öø-ÿ0-9_-]/g)) {
+                  setStatusMessage(t('messages_error_titleNotValid'));
+                } else {
                   setOverlayVisibility(false);
-                }}
-              />
-              <div className="content">
-                <h1>{data.getList.name}</h1>
-                <div className="sub-header">
-                  <Link to="/vocablists">
-                    <div className="icon">
-                      <Icon type="home" />
-                    </div>
-                  </Link>
-                  <label className="edit-mode-checkbox" htmlFor="edit-mode">
-                    <span>Edit Mode</span>
-                    <input
-                      id="edit-mode"
-                      type="checkbox"
-                      checked={isEditMode}
-                      onChange={({ target }) => setEditMode(target.checked)}
-                    />
-                  </label>
-                </div>
-                {!isEditMode ? <VocabListSessionContainer list={translations} />
-                  : (
-                    <VocabListEditContainer
-                      id={id}
-                      creatorId={creatorId}
-                      list={data.getList.data}
-                      addList={addList}
-                      updateList={updateList}
-                    />
-                  )}
+                  setStatusMessage('');
+                  updateList({ variables: { id, name: newTitle } });
+                }
+              }}
+            />
+            <div className="content">
+              <h1>{name}</h1>
+              <div className="sub-header">
+                <Link to="/vocablists">
+                  <div className="icon">
+                    <Icon type="home" />
+                  </div>
+                </Link>
+                <Switch
+                  name="edit-mode"
+                  label={isEditMode ? t('vocablist_switch_label_editMode') : t('vocablist_switch_label_practiceMode')}
+                  isActive={isEditMode}
+                  onChange={({ target }) => setEditMode(target.checked)}
+                />
               </div>
-              {addListMutationLoading && <Message type="info" content="Loading..." /> }
-              {addListMutationError && <Message type="error" content="Please try again" />}
-              {updateListMutationLoading && <Message type="info" content="Loading..." /> }
-              {updateListMutationError && <Message type="error" content="Please try again" />}
-            </>
-          )}
+              {!isEditMode ? <VocabListSessionContainer list={shuffledList} />
+                : (
+                  <VocabListEditContainer
+                    id={id}
+                    creatorId={creatorId}
+                    list={list}
+                    addList={addList}
+                    updateList={updateList}
+                  />
+                )}
+            </div>
+          </>
+        )}
+
+        {error && <Message type="error" content={error.message.split(':')[1].trim()} />}
+        {(loading || updateListMutationLoading || addListMutationLoading) && <Message type="info" content={t('messages_info_loading')} /> }
+        {(updateListMutationError || addListMutationError) && <Message type="error" content={t('messages_error_pleaseTryAgain')} />}
       </div>
-    </ContentLayout>
+    </RootLayout>
   );
 };
 export default VocabListPage;

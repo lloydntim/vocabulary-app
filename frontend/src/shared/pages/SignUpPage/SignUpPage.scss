@@ -6,4 +6,16 @@
       margin: 0 0 24px 0;
     }
   }
+
+  .link-group { 
+    display: flex;
+    justify-content: space-between;
+    margin: 0 0 12px;
+
+    a {
+      font-weight: $bold;
+      font-size: 12px;
+      color: $white;
+    }
+  }
 }

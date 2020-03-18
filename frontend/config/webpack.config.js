@@ -31,11 +31,6 @@ module.exports = {
         ],
       },
       {
-        test: /\.json$/,
-        exclude: /node_modules/,
-        loader: 'json',
-      },
-      {
         test: /\.scss$/,
         use: [
           {
@@ -48,11 +43,6 @@ module.exports = {
             loader: 'sass-loader' // compiles Sass to CSS
           }
         ]
-      },
-      {
-        test: /\.json$/,
-        exclude: /node_modules/,
-        loader: 'json',
       },
     ]
   },

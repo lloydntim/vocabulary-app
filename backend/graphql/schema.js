@@ -23,6 +23,8 @@ import {
 } from '../user/UserController';
 
 export const typeDefs = gql`
+  scalar Date
+
   type User {
     id: ID
     username: String
@@ -44,8 +46,10 @@ export const typeDefs = gql`
     name: String
     data: [[String]]
     creatorId: ID
+    createdAt: Date
+    updatedAt: Date
   }
-  
+
   type Query {
     getPasswordToken(resetPasswordToken: String):Auth
 
@@ -55,18 +59,18 @@ export const typeDefs = gql`
     getLists(creatorId:ID): [List]
     getList(id: ID, name: String): List
   }
-  
+
   type Mutation {
     register(username: String, email: String, password: String): Auth
     login(username: String, password: String): Auth
     createPasswordToken(email: String): Auth
     updatePassword(resetPasswordToken: String, password: String): Auth
-    updateUser(id: ID, username: String, password: String): User
+    updateUser(id: ID, username: String, email: String): User
     removeUser(id: ID): User
 
     addList(name: String!, file: Upload, data: [[String]], creatorId: ID!): List
     updateList(id: ID!, name: String, file: Upload, data: [[String]]): List
-    removeList(id: ID!): List
+    removeList(id: ID, creatorId: ID): List
   }
 `;
 

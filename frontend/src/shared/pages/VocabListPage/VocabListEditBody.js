@@ -6,7 +6,7 @@ import {
   func,
 } from 'prop-types';
 
-import { IconButton } from '../../components';
+import { IconButton, Checkbox } from '../../components';
 
 const VocabListEditBody = ({
   list,
@@ -19,9 +19,8 @@ const VocabListEditBody = ({
       const [sourceLanguage, targetLanguage, sourceText, targetText] = item;
       return (
         <li className="list-item" key={index}>
-          <input
-            type="checkbox"
-            className="checkbox"
+          <Checkbox
+            name={`checkbox-${index + 1}`}
             checked={selectedVocabs.indexOf(index) !== -1}
             onChange={() => onVocabCheckboxChange(index, item)}
           />

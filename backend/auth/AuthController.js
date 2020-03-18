@@ -13,7 +13,6 @@ dotEnv.config();
 const {
   NODE_ENV,
   HOST,
-  PORT,
   CLIENT_DEV_PORT,
   CLIENT_HOST,
   JWT_SECRET,
@@ -28,13 +27,14 @@ const nodemailerAuthConfig = {
 };
 const nodemailerMailgun = nodemailer.createTransport(mg(nodemailerAuthConfig));
 
-export const register = async (parent, { username, email, password }) => {
+export const register = async (parent, args) => {
+  const { username, email, password } = args;
   try {
     const hash = await bcrypt.hash(password, 10);
     const user = await User.create({ username, email, password: hash });
     return { user };
   } catch (error) {
-    throw new Error('User could not be added', error);
+    throw new Error(error);
   }
 };
 

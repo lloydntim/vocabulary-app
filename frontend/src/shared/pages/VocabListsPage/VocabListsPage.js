@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import gql from 'graphql-tag';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import { Link, Redirect } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import jwtDecode from 'jwt-decode';
 
-import { ContentLayout, Overlay } from '../../layouts';
+import { RootLayout, Overlay, Dialog } from '../../layouts';
 import {
   IconButton,
   Icon,
-  Dialog,
   Message,
 } from '../../components';
 
@@ -28,6 +28,8 @@ export const GET_LISTS = gql`
       name
       data
       id
+      createdAt
+
     }
   }
 `;
@@ -43,8 +45,8 @@ export const UPDATE_LIST = gql`
 `;
 
 export const REMOVE_LIST = gql`
-  mutation RemoveList($id: ID!) {
-    removeList(id: $id) {
+  mutation RemoveList($id: ID, $creatorId: ID) {
+    removeList(id: $id, creatorId: $creatorId) {
       id
       name
     }
@@ -53,20 +55,26 @@ export const REMOVE_LIST = gql`
 
 const VocabListsPage = () => {
   /* eslint-disable  no-undef */
+  const { t } = useTranslation();
   const token = localStorage.getItem('token');
 
-  if (!token) {
-    return <Redirect to="/" />;
-  }
+  if (!token) return <Redirect to="/" />;
 
   const creatorId = jwtDecode(token).id;
   const [file, setFile] = useState('');
   const [title, setTitle] = useState('');
   const [isEditTitleMode, setEditTitleMode] = useState(false);
+  const [status, setStatusMessage] = useState('');
   const [currentList, setCurrentList] = useState({});
   const [isDialogVisible, setDialogVisibility] = useState(false);
   const [isOverlayVisible, setOverlayVisibility] = useState(false);
-  const { loading, error, data } = useQuery(GET_LISTS, { variables: { creatorId } });
+  const { loading, error, data } = useQuery(GET_LISTS, {
+    variables: { creatorId },
+    // onCompleted: (data) => {
+    //   if (data.getLists.length > 0)
+    // console.log('date', new Date(data.getLists[0].createdAt).getTime());
+    // },
+  });
   const [addList] = useMutation(ADD_LIST,
     { refetchQueries: [{ query: GET_LISTS, variables: { creatorId } }] });
   const [
@@ -83,147 +91,160 @@ const VocabListsPage = () => {
   });
 
   return (
-    <ContentLayout>
+    <RootLayout>
       <div className="vocab-lists-page page">
-        {!data
-          ? (
-            <>
-              {loading && <Message type="info" content="Loading..." />}
-              {error && <Message type="error" content={error.message.split(':')[1].trim()} />}
-            </>
-          )
-          : (
-            <>
-              <Dialog
-                title="Delete List Item"
-                message={`You'll lose all data of list "${currentList.name}"`}
-                cancelButtonText="Cancel"
-                continueButtonText="Ok"
-                isVisible={isDialogVisible}
-                onCancelButtonClick={() => setDialogVisibility(false)}
-                onContinueButtonClick={() => {
-                  removeList({ variables: { id: currentList.id } });
-                  setDialogVisibility(false);
-                  setCurrentList({});
-                }}
-              />
-              <Overlay
-                isVisible={isOverlayVisible}
-                onCloseButtonClick={() => {
-                  setTitle('');
-                  setFile('');
-                  setEditTitleMode(false);
-                  setOverlayVisibility(false);
-                }}
-              >
-                <h1>{isEditTitleMode ? 'Edit Vocab List Title' : 'New Vocab List'}</h1>
+        {data && (
+          <>
+            <Dialog
+              title={t('vocablists_dialog_title')}
+              cancelButtonText={t('common_button_cancel')}
+              continueButtonText={t('common_button_ok')}
+              isVisible={isDialogVisible}
+              onCancelButtonClick={() => setDialogVisibility(false)}
+              onContinueButtonClick={() => {
+                removeList({ variables: { id: currentList.id } });
+                setDialogVisibility(false);
+                setCurrentList({});
+              }}
+            >
+              {t('vocablists_dialog_messsage_deleteListWarning', { listName: currentList.name })}
+            </Dialog>
+            <Overlay
+              isVisible={isOverlayVisible}
+              onCloseButtonClick={() => {
+                setTitle('');
+                setFile('');
+                setStatusMessage('');
+                setEditTitleMode(false);
+                setOverlayVisibility(false);
+              }}
+            >
+              <h1>{isEditTitleMode ? t('vocablists_form_title_editTitle') : t('vocablists_form_title_newList')}</h1>
 
-                <form>
-                  <label htmlFor="title">
-                    <span>Title</span>
-                    <input
-                      name="title"
-                      type="text"
-                      placeholder="Enter Title"
-                      value={title}
-                      onChange={({ target: { value } }) => setTitle(value)}
-                    />
-                  </label>
-                  {!isEditTitleMode && (
-                    <>
-                      <label htmlFor="document">
-                        <input
-                          name="document"
-                          type="file"
-                          onChange={({ target: { files } }) => setFile(files[0])}
-                        />
-                      </label>
-                      {file.name && <Message type="info" content={file.name} />}
-                    </>
-                  )}
+              <form>
+                <label htmlFor="title">
+                  <span>{t('vocablists_form_label_title')}</span>
+                  <input
+                    name="title"
+                    type="text"
+                    placeholder={t('vocablists_form_placeholder_title')}
+                    value={title}
+                    onFocus={() => setStatusMessage('')}
+                    onChange={({ target: { value } }) => setTitle(value)}
+                  />
+                </label>
+                {!isEditTitleMode && (
+                  <>
+                    <label htmlFor="document">
+                      <input
+                        name="document"
+                        type="file"
+                        onFocus={() => setStatusMessage('')}
+                        onChange={({ target: { files } }) => {
+                          setFile(files[0]);
+                        }}
+                      />
+                    </label>
+                    {file.name && <Message type="info" content={file.name} />}
+                  </>
+                )}
 
-                  <button
-                    className="button button-secondary"
-                    type="button"
-                    onClick={() => {
-                      if (isEditTitleMode) {
-                        updateList({ variables: { id: currentList.id, name: title } });
-                        setEditTitleMode(false);
-                      } else {
-                        addList({ variables: { name: title, file, creatorId } });
-                      }
+                <button
+                  className="button button-secondary"
+                  type="button"
+                  onClick={() => {
+                    const titleMinLength = 3;
+                    const titleMaxLength = 35;
 
+                    if (title.length < titleMinLength || title.length > titleMaxLength) {
+                      setStatusMessage(t('messages_error_titleMinMaxLength', { titleMinLength, titleMaxLength }));
+                    } else if (!title.match(/^[A-Za-zÀ-ÖØ-öø-ÿ0-9_-]/g)) {
+                      setStatusMessage(t('messages_error_titleNotValid'));
+                    } else if (isEditTitleMode) {
+                      updateList({ variables: { id: currentList.id, name: title } });
+                      setEditTitleMode(false);
+                      setStatusMessage('');
+                      setOverlayVisibility(false);
+                    } else if (file && !file.name.match(/\.[xls(?x)|csv]+$/)) {
+                      setStatusMessage(t('messages_error_fileTypeIncorrect'));
+                    } else {
+                      addList({ variables: { name: title, file, creatorId } });
+                      setOverlayVisibility(false);
                       setTitle('');
                       setFile('');
-                      setOverlayVisibility(false);
-                    }}
-                  >
-                    {isEditTitleMode ? 'Edit' : 'Add'}
-                  </button>
-                </form>
-              </Overlay>
+                      setStatusMessage('');
+                    }
+                  }}
+                >
+                  {isEditTitleMode ? t('vocablists_form_button_edit') : t('vocablists_form_button_add')}
+                </button>
+                { status && <Message type="error" id="status" content={status} /> }
+              </form>
+            </Overlay>
 
-              <div className="content">
-                <h1>Vocabulary Lists</h1>
+            <div className="content">
+              <h1>{t('vocablists_title')}</h1>
 
-                <div className="sub-header">
-                  <IconButton
-                    icon="add-list"
-                    type="primary"
-                    onClick={() => {
-                      setTitle('');
-                      setOverlayVisibility(true);
-                    }}
-                  />
-                </div>
-
-                {updateListMutationLoading && <Message type="info" content="Loading..." /> }
-                {updateListMutationError && <Message type="error" content="Please try again" />}
-                {removeMutationLoading && <Message type="info" content="Loading..." /> }
-                {removeMutationError && <Message type="error" content="Please try again" />}
-
-                <ul className="list">
-                  {data.getLists.map((list) => (
-                    <li className="list-item" key={list.id}>
-                      <div className="button-group">
-                        <IconButton
-                          icon="edit"
-                          type="secondary"
-                          onClick={() => {
-                            setTitle(list.name);
-                            setCurrentList(list);
-                            setEditTitleMode(true);
-                            setOverlayVisibility(true);
-                          }}
-                        />
-                        <IconButton
-                          icon="delete"
-                          type="secondary"
-                          onClick={() => {
-                            setCurrentList(list);
-                            setDialogVisibility(true);
-                          }}
-                        />
-                      </div>
-                      <Link to={`/vocablist/${list.id}`}>
-                        <div className="list-item-link-content">
-                          <span>{list.name}</span>
-                          <small>
-                            {`${list.data.length} Phrases`}
-                          </small>
-                        </div>
-                        <div className="icon">
-                          <Icon type="arrow-right" />
-                        </div>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
+              <div className="sub-header">
+                <IconButton
+                  icon="add-list"
+                  type="primary"
+                  onClick={() => {
+                    setTitle('');
+                    setOverlayVisibility(true);
+                  }}
+                />
               </div>
-            </>
-          )}
+
+              <ul className="list">
+                {data.getLists.map((list) => (
+                  <li className="list-item" key={list.id}>
+                    <div className="button-group">
+                      <IconButton
+                        icon="edit"
+                        type="secondary"
+                        onClick={() => {
+                          setTitle(list.name);
+                          setCurrentList(list);
+                          setEditTitleMode(true);
+                          setOverlayVisibility(true);
+                        }}
+                      />
+                      <IconButton
+                        icon="delete"
+                        type="secondary"
+                        onClick={() => {
+                          setCurrentList(list);
+                          setDialogVisibility(true);
+                        }}
+                      />
+                    </div>
+                    <Link to={`/vocablist/${list.id}`}>
+                      <div className="list-item-link-content">
+                        <span>{list.name}</span>
+                        <small>
+                          {t('vocablists_numOfVocabs', { num: list.data.length })}
+                        </small>
+                      </div>
+                      <div className="icon">
+                        <Icon type="arrow-right" />
+                      </div>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </>
+        )}
+        {(error
+        || removeMutationError
+        || updateListMutationError) && <Message type="error" content={t('messages_error_pleaseTryAgain')} />}
+
+        {(loading
+        || removeMutationLoading
+        || updateListMutationLoading) && <Message type="info" content={t('messages_info_loading')} /> }
       </div>
-    </ContentLayout>
+    </RootLayout>
   );
 };
 export default VocabListsPage;

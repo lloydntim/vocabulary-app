@@ -3,19 +3,27 @@ import {
   string,
   bool,
   func,
+  arrayOf,
 } from 'prop-types';
 
+import VocabForm from './VocabForm';
 import { Overlay } from '../../layouts';
 
 const VocabEditOverlay = ({
   title,
+  sourceLanguageDataList,
+  targetLanguageDataList,
   sourceLanguageInputValue,
   targetLanguageInputValue,
   sourceTextInputValue,
   targetTextInputValue,
+  status,
   isVisible,
+  onInputFocus,
   onSourceLanguageInputChange,
   onTargetLanguageInputChange,
+  onSourceLanguageDataListClick,
+  onTargetLanguageDataListClick,
   onSourceTextInputChange,
   onTargetTextInputChange,
   updateVocabButtonText,
@@ -28,69 +36,43 @@ const VocabEditOverlay = ({
   >
     <h1>{title}</h1>
 
-    <form>
-      <label htmlFor="source-language">
-        <span>Source Language</span>
-        <input
-          name="source-language"
-          type="text"
-          placeholder="Enter Source Language"
-          value={sourceLanguageInputValue}
-          onChange={onSourceLanguageInputChange}
-        />
-      </label>
-      <label htmlFor="source-text">
-        <span>Source Text</span>
-        <input
-          name="source-text"
-          type="text"
-          placeholder="Enter Source Text"
-          value={sourceTextInputValue}
-          onChange={onSourceTextInputChange}
-        />
-      </label>
-      <div className="separator" />
-      <label htmlFor="target-language">
-        <span>Target Language</span>
-        <input
-          name="target-language"
-          type="text"
-          placeholder="Enter Target Language"
-          value={targetLanguageInputValue}
-          onChange={onTargetLanguageInputChange}
-        />
-      </label>
-      <label htmlFor="target-text">
-        <span>Target Text</span>
-        <input
-          name="target-text"
-          type="text"
-          placeholder="Enter Target Text"
-          value={targetTextInputValue}
-          onChange={onTargetTextInputChange}
-        />
-      </label>
-      <button
-        className="button button-secondary"
-        type="button"
-        onClick={onUpdateVocabButtonClick}
-      >
-        {updateVocabButtonText}
-      </button>
-    </form>
+    <VocabForm
+      sourceLanguageDataList={sourceLanguageDataList}
+      targetLanguageDataList={targetLanguageDataList}
+      sourceLanguageInputValue={sourceLanguageInputValue}
+      targetLanguageInputValue={targetLanguageInputValue}
+      sourceTextInputValue={sourceTextInputValue}
+      targetTextInputValue={targetTextInputValue}
+      onInputFocus={onInputFocus}
+      onSourceLanguageInputChange={onSourceLanguageInputChange}
+      onTargetLanguageInputChange={onTargetLanguageInputChange}
+      onSourceLanguageDataListClick={onSourceLanguageDataListClick}
+      onTargetLanguageDataListClick={onTargetLanguageDataListClick}
+      onSourceTextInputChange={onSourceTextInputChange}
+      onTargetTextInputChange={onTargetTextInputChange}
+      status={status}
+      submitVocabButtonText={updateVocabButtonText}
+      onSubmitVocabButtonClick={onUpdateVocabButtonClick}
+    />
   </Overlay>
 );
 
 VocabEditOverlay.propTypes = {
   title: string.isRequired,
+  sourceLanguageDataList: arrayOf(string).isRequired,
+  targetLanguageDataList: arrayOf(string).isRequired,
   sourceLanguageInputValue: string.isRequired,
   targetLanguageInputValue: string.isRequired,
   sourceTextInputValue: string.isRequired,
   targetTextInputValue: string.isRequired,
   updateVocabButtonText: string.isRequired,
+  status: string.isRequired,
   isVisible: bool.isRequired,
+  onInputFocus: func.isRequired,
   onSourceLanguageInputChange: func.isRequired,
   onTargetLanguageInputChange: func.isRequired,
+  onSourceLanguageDataListClick: func.isRequired,
+  onTargetLanguageDataListClick: func.isRequired,
   onSourceTextInputChange: func.isRequired,
   onTargetTextInputChange: func.isRequired,
   onUpdateVocabButtonClick: func.isRequired,

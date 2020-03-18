@@ -1,0 +1,49 @@
+@import '../../../client/styles.scss';
+
+.radios {
+  display: flex;
+  flex-direction: column;
+  .radio {
+    display: flex;
+
+    .radio-label {
+      display: flex;
+      margin: 0 0 8px 24px;
+      font-size: 20px;
+    }
+
+    .radio-input {
+      visibility: hidden;
+
+      &~ .radio-background {
+        display: flex;
+        position: relative;
+        border-radius: 10px;
+        width: 20px;
+        height: 20px;
+        background-color: $white;
+        border: solid $green 2px;
+        justify-content: center;
+        align-items: center;
+
+        &:after {
+          content: " ";
+          visibility: visible;
+          width: 12px;
+          height: 12px;
+          border-radius: 8px;
+          background-color: $white;
+          display: flex;
+        }
+      }
+
+      &:checked {
+        &~ .radio-background {
+          &:after {
+            background-color: $green;
+          }
+        }
+      }
+    }
+  }
+}

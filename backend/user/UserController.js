@@ -11,7 +11,7 @@ export const getUser = async (parent, args, { currentUser }) => {
     throw new Error(`User with id ${id} could not be retrieved`);
   }
 };
- 
+
 export const getUsers = async (parent, args, { currentUser }) => {
   if (!currentUser.loggedIn) throw new AuthenticationError('User must be logged in!');
   try {
@@ -21,12 +21,16 @@ export const getUsers = async (parent, args, { currentUser }) => {
   }
 };
 
-export const updateUser = async (parent, args) => {
+export const updateUser = async (parent, args, { currentUser }) => {
   if (!currentUser.loggedIn) throw new AuthenticationError('User must be logged in!');
 
   try {
+    let $set = {};
+    const { id, email } = args;
+    if (email) $set.email = email;
+
     return await User
-      .findByIdAndUpdate(args.id, { $set: args.input }, { new: true })
+      .findByIdAndUpdate(id, { $set }, { new: true })
       .select({ password: 0, __v: 0 });
   } catch (error) {
     throw new Error('User could not be updated');

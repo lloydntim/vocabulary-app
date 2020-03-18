@@ -1,10 +1,11 @@
-
 import React, { useState } from 'react';
 import gql from 'graphql-tag';
 import { useQuery, useMutation } from '@apollo/react-hooks';
-import { Redirect, useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
-import { ContentLayout } from '../../layouts';
+import { RootLayout } from '../../layouts';
+import { Message } from '../../components';
 
 import './ResetPasswordPage.scss';
 
@@ -27,77 +28,113 @@ export const UPDATE_PASSWORD_TOKEN = gql`
 const ResetPasswordPage = () => {
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
+  const [responseMessage, setResponseMessage] = useState('');
+  const [status, setStatusMessage] = useState('');
+  const { push } = useHistory();
+  const { t } = useTranslation();
   const { token: resetPasswordToken } = useParams();
   const {
     loading, error, data,
-  } = useQuery(GET_PASSWORD_TOKEN, { variables: { resetPasswordToken } });
+  } = useQuery(
+    GET_PASSWORD_TOKEN, {
+      variables: { resetPasswordToken },
+      onError: ({ message }) => {
+        setResponseMessage(message);
+      },
+    },
+  );
   const [
     updatePassword,
-    { mutationLoading, mutationError, data: mutationData },
-  ] = useMutation(UPDATE_PASSWORD_TOKEN);
-
-  /* eslint-disable no-undef */
-  if (mutationData) {
-    localStorage.setItem('token', mutationData.updatePassword.token);
-    return <Redirect to="/vocablists" />;
-  }
-
+    { mutationLoading, mutationError },
+  ] = useMutation(
+    UPDATE_PASSWORD_TOKEN, {
+      onCompleted: (data) => {
+        /* eslint-disable no-undef */
+        localStorage.setItem('token', data.updatePassword.token);
+        push('/vocablists');
+      },
+      onError: (error) => {
+        const message = error.message.includes('email')
+          ? t('messages_error_emailDoesNotExist', { email }) : t('messages_error_somethingWentWrong');
+        setResponseMessage(message);
+      },
+    },
+  );
   return (
-    <ContentLayout>
+    <RootLayout>
       <div className="reset-password-page">
         <h1>Reset Password</h1>
 
         {
           data && (
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                if (password !== passwordConfirm) {
-                  setStatusMessage('Your passwords aren\'t matching, please re-enter.');
-                } else {
-                  updatePassword({ variables: { resetPasswordToken, password } });
-                }
-                setPassword('');
-                setPasswordConfirm('');
-              }}
-            >
+            <form>
               <label htmlFor="password">
-                <span>Password</span>
+                <span>{t('common_form_label_password')}</span>
                 <input
                   autoComplete="current-password"
                   name="password"
                   type="password"
+                  placeholder={t('common_form_placeholder_password')}
                   value={password}
-                  onChange={
-                    ({ target: { value } }) => setPassword(value)
-                  }
+                  onChange={({ target: { value } }) => setPassword(value)}
+                  onFocus={() => {
+                    setResponseMessage('');
+                    setStatusMessage('');
+                  }}
                 />
               </label>
               <label htmlFor="password-confirm">
-                <span>Confirm Password</span>
+                <span>{t('common_form_label_confirmPassword')}</span>
                 <input
                   autoComplete="new-password"
                   name="password-confirm"
                   type="password"
+                  placeholder={t('common_form_placeholder_confirmPassword')}
                   value={passwordConfirm}
-                  onChange={
-                    ({ target: { value } }) => setPasswordConfirm(value)
-                  }
+                  onChange={({ target: { value } }) => setPasswordConfirm(value)}
+                  onFocus={() => {
+                    setResponseMessage('');
+                    setStatusMessage('');
+                  }}
                 />
               </label>
-              <button type="submit">Submit</button>
+              <button
+                type="button"
+                onClick={() => {
+                  const passwordMinLength = 7;
+                  const passwordMaxLength = 15;
+                  if (password !== passwordConfirm) {
+                    setStatusMessage(t('messages_error_passwordsNotMatching'));
+                  } else if (password.length < passwordMinLength) {
+                    setStatusMessage(t('messages_error_passwordMinLength', { passwordMinLength }));
+                  } else if (password.length > passwordMaxLength) {
+                    setStatusMessage(t('messages_error_passwordMaxLength', { passwordMaxLength }));
+                  } else if (!password.match(/^(?=.*[a-z])/)) {
+                    setStatusMessage(t('messages_error_passwordMustContainLowercaseChar'));
+                  } else if (!password.match(/^(?=.*[A-Z])/)) {
+                    setStatusMessage(t('messages_error_passwordMustContainUppercaseChar'));
+                  } else if (!password.match(/^(?=.*[!@#$%^&*])/)) {
+                    setStatusMessage(t('messages_error_passwordMustContainSpecialChar'));
+                  } else if (!password.match(/^(?=.*[0-9])/)) {
+                    setStatusMessage(t('messages_error_passwordMustContainNumber'));
+                  } else {
+                    updatePassword({ variables: { resetPasswordToken, password } });
+                  }
+                  setPassword('');
+                  setPasswordConfirm('');
+                }}
+              >
+                {t('common_button_submit')}
+              </button>
+              { status && <Message type="error" id="status" content={status} /> }
             </form>
           )
         }
 
-        { mutationData && <p>{mutationData.updatePassword.message}</p> }
-        { mutationLoading && <p>Loading...</p> }
-        { mutationError && <p>Error :( Please try again</p> }
-
-        { loading && <p>Loading...</p> }
-        { error && <p>Error :( Please try again</p> }
+        { (mutationLoading || loading) && <Message type="info" content={t('messages_info_loading')} /> }
+        { (mutationError || error) && <Message type="error" content={responseMessage} /> }
       </div>
-    </ContentLayout>
+    </RootLayout>
   );
 };
 

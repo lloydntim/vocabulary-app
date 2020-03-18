@@ -1,0 +1,49 @@
+@import '../../../client/styles.scss';
+
+.auto-complete {
+  position: relative;
+
+  .auto-complete-input {
+    margin: 0;
+  }
+
+  .auto-complete-datalist {
+    position: absolute;
+    width: 100%;
+  
+    .auto-complete-datalist-item {
+      border-radius: 0;
+      margin: 0;
+      padding: 0;
+      border-bottom: 0;
+      width: 100%;
+  
+      &:last-of-type {
+        border-bottom: $green solid 1px;
+      }
+  
+      .auto-complete-datalist-item-button {
+        position: relative;
+        z-index: 10;
+        text-align: left;
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
+        background-color: $white;
+        padding: 12px;
+        border: none;
+        font-size: 16px;
+        outline: none;
+
+        span {
+          font-weight: $bold;
+
+          &:last-of-type {
+            font-weight: $normal;
+          }
+          
+        }
+      }
+    }
+  }
+}

@@ -16,6 +16,7 @@ import IconClose from './IconClose';
 import IconAddList from './IconAddList';
 import IconRefresh from './IconRefresh';
 import IconHome from './IconHome';
+import IconLanguage from './IconLanguage';
 
 const Icon = ({ type }) => {
   switch (type) {
@@ -34,6 +35,7 @@ const Icon = ({ type }) => {
     case 'add-list': return <IconAddList />;
     case 'refresh': return <IconRefresh />;
     case 'home': return <IconHome />;
+    case 'language': return <IconLanguage />;
     default: return <div>Please select valid icon.</div>;
   }
 };

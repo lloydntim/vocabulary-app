@@ -2,6 +2,35 @@ import { AuthenticationError } from 'apollo-server-express';
 import xlsx from 'node-xlsx';
 import List from './ListModel';
 
+const checkTextString = (string, {
+  minStringLength = 2,
+  maxStringLength = 25,
+  match = '',
+  errorMessage = 'Invalid String',
+} = {}) => {
+  const re = new RegExp(match,'g');
+  const stringLength = string.length;
+  const isStringValid = match ? re && (stringLength < minStringLength) : stringLength < minStringLength
+
+   if (isStringValid) return errorMessage;
+   else if (stringLength > maxStringLength) return string.substr(0, maxStringLength);
+   else return string.trim();
+};
+
+const sanitizeList = (list) => list
+  .filter((list) => (list.length === 4) && list.every((l) => typeof l === 'string'))
+  .map((filteredList) => {
+    const maxPhraseLength = 150;
+    const languageStringValidation = { maxStringLength: maxPhraseLength, match: '^[aA-Za-zÀ-ÖØ-öø-ÿ ]' };
+    const [srcLangData, srcTextData, tgtLangData, tgtTextData] = filteredList;
+    const srcLang = checkTextString(srcLangData, languageStringValidation);
+    const srcText = checkTextString(srcTextData);
+    const tgtLang = checkTextString(tgtLangData);
+    const tgtText = checkTextString(tgtTextData, languageStringValidation);
+
+    return [srcLang, srcText, tgtLang, tgtText]
+  });
+
 export const getList = async (parent, args, { currentUser }) => {
   if (!currentUser.loggedIn) throw new AuthenticationError('User must be logged in!');
   try {
@@ -45,7 +74,7 @@ export const addList = async (parent, args, { currentUser }) => {
             console.info('File successfully processed');
             const buffer = Buffer.concat(bufferArray);
             const [ list ] = xlsx.parse(buffer);
-            res(List.create({ name, data: list.data, creatorId }));
+            res(List.create({ name, data: sanitizeList(list.data), creatorId }));
           })
           .on('close', (e) => {
             console.log('File stream closed.')
@@ -55,7 +84,7 @@ export const addList = async (parent, args, { currentUser }) => {
     }
   } catch (error) {
     throw new Error ('List could not be added.');
-  };  
+  };
 };
 
 export const updateList = async (parent, args, { currentUser }) => {
@@ -82,13 +111,13 @@ export const updateList = async (parent, args, { currentUser }) => {
             console.info('File successfully processed');
             const buffer = Buffer.concat(bufferArray);
             const [ list ] = xlsx.parse(buffer);
-            res(existingData.concat(list.data));
+            res(existingData.concat(sanitizeList(list.data)));
           })
           .on('close', (e) => {
             console.log('File stream closed.')
           })
         )) : data;
-    } 
+    }
     if (data) {
       $set.data = data;
     }
@@ -101,7 +130,8 @@ export const updateList = async (parent, args, { currentUser }) => {
 export const removeList = async (parent, args, { currentUser }) => {
   if (!currentUser.loggedIn) throw new AuthenticationError('User must be logged in!');
   try {
-    return await List.findOneAndDelete({ _id: args.id });
+    const { id: _id , creatorId } = args;
+    return creatorId ? await List.deleteMany({ creatorId }) : await List.findOneAndDelete({ _id });
   } catch (error) {
     throw new Error('List could not be removed');
   };
