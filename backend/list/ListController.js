@@ -8,8 +8,7 @@ import List from './ListModel';
 dotEnv.config();
 
 const {
-  NODE_ENV,
-  GOOGLE_APPLICATION_CREDENTIALS,
+  GCS_KEYFILE1,
 } = process.env;
 
 const checkTextString = (string, {
@@ -44,12 +43,13 @@ const sanitizeList = (list) => list
 export const getListVocabTranslation = async (parent, args, { currentUser }) => {
   // if (!currentUser.loggedIn) throw new AuthenticationError('User must be logged in!');
   try {
+    console.log('GCS_KEYFILE', GCS_KEYFILE1);
     const projectId = 'norse-case-271518';
     const location = 'global';
     const { sourceLanguage, targetLanguage, sourceText } = args;
     const translationClient = new TranslationServiceClient({
       projectId: 'norse-case-271518',
-      keyFilename: resolve(__dirname,'../config/vocapp.json'),
+      credentials: JSON.stringify(GCS_KEYFILE1),
     });
     const request = {
       parent: `projects/${projectId}/locations/${location}`,

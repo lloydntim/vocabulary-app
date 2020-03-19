@@ -1,3 +1,4 @@
+import { join } from 'path';
 import { ApolloServer } from 'apollo-server-express';
 import Express from 'express';
 import mongoose from 'mongoose';
@@ -26,6 +27,7 @@ const server = new ApolloServer({
 });
 const mongoURI = NODE_ENV === 'development' ? MONGODB_DEV_URI : MONGODB_URI;
 
+// app.use('/config', Express.static(join(__dirname,'../config')));
 server.applyMiddleware({ app, path: '/graphql' });
 
 app.listen(PORT, () => console.log( // eslint-disable-line no-console
