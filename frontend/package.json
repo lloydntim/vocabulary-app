@@ -19,6 +19,7 @@
     "apollo-link-context": "^1.0.19",
     "apollo-link-http": "^1.5.16",
     "apollo-upload-client": "^12.1.0",
+    "google-translate": "^3.0.0",
     "graphql": "^14.5.8",
     "graphql-tag": "^2.10.1",
     "i18next": "^19.3.2",

@@ -1,6 +1,14 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { string, func, arrayOf } from 'prop-types';
+import {
+  string,
+  func,
+  bool,
+  number,
+  shape,
+  arrayOf,
+  oneOfType,
+} from 'prop-types';
 
 import { Message, AutoComplete } from '../../components';
 
@@ -12,6 +20,7 @@ const VocabForm = ({
   sourceLanguageDataList,
   targetLanguageDataList,
   status,
+  translateVocabButtonText,
   submitVocabButtonText,
   onInputFocus,
   onSourceLanguageInputChange,
@@ -20,6 +29,7 @@ const VocabForm = ({
   onTargetLanguageDataListClick,
   onSourceTextInputChange,
   onTargetTextInputChange,
+  onTranslateVocabButtonClick,
   onSubmitVocabButtonClick,
 }) => {
   const { t } = useTranslation();
@@ -64,6 +74,15 @@ const VocabForm = ({
           onChange={onTargetTextInputChange}
         />
       </label>
+      {translateVocabButtonText && (
+        <button
+          className="button button-secondary"
+          type="button"
+          onClick={onTranslateVocabButtonClick}
+        >
+          {translateVocabButtonText}
+        </button>
+      )}
       <button
         className="button button-secondary"
         type="button"
@@ -75,15 +94,25 @@ const VocabForm = ({
     </form>
   );
 };
+VocabForm.defaultProps = {
+  translateVocabButtonText: '',
+};
 
 VocabForm.propTypes = {
   sourceLanguageInputValue: string.isRequired,
   targetLanguageInputValue: string.isRequired,
   sourceTextInputValue: string.isRequired,
   targetTextInputValue: string.isRequired,
-  sourceLanguageDataList: arrayOf(string).isRequired,
-  targetLanguageDataList: arrayOf(string).isRequired,
+  sourceLanguageDataList: arrayOf(shape({
+    value: oneOfType([string, number, bool]),
+    text: string,
+  })).isRequired,
+  targetLanguageDataList: arrayOf(shape({
+    value: oneOfType([string, number, bool]),
+    text: string,
+  })).isRequired,
   status: string.isRequired,
+  translateVocabButtonText: string,
   submitVocabButtonText: string.isRequired,
   onInputFocus: func.isRequired,
   onSourceLanguageInputChange: func.isRequired,
@@ -92,6 +121,7 @@ VocabForm.propTypes = {
   onTargetTextInputChange: func.isRequired,
   onSourceLanguageDataListClick: func.isRequired,
   onTargetLanguageDataListClick: func.isRequired,
+  onTranslateVocabButtonClick: func.isRequired,
   onSubmitVocabButtonClick: func.isRequired,
 };
 

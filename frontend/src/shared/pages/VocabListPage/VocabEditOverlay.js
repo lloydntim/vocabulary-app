@@ -3,6 +3,9 @@ import {
   string,
   bool,
   func,
+  number,
+  shape,
+  oneOfType,
   arrayOf,
 } from 'prop-types';
 
@@ -26,7 +29,9 @@ const VocabEditOverlay = ({
   onTargetLanguageDataListClick,
   onSourceTextInputChange,
   onTargetTextInputChange,
+  translateVocabButtonText,
   updateVocabButtonText,
+  onTranslateVocabButtonClick,
   onUpdateVocabButtonClick,
   onCloseButtonClick,
 }) => (
@@ -51,20 +56,33 @@ const VocabEditOverlay = ({
       onSourceTextInputChange={onSourceTextInputChange}
       onTargetTextInputChange={onTargetTextInputChange}
       status={status}
+      translateVocabButtonText={translateVocabButtonText}
       submitVocabButtonText={updateVocabButtonText}
+      onTranslateVocabButtonClick={onTranslateVocabButtonClick}
       onSubmitVocabButtonClick={onUpdateVocabButtonClick}
     />
   </Overlay>
 );
 
+VocabEditOverlay.defaultProps = {
+  translateVocabButtonText: '',
+};
+
 VocabEditOverlay.propTypes = {
   title: string.isRequired,
-  sourceLanguageDataList: arrayOf(string).isRequired,
-  targetLanguageDataList: arrayOf(string).isRequired,
+  sourceLanguageDataList: arrayOf(shape({
+    value: oneOfType([string, number, bool]),
+    text: string,
+  })).isRequired,
+  targetLanguageDataList: arrayOf(shape({
+    value: oneOfType([string, number, bool]),
+    text: string,
+  })).isRequired,
   sourceLanguageInputValue: string.isRequired,
   targetLanguageInputValue: string.isRequired,
   sourceTextInputValue: string.isRequired,
   targetTextInputValue: string.isRequired,
+  translateVocabButtonText: string,
   updateVocabButtonText: string.isRequired,
   status: string.isRequired,
   isVisible: bool.isRequired,
@@ -75,6 +93,7 @@ VocabEditOverlay.propTypes = {
   onTargetLanguageDataListClick: func.isRequired,
   onSourceTextInputChange: func.isRequired,
   onTargetTextInputChange: func.isRequired,
+  onTranslateVocabButtonClick: func.isRequired,
   onUpdateVocabButtonClick: func.isRequired,
   onCloseButtonClick: func.isRequired,
 };

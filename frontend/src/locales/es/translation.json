@@ -11,6 +11,7 @@
   "common_button_create": "Crear",
   "common_button_ok": "Ok",
   "common_button_cancel": "Cancelar",
+  "common_button_translate": "Traducir",
   "common_form_title_newTitle": "Nuevo título",
   "common_form_label_username": "Nombre de usuario",
   "common_form_label_email": "Correo electrónico",
@@ -28,7 +29,7 @@
   "common_languages_spanish": "Español",
   "common_languages_french": "Francés",
 
-  "menu.title": "Menú",
+  "menu_title": "Menú",
 
   "languageSelector_dialog_title_pleaseChooseLanguage": "Elija un idioma",
 
@@ -100,7 +101,7 @@
   "vocablist_message_sessionTimeMinutes": "minutos",
   "vocablist_message_sessionTimeSeconds": "segundos",
 
-  "messages_error_pleaseTryAgain": "Por favor, tr y de nuevo.",
+  "messages_error_pleaseTryAgain": "Por favor, trata de nuevo.",
   "messages_error_somethingWentWrong": "Algo salió mal.",
   "messages_error_userCouldNotDeleted": "El usuario no pudo ser eliminado.",
   "messages_error_usernameEmpty": "Por favor ingrese un nombre de usuario.",

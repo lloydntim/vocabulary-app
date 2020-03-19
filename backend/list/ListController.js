@@ -1,5 +1,7 @@
+const { resolve } = require('path');
 import { AuthenticationError } from 'apollo-server-express';
 import xlsx from 'node-xlsx';
+import { TranslationServiceClient } from '@google-cloud/translate';
 import List from './ListModel';
 
 const checkTextString = (string, {
@@ -31,6 +33,31 @@ const sanitizeList = (list) => list
     return [srcLang, srcText, tgtLang, tgtText]
   });
 
+export const getListVocabTranslation = async (parent, args, { currentUser }) => {
+  if (!currentUser.loggedIn) throw new AuthenticationError('User must be logged in!');
+  try {
+    const projectId = 'norse-case-271518';
+    const location = 'global';
+    const { sourceLanguage, targetLanguage, sourceText } = args;
+    const translationClient = new TranslationServiceClient({
+      projectId: 'norse-case-271518',
+      keyFilename: resolve(__dirname,'../config/vocapp.json')
+    });
+    const request = {
+      parent: `projects/${projectId}/locations/${location}`,
+      contents: [sourceText],
+      mimeType: 'text/plain',
+      sourceLanguageCode: sourceLanguage,
+      targetLanguageCode: targetLanguage,
+    };
+
+    const [response] = await translationClient.translateText(request);
+
+    return { targetText: response.translations[0].translatedText };
+  } catch (error) {
+    throw new Error('This text could not be translated');
+  }
+};
 export const getList = async (parent, args, { currentUser }) => {
   if (!currentUser.loggedIn) throw new AuthenticationError('User must be logged in!');
   try {

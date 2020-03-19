@@ -6,7 +6,9 @@ import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
 import mg from 'nodemailer-mailgun-transport';
+
 import User from '../user/UserModel';
+// const translate = new Translate({ projectId: 'norse-case-271518', keyFilename: resolve(__dirname,'./vocapp.json') });
 
 dotEnv.config();
 
@@ -39,6 +41,11 @@ export const register = async (parent, args) => {
 };
 
 export const login = async (parent, args) => {
+
+  // const [translation] = await translate.translate('Morning', 'es');
+  // console.log('Text: Morning');
+  // console.log(`Translation: ${translation}`);
+
   const { username, password } = args;
   try {
     const user = await User.findOne({ username });
@@ -102,6 +109,7 @@ export const getPasswordToken = async (parent, args) => {
   return { token };
 };
 
+// gcloud projects add-iam-policy-binding norse-case-271518 --member "serviceAccount:vocapp@norse-case-271518.iam.gserviceaccount.com" --role "roles/owner"
 export const updatePassword = async (parents, args) => {
   try {
     const { password, resetPasswordToken } = args;
@@ -118,7 +126,7 @@ export const updatePassword = async (parents, args) => {
       });
 
     if (!currentUser) throw new ApolloError('Password reset token is invalid or has expired.');
-      
+
     const { id, username, email } = currentUser;
     const token = jwt.sign({ id, username, email }, process.env.JWT_SECRET, { expiresIn: 60 * 10 });
     const mailOptions = {

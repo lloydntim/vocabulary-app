@@ -2,7 +2,11 @@ import React, { useState } from 'react';
 import {
   string,
   func,
+  bool,
+  number,
+  shape,
   arrayOf,
+  oneOfType,
 } from 'prop-types';
 
 import './AutoComplete.scss';
@@ -36,11 +40,12 @@ const AutoComplete = ({
           {
             dataList
               .filter(
-                (item) => value.length > 0 && item.toLowerCase().startsWith(value.toLowerCase()),
+                (item) => value.length > 0
+                && item.text.toLowerCase().startsWith(value.toLowerCase()),
               )
               .map((item, index) => {
-                const boldText = item.substring(0, value.length);
-                const normalText = item.substring(value.length);
+                const boldText = item.text.substring(0, value.length);
+                const normalText = item.text.substring(value.length);
                 return (
                   <li
                     key={index}
@@ -75,7 +80,10 @@ AutoComplete.defaultProps = {
 AutoComplete.propTypes = {
   value: string.isRequired,
   placeholder: string,
-  dataList: arrayOf(string).isRequired,
+  dataList: arrayOf(shape({
+    value: oneOfType([string, number, bool]),
+    text: string,
+  })).isRequired,
   onClick: func.isRequired,
   onChange: func.isRequired,
   onFocus: func,

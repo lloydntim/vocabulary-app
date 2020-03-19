@@ -15,6 +15,9 @@ const VocabListEditContainer = ({
   list,
   addList,
   updateList,
+  translatedText,
+  setTranslatedText,
+  getListVocabTranslation,
 }) => {
   const { t } = useTranslation();
   const [count, setCount] = useState(0);
@@ -26,18 +29,20 @@ const VocabListEditContainer = ({
   const [isCreateVocabListOverlayVisible, setCreateVocabListOverlayVisibility] = useState(false);
   const [sourceLanguageInputValue, setSourceLanguageInputValue] = useState('');
   const [targetLanguageInputValue, setTargetLanguageInputValue] = useState('');
+  const [sourceLanguageInputCode, setSourceLanguageInputCode] = useState('');
+  const [targetLanguageInputCode, setTargetLanguageInputCode] = useState('');
   const [sourceTextInputValue, setSourceTextInputValue] = useState('');
-  const [targetTextInputValue, setTargetTextInputValue] = useState('');
   const [isDialogVisible, setDialogVisibility] = useState(false);
   const [selectedVocabs, setSelectedVocabs] = useState([]);
 
   const languages = [
-    t('common_languages_english'),
-    t('common_languages_german'),
-    t('common_languages_spanish'),
-    t('common_languages_french'),
-    t('common_languages_portuguese'),
+    { value: 'en', text: t('common_languages_english') },
+    { value: 'de', text: t('common_languages_german') },
+    { value: 'es', text: t('common_languages_spanish') },
+    { value: 'fr', text: t('common_languages_french') },
+    { value: 'pt', text: t('common_languages_portuguese') },
   ];
+
   return (
     <>
       <VocabEditOverlay
@@ -50,19 +55,41 @@ const VocabListEditContainer = ({
         sourceLanguageInputValue={sourceLanguageInputValue}
         targetLanguageInputValue={targetLanguageInputValue}
         sourceTextInputValue={sourceTextInputValue}
-        targetTextInputValue={targetTextInputValue}
+        targetTextInputValue={translatedText}
         onInputFocus={() => setStatusMessage('')}
         onSourceLanguageInputChange={({ target }) => setSourceLanguageInputValue(target.value)}
-        onTargetLanguageInputChange={({ target }) => setTargetLanguageInputValue(target.value)}
+        onTargetLanguageInputChange={({ target }) => {
+          setTargetLanguageInputValue(target.value);
+        }}
         onSourceTextInputChange={({ target }) => setSourceTextInputValue(target.value)}
-        onTargetTextInputChange={({ target }) => setTargetTextInputValue(target.value)}
+        onTargetTextInputChange={({ target }) => {
+          setTranslatedText(target.value);
+        }}
         onSourceLanguageDataListClick={(selectedItem) => {
-          setSourceLanguageInputValue(selectedItem);
+          setSourceLanguageInputValue(selectedItem.text);
         }}
         onTargetLanguageDataListClick={(selectedItem) => {
-          setTargetLanguageInputValue(selectedItem);
+          setTargetLanguageInputValue(selectedItem.text);
         }}
+        // translateVocabButtonText={t('common_button_translate')}
         updateVocabButtonText={t('common_button_update')}
+        onTranslateVocabButtonClick={() => {
+          const sourcePhraseLength = sourceLanguageInputValue.length;
+          const phraseMaxLength = 150;
+          if (sourcePhraseLength < 1) {
+            setStatusMessage(t('messages_error_sourcePhraseEmpty'));
+          } else if (sourcePhraseLength > phraseMaxLength) {
+            setStatusMessage(t('messages_error_sourcePhraseMaxLength'));
+          } else {
+            getListVocabTranslation({
+              variables: {
+                sourceLanguage: sourceLanguageInputCode,
+                targetLanguage: targetLanguageInputCode,
+                sourceText: sourceTextInputValue,
+              },
+            });
+          }
+        }}
         onUpdateVocabButtonClick={() => {
           const sourcePhraseLength = sourceLanguageInputValue.length;
           const targetPhraseLength = targetLanguageInputValue.length;
@@ -80,7 +107,7 @@ const VocabListEditContainer = ({
               sourceLanguageInputValue,
               targetLanguageInputValue,
               sourceTextInputValue,
-              targetTextInputValue,
+              translatedText,
             ];
             const data = list.map((item, index) => (count === index ? vocabInputData : item));
             updateList({ variables: { id, data } });
@@ -101,7 +128,7 @@ const VocabListEditContainer = ({
               sourceLanguageInputValue={sourceLanguageInputValue}
               targetLanguageInputValue={targetLanguageInputValue}
               sourceTextInputValue={sourceTextInputValue}
-              targetTextInputValue={targetTextInputValue}
+              targetTextInputValue={translatedText}
               onInputFocus={() => setStatusMessage('')}
               onSourceLanguageInputChange={({ target }) => {
                 setSourceLanguageInputValue(target.value);
@@ -110,19 +137,39 @@ const VocabListEditContainer = ({
                 setTargetLanguageInputValue(target.value);
               }}
               onSourceLanguageDataListClick={(selectedItem) => {
-                setSourceLanguageInputValue(selectedItem);
+                setSourceLanguageInputValue(selectedItem.text);
+                setSourceLanguageInputCode(selectedItem.value);
               }}
               onTargetLanguageDataListClick={(selectedItem) => {
-                setTargetLanguageInputValue(selectedItem);
+                setTargetLanguageInputValue(selectedItem.text);
+                setTargetLanguageInputCode(selectedItem.value);
               }}
               onSourceTextInputChange={({ target }) => {
                 setSourceTextInputValue(target.value);
               }}
               onTargetTextInputChange={({ target }) => {
-                setTargetTextInputValue(target.value);
+                setTranslatedText(target.value);
               }}
               status={status}
+              translateVocabButtonText={t('common_button_translate')}
               submitVocabButtonText={t('common_button_create')}
+              onTranslateVocabButtonClick={() => {
+                const sourcePhraseLength = sourceLanguageInputValue.length;
+                const phraseMaxLength = 150;
+                if (sourcePhraseLength < 1) {
+                  setStatusMessage(t('messages_error_sourcePhraseEmpty'));
+                } else if (sourcePhraseLength > phraseMaxLength) {
+                  setStatusMessage(t('messages_error_sourcePhraseMaxLength'));
+                } else {
+                  getListVocabTranslation({
+                    variables: {
+                      sourceLanguage: sourceLanguageInputCode,
+                      targetLanguage: targetLanguageInputCode,
+                      sourceText: sourceTextInputValue,
+                    },
+                  });
+                }
+              }}
               onSubmitVocabButtonClick={() => {
                 const sourcePhraseLength = sourceLanguageInputValue.length;
                 const targetPhraseLength = targetLanguageInputValue.length;
@@ -140,7 +187,7 @@ const VocabListEditContainer = ({
                     sourceLanguageInputValue,
                     targetLanguageInputValue,
                     sourceTextInputValue,
-                    targetTextInputValue,
+                    translatedText,
                   ];
                   const data = list.concat([vocabInputData]);
                   updateList({ variables: { id, data } });
@@ -251,7 +298,7 @@ const VocabListEditContainer = ({
           setSourceLanguageInputValue('');
           setTargetLanguageInputValue('');
           setSourceTextInputValue('');
-          setTargetTextInputValue('');
+          setTranslatedText('');
           setAddVocabOverlayVisibility(true);
         }}
         onAddVocabListButtonClick={() => setAddVocabOverlayVisibility(true)}
@@ -274,7 +321,7 @@ const VocabListEditContainer = ({
           setSourceLanguageInputValue(sourceLanguage);
           setTargetLanguageInputValue(targetLanguage);
           setSourceTextInputValue(sourceText);
-          setTargetTextInputValue(targetText);
+          setTranslatedText(targetText);
           setVocabEditOverlayVisibility(true);
         }}
       />
@@ -288,6 +335,9 @@ VocabListEditContainer.propTypes = {
   list: arrayOf(arrayOf(string)).isRequired,
   addList: func.isRequired,
   updateList: func.isRequired,
+  translatedText: string.isRequired,
+  setTranslatedText: func.isRequired,
+  getListVocabTranslation: func.isRequired,
 };
 
 export default VocabListEditContainer;

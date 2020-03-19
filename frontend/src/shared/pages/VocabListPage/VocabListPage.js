@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import gql from 'graphql-tag';
-import { useQuery, useMutation } from '@apollo/react-hooks';
+import { useQuery, useLazyQuery, useMutation } from '@apollo/react-hooks';
 import { useParams, useHistory, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import jwtDecode from 'jwt-decode';
@@ -20,6 +20,14 @@ export const GET_LISTS = gql`
       name
       data
       id
+    }
+  }
+`;
+
+export const GET_LIST_VOCAB_TRANSLATION = gql`
+  query GetListVocabTranslation($sourceLanguage: String, $targetLanguage: String, $sourceText: String) {
+    getListVocabTranslation(sourceLanguage: $sourceLanguage, targetLanguage: $targetLanguage, sourceText: $sourceText) {
+      targetText
     }
   }
 `;
@@ -57,6 +65,8 @@ const VocabListPage = () => {
   const [isEditMode, setEditMode] = useState(true);
   const [{ name, list, shuffledList }, setVocabListData] = useState({ name: '', list: [], shuffledList: [] });
   const [status, setStatusMessage] = useState('');
+
+  const [translatedText, setTranslatedText] = useState('');
   const [isOverlayVisible, setOverlayVisibility] = useState(false);
 
   const [newTitle, setNewTitle] = useState('');
@@ -76,6 +86,14 @@ const VocabListPage = () => {
       },
     },
   );
+
+  const [getListVocabTranslation,
+    { getListVocabTransLoading, getListVocabTransError }] = useLazyQuery(
+    GET_LIST_VOCAB_TRANSLATION, {
+      onCompleted: ({ getListVocabTranslation: { targetText } }) => setTranslatedText(targetText),
+    },
+  );
+
   /* eslint-disable  no-undef */
   const token = localStorage.getItem('token');
   const creatorId = jwtDecode(token).id;
@@ -149,6 +167,9 @@ const VocabListPage = () => {
                     list={list}
                     addList={addList}
                     updateList={updateList}
+                    getListVocabTranslation={getListVocabTranslation}
+                    translatedText={translatedText}
+                    setTranslatedText={setTranslatedText}
                   />
                 )}
             </div>
@@ -156,8 +177,15 @@ const VocabListPage = () => {
         )}
 
         {error && <Message type="error" content={error.message.split(':')[1].trim()} />}
-        {(loading || updateListMutationLoading || addListMutationLoading) && <Message type="info" content={t('messages_info_loading')} /> }
-        {(updateListMutationError || addListMutationError) && <Message type="error" content={t('messages_error_pleaseTryAgain')} />}
+        {(loading
+          || updateListMutationLoading
+          || addListMutationLoading
+          || getListVocabTransLoading
+        ) && <Message type="info" content={t('messages_info_loading')} /> }
+        {(updateListMutationError
+          || addListMutationError
+          || getListVocabTransError
+        ) && <Message type="error" content={t('messages_error_pleaseTryAgain')} />}
       </div>
     </RootLayout>
   );

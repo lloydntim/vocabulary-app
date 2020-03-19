@@ -8,6 +8,7 @@ import {
 } from '../auth/AuthController';
 
 import {
+  getListVocabTranslation,
   getList,
   getLists,
   addList,
@@ -50,6 +51,10 @@ export const typeDefs = gql`
     updatedAt: Date
   }
 
+  type Translation {
+    targetText: String
+  }
+
   type Query {
     getPasswordToken(resetPasswordToken: String):Auth
 
@@ -58,6 +63,8 @@ export const typeDefs = gql`
 
     getLists(creatorId:ID): [List]
     getList(id: ID, name: String): List
+
+    getListVocabTranslation(sourceLanguage: String, targetLanguage: String, sourceText: String):Translation
   }
 
   type Mutation {
@@ -80,7 +87,8 @@ export const resolvers = {
     getUser,
     getUsers,
     getList,
-    getLists
+    getLists,
+    getListVocabTranslation,
   },
   Mutation: {
     login,
@@ -91,6 +99,6 @@ export const resolvers = {
     removeUser,
     addList,
     updateList,
-    removeList
+    removeList,
   }
 };

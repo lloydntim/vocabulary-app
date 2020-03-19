@@ -11,6 +11,7 @@
   "common_button_create": "Create",
   "common_button_ok": "Ok",
   "common_button_cancel": "Cancel",
+  "common_button_translate": "Translate",
   "common_form_title_newTitle": "New Title",
   "common_form_label_username": "Username",
   "common_form_label_email": "Email",
@@ -28,7 +29,7 @@
   "common_languages_spanish": "Spanish",
   "common_languages_french": "French",
 
-  "menu.title": "Menu",
+  "menu_title": "Menu",
 
   "languageSelector_dialog_title_pleaseChooseLanguage": "Please choose a language",
 
