@@ -1,16 +1,16 @@
 const { resolve } = require('path');
 import { ApolloError, AuthenticationError } from 'apollo-server-express';
-// import dotEnv from 'dotenv';
+import dotEnv from 'dotenv';
 import xlsx from 'node-xlsx';
-// import { TranslationServiceClient } from '@google-cloud/translate';
+import { TranslationServiceClient } from '@google-cloud/translate';
 import List from './ListModel';
 
-/* dotEnv.config();
+dotEnv.config();
 
 const {
   NODE_ENV,
   GOOGLE_APPLICATION_CREDENTIALS,
-} = process.env; */
+} = process.env;
 
 const checkTextString = (string, {
   minStringLength = 2,
@@ -44,11 +44,10 @@ const sanitizeList = (list) => list
 export const getListVocabTranslation = async (parent, args, { currentUser }) => {
   // if (!currentUser.loggedIn) throw new AuthenticationError('User must be logged in!');
   try {
-    // const projectId = 'norse-case-271518';
-    // const location = 'global';
+    const projectId = 'norse-case-271518';
+    const location = 'global';
     const { sourceLanguage, targetLanguage, sourceText } = args;
-    console.log('args',  { sourceLanguage, targetLanguage, sourceText });
-    /* const translationClient = new TranslationServiceClient({
+    const translationClient = new TranslationServiceClient({
       projectId: 'norse-case-271518',
       keyFilename: NODE_ENV !== 'development' ? GOOGLE_APPLICATION_CREDENTIALS : resolve(__dirname,'../config/vocapp.json'),
     });
@@ -62,8 +61,7 @@ export const getListVocabTranslation = async (parent, args, { currentUser }) => 
 
     const [response] = await translationClient.translateText(request);
 
-    return { targetText: response.translations[0].translatedText }; */
-    return { targetText: "None" };
+    return { targetText: response.translations[0].translatedText };
   } catch (error) {
     throw new ApolloError(error);
     // throw new ApolloError('This text could not be translated');
