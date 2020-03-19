@@ -21,7 +21,7 @@ const server = new ApolloServer({
     };
   },
   formatError: (error) => {
-    throw Error(error.message);
+    throw error;
   },
 });
 const mongoURI = NODE_ENV === 'development' ? MONGODB_DEV_URI : MONGODB_URI;
