@@ -1,5 +1,5 @@
 const { resolve } = require('path');
-import { AuthenticationError } from 'apollo-server-express';
+import { ApolloError, AuthenticationError } from 'apollo-server-express';
 import xlsx from 'node-xlsx';
 import { TranslationServiceClient } from '@google-cloud/translate';
 import List from './ListModel';
@@ -55,7 +55,7 @@ export const getListVocabTranslation = async (parent, args, { currentUser }) => 
 
     return { targetText: response.translations[0].translatedText };
   } catch (error) {
-    throw new Error('This text could not be translated');
+    throw new ApolloError('This text could not be translated');
   }
 };
 export const getList = async (parent, args, { currentUser }) => {

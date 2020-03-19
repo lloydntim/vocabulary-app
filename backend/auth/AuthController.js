@@ -65,7 +65,7 @@ export const login = async (parent, args) => {
         { expiresIn: 60 * 30 }),
     };
   } catch (error) {
-    throw error.message;
+    throw error;
   }
 };
 
