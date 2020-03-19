@@ -1,8 +1,16 @@
 const { resolve } = require('path');
 import { ApolloError, AuthenticationError } from 'apollo-server-express';
+import dotEnv from 'dotenv';
 import xlsx from 'node-xlsx';
 import { TranslationServiceClient } from '@google-cloud/translate';
 import List from './ListModel';
+
+dotEnv.config();
+
+const {
+  NODE_ENV,
+  GOOGLE_APPLICATION_CREDENTIALS,
+} = process.env;
 
 const checkTextString = (string, {
   minStringLength = 2,
@@ -41,7 +49,7 @@ export const getListVocabTranslation = async (parent, args, { currentUser }) => 
     const { sourceLanguage, targetLanguage, sourceText } = args;
     const translationClient = new TranslationServiceClient({
       projectId: 'norse-case-271518',
-      keyFilename: resolve(__dirname,'../config/vocapp.json')
+      keyFilename: NODE_ENV !== 'development' ? GOOGLE_APPLICATION_CREDENTIALS : resolve(__dirname,'../config/vocapp.json'),
     });
     const request = {
       parent: `projects/${projectId}/locations/${location}`,
@@ -55,7 +63,8 @@ export const getListVocabTranslation = async (parent, args, { currentUser }) => 
 
     return { targetText: response.translations[0].translatedText };
   } catch (error) {
-    throw new ApolloError('This text could not be translated');
+    throw new ApolloError(error);
+    // throw new ApolloError('This text could not be translated');
   }
 };
 export const getList = async (parent, args, { currentUser }) => {
