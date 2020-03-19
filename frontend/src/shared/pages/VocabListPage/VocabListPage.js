@@ -111,11 +111,16 @@ const VocabListPage = () => {
   ] = useMutation(UPDATE_LIST, {
     onCompleted: (data) => {
       const { data: list } = data.updateList;
+      const shuffledList = list
+        ? list
+          .map((translation) => translation)
+          .sort(() => (0.5 - Math.random())) : [];
       setVocabListData({ name, list, shuffledList });
     },
     refetchQueries: [{ query: GET_LIST, variables: { id } }],
   });
-
+  console.log('shuffled ist', shuffledList);
+  console.log(' ist', list);
   return (
     <RootLayout>
       <div className="vocab-list-page page">

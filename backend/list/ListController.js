@@ -44,7 +44,7 @@ const sanitizeList = (list) => list
   });
 
 export const getListVocabTranslation = async (parent, args, { currentUser }) => {
-  // if (!currentUser.loggedIn) throw new AuthenticationError('User must be logged in!');
+  if (!currentUser.loggedIn) throw new AuthenticationError('User must be logged in!');
   try {
     const projectId = GCS_PROJECT_ID;
     const location = GCS_PROJECT_LOCATION;
@@ -52,7 +52,7 @@ export const getListVocabTranslation = async (parent, args, { currentUser }) => 
     const translationClient = new TranslationServiceClient({
       projectId,
       credentials: {
-        client_email: GCS_CLIENT_EMAIL.toString(),
+        client_email: GCS_CLIENT_EMAIL,
         private_key: GCS_PRIVATE_KEY,
       }
     });
@@ -69,8 +69,7 @@ export const getListVocabTranslation = async (parent, args, { currentUser }) => 
 
     return { targetText: response.translations[0].translatedText };
   } catch (error) {
-    throw new ApolloError(error);
-    // throw new ApolloError('This text could not be translated');
+    throw new ApolloError('This text could not be translated');
   }
 };
 export const getList = async (parent, args, { currentUser }) => {
@@ -184,5 +183,6 @@ export default {
   getLists,
   addList,
   updateList,
-  removeList
+  removeList,
+  getListVocabTranslation,
 };

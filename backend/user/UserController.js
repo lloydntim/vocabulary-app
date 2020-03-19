@@ -8,7 +8,7 @@ export const getUser = async (parent, args, { currentUser }) => {
       await User.findById(args.id).select({ password: 0, __v: 0 })
       : await User.findOne({ username: args.username }).select({ password: 0, __v: 0 });
   } catch (error) {
-    throw new Error(`User with id ${id} could not be retrieved`);
+    throw new Error(`User with id ${args.id} could not be retrieved`);
   }
 };
 

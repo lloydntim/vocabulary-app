@@ -255,10 +255,10 @@ const VocabListEditContainer = ({
               const titleMinLength = 3;
               const titleMaxLength = 35;
               const data = list.filter((val, index) => selectedVocabs.indexOf(index) !== -1);
-              if (newVocabListTitle.length > titleMinLength
-              || newVocabListTitle.length < titleMaxLength) {
+              if (newVocabListTitle.length < titleMinLength
+              || newVocabListTitle.length > titleMaxLength) {
                 setStatusMessage(t('messages_error_titleMinMaxLength', { titleMinLength, titleMaxLength }));
-              } else if (newVocabListTitle.match(/^[A-Za-zÀ-ÖØ-öø-ÿ0-9_-]/g)) {
+              } else if (!newVocabListTitle.match(/^[A-Za-zÀ-ÖØ-öø-ÿ0-9_-]/g)) {
                 setStatusMessage(t('messages_error_titleNotValid'));
               } else {
                 addList({ variables: { name: newVocabListTitle, data, creatorId } });
