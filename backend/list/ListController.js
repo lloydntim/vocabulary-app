@@ -46,7 +46,6 @@ const sanitizeList = (list) => list
 export const getListVocabTranslation = async (parent, args, { currentUser }) => {
   // if (!currentUser.loggedIn) throw new AuthenticationError('User must be logged in!');
   try {
-    console.log('GCS_PRIVATE_KEY', typeof GCS_PRIVATE_KEY);
     const projectId = GCS_PROJECT_ID;
     const location = GCS_PROJECT_LOCATION;
     const { sourceLanguage, targetLanguage, sourceText } = args;
@@ -57,6 +56,7 @@ export const getListVocabTranslation = async (parent, args, { currentUser }) => 
         private_key: GCS_PRIVATE_KEY,
       }
     });
+
     const request = {
       parent: `projects/${projectId}/locations/${location}`,
       contents: [sourceText],

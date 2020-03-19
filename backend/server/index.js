@@ -1,4 +1,3 @@
-import { join } from 'path';
 import { ApolloServer } from 'apollo-server-express';
 import Express from 'express';
 import mongoose from 'mongoose';
@@ -39,6 +38,7 @@ mongoose.connect(mongoURI, {
   useCreateIndex: true,
   useFindAndModify: false,
 });
+
 mongoose.connection.once('open', () => {
   console.log('Database connected');
 });
