@@ -49,7 +49,7 @@ export const getListVocabTranslation = async (parent, args, { currentUser }) => 
     const { sourceLanguage, targetLanguage, sourceText } = args;
     const translationClient = new TranslationServiceClient({
       projectId: 'norse-case-271518',
-      keyFilename: NODE_ENV !== 'development' ? GOOGLE_APPLICATION_CREDENTIALS : resolve(__dirname,'../config/vocapp.json'),
+      keyFilename: resolve(__dirname,'../config/vocapp.json'),
     });
     const request = {
       parent: `projects/${projectId}/locations/${location}`,
