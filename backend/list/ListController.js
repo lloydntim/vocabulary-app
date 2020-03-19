@@ -8,7 +8,10 @@ import List from './ListModel';
 dotEnv.config();
 
 const {
-  GCS_KEYFILE1,
+  GCS_PROJECT_ID,
+  GCS_PROJECT_LOCATION,
+  GCS_PRIVATE_KEY,
+  GCS_CLIENT_EMAIL,
 } = process.env;
 
 const checkTextString = (string, {
@@ -43,13 +46,16 @@ const sanitizeList = (list) => list
 export const getListVocabTranslation = async (parent, args, { currentUser }) => {
   // if (!currentUser.loggedIn) throw new AuthenticationError('User must be logged in!');
   try {
-    console.log('GCS_KEYFILE', GCS_KEYFILE1);
-    const projectId = 'norse-case-271518';
-    const location = 'global';
+    // console.log('GCS_KEYFILE', GCS_KEYFILE2);
+    const projectId = GCS_PROJECT_ID;
+    const location = GCS_PROJECT_LOCATION;
     const { sourceLanguage, targetLanguage, sourceText } = args;
     const translationClient = new TranslationServiceClient({
-      projectId: 'norse-case-271518',
-      credentials: JSON.stringify(GCS_KEYFILE1),
+      projectId,
+      credentials: {
+        client_email: GCS_CLIENT_EMAIL,
+        private_key: GCS_PRIVATE_KEY,
+      }
     });
     const request = {
       parent: `projects/${projectId}/locations/${location}`,
