@@ -65,7 +65,7 @@ export const login = async (parent, args) => {
         { expiresIn: 60 * 30 }),
     };
   } catch (error) {
-    throw error;
+    throw new ApolloError('User can\'t be logged in');
   }
 };
 
