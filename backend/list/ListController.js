@@ -42,7 +42,7 @@ const sanitizeList = (list) => list
   });
 
 export const getListVocabTranslation = async (parent, args, { currentUser }) => {
-  if (!currentUser.loggedIn) throw new AuthenticationError('User must be logged in!');
+  // if (!currentUser.loggedIn) throw new AuthenticationError('User must be logged in!');
   try {
     // const projectId = 'norse-case-271518';
     // const location = 'global';
