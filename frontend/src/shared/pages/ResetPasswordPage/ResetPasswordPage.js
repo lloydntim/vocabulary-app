@@ -5,7 +5,7 @@ import { useParams, useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { RootLayout } from '../../layouts';
-import { Message } from '../../components';
+import { Message, Input } from '../../components';
 
 import './ResetPasswordPage.scss';
 
@@ -64,40 +64,29 @@ const ResetPasswordPage = () => {
     <RootLayout>
       <div className="reset-password-page">
         <h1>Reset Password</h1>
-
         {
           data && (
             <form>
-              <label htmlFor="password">
-                <span>{t('common_form_label_password')}</span>
-                <input
-                  autoComplete="current-password"
-                  name="password"
-                  type="password"
-                  placeholder={t('common_form_placeholder_password')}
-                  value={password}
-                  onChange={({ target: { value } }) => setPassword(value)}
-                  onFocus={() => {
-                    setResponseMessage('');
-                    setStatusMessage('');
-                  }}
-                />
-              </label>
-              <label htmlFor="password-confirm">
-                <span>{t('common_form_label_confirmPassword')}</span>
-                <input
-                  autoComplete="new-password"
-                  name="password-confirm"
-                  type="password"
-                  placeholder={t('common_form_placeholder_confirmPassword')}
-                  value={passwordConfirm}
-                  onChange={({ target: { value } }) => setPasswordConfirm(value)}
-                  onFocus={() => {
-                    setResponseMessage('');
-                    setStatusMessage('');
-                  }}
-                />
-              </label>
+              <Input
+                label={t('common_form_label_password')}
+                autoComplete="current-password"
+                name="password"
+                type="password"
+                placeholder={t('common_form_placeholder_password')}
+                value={password}
+                onChange={setPassword}
+                onFocus={() => { setResponseMessage(''); setStatusMessage(''); }}
+              />
+              <Input
+                label={t('common_form_label_confirmPassword')}
+                autoComplete="new-password"
+                name="password-confirm"
+                type="password"
+                placeholder={t('common_form_placeholder_confirmPassword')}
+                value={passwordConfirm}
+                onChange={setPasswordConfirm}
+                onFocus={() => { setResponseMessage(''); setStatusMessage(''); }}
+              />
               <button
                 type="button"
                 onClick={() => {

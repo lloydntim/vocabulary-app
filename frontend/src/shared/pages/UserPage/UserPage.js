@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
 import gql from 'graphql-tag';
 import { useQuery, useMutation } from '@apollo/react-hooks';
-import { useParams, useHistory, Redirect } from 'react-router-dom';
+import {
+  useParams,
+  useHistory,
+  Redirect,
+  Link,
+} from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { RootLayout, Overlay, Dialog } from '../../layouts';
-import { Message, IconButton } from '../../components';
+import { Message, IconButton, Icon } from '../../components';
 
 import './UserPage.scss';
 
@@ -112,66 +117,66 @@ const UserPage = () => {
   );
 
   return (
-    <div className="user-page page">
-      <Dialog
-        title={t('profile_dialog_title_deleteAccount')}
-        cancelButtonText={t('common_button_cancel')}
-        continueButtonText={t('profile_dialog_button_delete')}
-        isVisible={isDialogVisible}
-        onCancelButtonClick={() => setDialogVisibility(false)}
-        onContinueButtonClick={() => {
-          removeUser({ variables: { id } });
-          setDialogVisibility(false);
-        }}
-      >
-        {t('profile_dialog_message_deleteAccountWarning')}
-      </Dialog>
-      <Overlay
-        isVisible={isOverlayVisible}
-        onCloseButtonClick={() => {
-          setUpdatedEmail('');
-          setStatusMessage('');
-          setOverlayVisibility(false);
-        }}
-      >
-        <h1>{t('profile_form_title_editEmail')}</h1>
+    <RootLayout>
+      <div className="user-page page">
+        <Dialog
+          title={t('profile_dialog_title_deleteAccount')}
+          cancelButtonText={t('common_button_cancel')}
+          continueButtonText={t('profile_dialog_button_delete')}
+          isVisible={isDialogVisible}
+          onCancelButtonClick={() => setDialogVisibility(false)}
+          onContinueButtonClick={() => {
+            removeUser({ variables: { id } });
+            setDialogVisibility(false);
+          }}
+        >
+          {t('profile_dialog_message_deleteAccountWarning')}
+        </Dialog>
+        <Overlay
+          isVisible={isOverlayVisible}
+          onCloseButtonClick={() => {
+            setUpdatedEmail('');
+            setStatusMessage('');
+            setOverlayVisibility(false);
+          }}
+        >
+          <h1>{t('profile_form_title_editEmail')}</h1>
 
-        <form>
-          <label htmlFor="email">
-            <span>{t('common_form_label_email')}</span>
-            <input
-              name="email"
-              type="email"
-              placeholder={t('common_form_placeholder_email')}
-              value={updatedEmail}
-              onFocus={() => setStatusMessage('')}
-              onChange={({ target: { value } }) => setUpdatedEmail(value)}
-            />
-          </label>
+          <form>
+            <label htmlFor="email">
+              <span>{t('common_form_label_email')}</span>
+              <input
+                name="email"
+                type="email"
+                placeholder={t('common_form_placeholder_email')}
+                value={updatedEmail}
+                onFocus={() => setStatusMessage('')}
+                onChange={({ target: { value } }) => setUpdatedEmail(value)}
+              />
+            </label>
 
-          <button
-            className="button button-secondary"
-            type="button"
-            onClick={() => {
-              if (!updatedEmail.match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)) {
-                setStatusMessage(t('messages_error_emailNotValid'));
-              } else {
-                updateUser({ variables: { id, email: updatedEmail } });
-                setOverlayVisibility(false);
-                setUpdatedEmail('');
-                setStatusMessage('');
-              }
-            }}
-          >
-            {t('profile_form_button_updateEmail')}
-          </button>
-          { status && <Message type="error" id="status" content={status} /> }
-        </form>
-      </Overlay>
+            <button
+              className="button button-secondary"
+              type="button"
+              onClick={() => {
+                if (!updatedEmail.match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)) {
+                  setStatusMessage(t('messages_error_emailNotValid'));
+                } else {
+                  updateUser({ variables: { id, email: updatedEmail } });
+                  setOverlayVisibility(false);
+                  setUpdatedEmail('');
+                  setStatusMessage('');
+                }
+              }}
+            >
+              {t('profile_form_button_updateEmail')}
+            </button>
+            { status && <Message type="error" id="status" content={status} /> }
+          </form>
+        </Overlay>
 
-      <RootLayout>
         <div className="content">
-          <div className="header">
+          <div className="title-header">
             <h1>{t('profile_title')}</h1>
 
             <IconButton
@@ -184,9 +189,16 @@ const UserPage = () => {
               disabled={!data}
             />
           </div>
+
           { data && (
             <>
-              <h3>{data.getUser.username}</h3>
+              <div className="sub-header">
+                <Link to="/vocablists">
+                  <Icon type="home" />
+                </Link>
+                <h3>{data.getUser.username}</h3>
+              </div>
+
               <table>
                 <tbody>
                   <tr>
@@ -220,8 +232,8 @@ const UserPage = () => {
           && <Message type="error" content={responseMessage} /> }
           { updateUserMutationData && <Message type="success" content={responseMessage} /> }
         </div>
-      </RootLayout>
-    </div>
+      </div>
+    </RootLayout>
   );
 };
 export default UserPage;

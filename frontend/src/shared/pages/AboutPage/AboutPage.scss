@@ -1,8 +1,42 @@
-.test {
-  color: red;
+@import '../../../client/styles.scss';
 
-  .bla {
-    color: blue;
+.about-page {
+  .content {
+    h1 {
+      margin: 0;
+    }
+
+    .sub-header {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      width: 100%;
+      padding: 12px 0;
+      margin: 0 0 20px 0;
+      border-bottom: 1px solid $grey;
+
+      a {
+        position: absolute;
+        display: flex;
+        align-self: start;
+        position: absolute;
+        margin: 0 0 0 12px;
+        left: 0;
+
+        svg {
+          height: 28px;
+          fill: $green;
+        }
+      }
+
+      h3 {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        border: 0;
+      }
+    }
   }
 }
 

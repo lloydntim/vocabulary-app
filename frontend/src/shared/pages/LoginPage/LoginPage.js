@@ -6,7 +6,7 @@ import { Link, useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { RootLayout } from '../../layouts';
-import { Message } from '../../components';
+import { Message, Input } from '../../components';
 
 import './LoginPage.scss';
 
@@ -52,40 +52,28 @@ const LoginPage = () => {
   return (
     <RootLayout type="guest">
       <div className="login-page page">
-
         <h1>{t('login_title')}</h1>
-
         <form>
-          <label htmlFor="username">
-            <span>{t('common_form_label_username')}</span>
-            <input
-              autoComplete="username"
-              name="username"
-              type="text"
-              placeholder={t('common_form_placeholder_username')}
-              value={username}
-              onChange={({ target }) => setUsername(target.value)}
-              onFocus={() => {
-                setResponseMessage('');
-                setStatusMessage('');
-              }}
-            />
-          </label>
-          <label htmlFor="password">
-            <span>{t('common_form_label_password')}</span>
-            <input
-              autoComplete="current-password"
-              name="password"
-              type="password"
-              placeholder={t('common_form_placeholder_password')}
-              value={password}
-              onChange={({ target }) => setPassword(target.value)}
-              onFocus={() => {
-                setResponseMessage('');
-                setStatusMessage('');
-              }}
-            />
-          </label>
+          <Input
+            label={t('common_form_label_username')}
+            autoComplete="username"
+            name="username"
+            type="text"
+            placeholder={t('common_form_placeholder_username')}
+            value={username}
+            onChange={setUsername}
+            onFocus={() => { setResponseMessage(''); setStatusMessage(''); }}
+          />
+          <Input
+            label={t('common_form_label_password')}
+            autoComplete="current-password"
+            name="password"
+            type="password"
+            placeholder={t('common_form_placeholder_password')}
+            value={password}
+            onChange={setPassword}
+            onFocus={() => { setResponseMessage(''); setStatusMessage(''); }}
+          />
           <button
             type="button"
             className="button button-primary"

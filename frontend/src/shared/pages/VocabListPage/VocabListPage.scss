@@ -5,13 +5,23 @@
     .sub-header {
       display: flex;
       justify-content: space-between;
-      padding: 8px 16px;
+      padding: 8px 0;
       margin: 0;
       border-bottom: 1px solid $grey;
-      
+
      .icon svg {
         height: 28px;
         fill: $green;
+      }
+
+      &.is-sticky {
+        position: fixed;
+        width: 100%;
+        left: 0;
+        background: $white;
+        top: 0;
+        z-index: 10;
+        padding: 8px 16px;
       }
     }
 
@@ -26,7 +36,7 @@
       height: 60px;
       overflow: hidden;
       outline: none;
-    
+
       &:before {
         content: "Upload File";
         outline: none;
@@ -76,7 +86,7 @@
         }
       }
     }
-  
+
     small {
       display: flex;
       justify-content: flex-end;
@@ -108,7 +118,7 @@
       }
     }
 
-    
+
 
     p {
       font-size: 24px;
@@ -158,7 +168,7 @@
         .vocab-content {
           display: flex;
           flex-direction: column;
-          
+
           small {
             justify-content: flex-start;
             margin: 0 0 4px;

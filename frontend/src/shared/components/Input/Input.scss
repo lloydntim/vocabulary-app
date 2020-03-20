@@ -1,0 +1,29 @@
+@import '../../../client/styles.scss';
+
+.input {
+  display: flex;
+  position: relative;
+
+  > .input-element {
+    margin: 0 0 16px;
+    padding: 12px 40px 12px 12px;
+  }
+
+  .icon-button {
+    display: flex;
+    align-items: center;
+    align-self: start;
+    border: none;
+    padding: 8px;
+    position: absolute;
+    right: 8px;
+    top: 3px;
+    opacity: 1;
+  }
+
+  &.input-type-text {
+    .icon-button {
+      opacity: .5;
+    }
+  }
+}

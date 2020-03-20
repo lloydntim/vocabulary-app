@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { RootLayout } from '../../layouts';
-import { Message } from '../../components';
+import { Message, Input } from '../../components';
 
 import './SignUpPage.scss';
 
@@ -56,76 +56,46 @@ const SignUpPage = () => {
         <h1>{t('signup_title')}</h1>
 
         <form>
-          <label htmlFor="username">
-            <span>{t('common_form_label_username')}</span>
-            <input
-              autoComplete="username"
-              name="username"
-              type="text"
-              placeholder={t('common_form_placeholder_username')}
-              value={username}
-              onChange={({ target: { value } }) => setUsername(value)}
-              onFocus={() => {
-                setResponseMessage('');
-                setStatusMessage('');
-              }}
-            />
-          </label>
-
-          <label htmlFor="email">
-            <span>{t('common_form_label_email')}</span>
-            <input
-              autoComplete="email"
-              name="email"
-              type="email"
-              placeholder={t('common_form_placeholder_email')}
-              value={email}
-              onChange={
-                ({ target: { value } }) => setEmail(value)
-              }
-              onFocus={() => {
-                setResponseMessage('');
-                setStatusMessage('');
-              }}
-            />
-          </label>
-
-          <label htmlFor="password">
-            <span>{t('common_form_placeholder_password')}</span>
-            <input
-              autoComplete="new-password"
-              name="password"
-              type="password"
-              placeholder={t('common_form_label_password')}
-              value={password}
-              onChange={
-                ({ target: { value } }) => setPassword(value)
-              }
-              onFocus={() => {
-                setResponseMessage('');
-                setStatusMessage('');
-              }}
-            />
-          </label>
-
-          <label htmlFor="password-confirm">
-            <span>{t('common_form_label_confirmPassword')}</span>
-            <input
-              autoComplete="new-password"
-              name="password-confirm"
-              type="password"
-              placeholder={t('common_form_placeholder_confirmPassword')}
-              value={passwordConfirm}
-              onChange={
-                ({ target: { value } }) => setPasswordConfirm(value)
-              }
-              onFocus={() => {
-                setResponseMessage('');
-                setStatusMessage('');
-              }}
-            />
-          </label>
-
+          <Input
+            label={t('common_form_label_username')}
+            autoComplete="username"
+            name="username"
+            type="text"
+            placeholder={t('common_form_placeholder_username')}
+            value={username}
+            onChange={setUsername}
+            onFocus={() => { setResponseMessage(''); setStatusMessage(''); }}
+          />
+          <Input
+            label={t('common_form_label_email')}
+            autoComplete="email"
+            name="email"
+            type="email"
+            placeholder={t('common_form_placeholder_email')}
+            value={email}
+            onChange={setEmail}
+            onFocus={() => { setResponseMessage(''); setStatusMessage(''); }}
+          />
+          <Input
+            label={t('common_form_placeholder_password')}
+            autoComplete="new-password"
+            name="password"
+            type="password"
+            placeholder={t('common_form_label_password')}
+            value={password}
+            onChange={setPassword}
+            onFocus={() => { setResponseMessage(''); setStatusMessage(''); }}
+          />
+          <Input
+            label={t('common_form_label_confirmPassword')}
+            autoComplete="new-password"
+            name="password-confirm"
+            type="password"
+            placeholder={t('common_form_placeholder_confirmPassword')}
+            value={passwordConfirm}
+            onChange={setPasswordConfirm}
+            onFocus={() => { setResponseMessage(''); setStatusMessage(''); }}
+          />
           <button
             type="button"
             className="button button-primary"

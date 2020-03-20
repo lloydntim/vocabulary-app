@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import gql from 'graphql-tag';
 import { useQuery, useLazyQuery, useMutation } from '@apollo/react-hooks';
 import { useParams, useHistory, Link } from 'react-router-dom';
@@ -119,8 +119,22 @@ const VocabListPage = () => {
     },
     refetchQueries: [{ query: GET_LIST, variables: { id } }],
   });
-  console.log('shuffled ist', shuffledList);
-  console.log(' ist', list);
+
+  const subHeader = useRef(null);
+  const [isSticky, setIsSticky] = useState(false);
+  useEffect(() => {
+    const onScroll = () => {
+      const { offsetTop, offsetHeight } = subHeader.current;
+      const isSticky = document.documentElement.scrollTop > (offsetTop + offsetHeight);
+      setIsSticky(isSticky);
+    };
+    window.addEventListener('scroll', onScroll);
+
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+    };
+  }, []);
+
   return (
     <RootLayout>
       <div className="vocab-list-page page">
@@ -151,7 +165,7 @@ const VocabListPage = () => {
             />
             <div className="content">
               <h1>{name}</h1>
-              <div className="sub-header">
+              <div ref={subHeader} className={`sub-header ${isSticky ? 'is-sticky' : ''}`}>
                 <Link to="/vocablists">
                   <div className="icon">
                     <Icon type="home" />

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import gql from 'graphql-tag';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import { Link, Redirect } from 'react-router-dom';
@@ -89,6 +89,20 @@ const VocabListsPage = () => {
   ] = useMutation(REMOVE_LIST, {
     refetchQueries: [{ query: GET_LISTS, variables: { creatorId } }],
   });
+  const subHeader = useRef(null);
+  const [isSticky, setIsSticky] = useState(false);
+  useEffect(() => {
+    const onScroll = () => {
+      const { offsetTop, offsetHeight } = subHeader.current;
+      const isSticky = document.documentElement.scrollTop > (offsetTop + offsetHeight);
+      setIsSticky(isSticky);
+    };
+    window.addEventListener('scroll', onScroll);
+
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+    };
+  }, []);
 
   return (
     <RootLayout>
@@ -185,7 +199,7 @@ const VocabListsPage = () => {
             <div className="content">
               <h1>{t('vocablists_title')}</h1>
 
-              <div className="sub-header">
+              <div ref={subHeader} className={`sub-header ${isSticky ? 'is-sticky' : ''}`}>
                 <IconButton
                   icon="add-list"
                   type="primary"

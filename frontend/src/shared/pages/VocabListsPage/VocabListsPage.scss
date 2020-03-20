@@ -24,6 +24,16 @@
         height: 16px;
       }
     }
+
+    &.is-sticky {
+      position: fixed;
+      width: 100%;
+      left: 0;
+      background: $white;
+      top: 0;
+      padding: 4px 16px;
+      z-index: 10;
+    }
   }
 
   .message {
@@ -34,7 +44,7 @@
     margin: 0;
     padding: 0;
     list-style: none;
-  
+
     li {
       display: flex;
       align-items: center;
@@ -54,7 +64,7 @@
           padding: 4px;
           margin: 0 8px 0 0;
         }
-      }       
+      }
 
       svg {
         height: 24px;
@@ -114,7 +124,7 @@
       height: 60px;
       overflow: hidden;
       outline: none;
-    
+
       &:before {
         content: "Upload File";
         outline: none;
