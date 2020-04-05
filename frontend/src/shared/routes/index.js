@@ -2,11 +2,13 @@ import {
   UsersPage,
   UserPage,
   VocabListsPage,
+  IntroPage,
   AboutPage,
   VocabListPage,
   ResetPasswordPage,
   ForgotPasswordPage,
   SignUpPage,
+  VerifyPage,
   LogoutPage,
   LoginPage,
 } from '../pages';
@@ -38,6 +40,11 @@ const routes = [
     component: VocabListPage,
   },
   {
+    path: '/verify/:token',
+    name: 'verify',
+    component: VerifyPage,
+  },
+  {
     path: '/reset/:token',
     name: 'reset',
     component: ResetPasswordPage,
@@ -58,9 +65,14 @@ const routes = [
     component: LogoutPage,
   },
   {
-    path: '/',
+    path: '/login',
     name: ' login',
     component: LoginPage,
+  },
+  {
+    path: '/',
+    name: 'intro',
+    component: IntroPage,
   },
 ];
 

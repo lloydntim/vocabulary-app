@@ -1,0 +1,35 @@
+@import '../../../client/styles.scss';
+
+.button {
+  outline: none;
+  color: $green;
+  padding: 12px;
+  border-radius: 8px;
+  margin: 0 0 16px;
+  border: 1px solid;
+  font-size: 18px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  cursor: pointer;
+
+  &.is-disabled {
+    opacity: .5;
+  }
+
+  &.button-type-primary {
+    color: $green;
+    background-color: $white;
+  }
+
+  &.button-type-secondary {
+    color: $white;
+    background-color: $green;
+    border-color: $dark-green;
+  }
+
+  &.button-type-tertiary {
+    color: $white;
+    background-color: $dark-blue;
+  }
+}

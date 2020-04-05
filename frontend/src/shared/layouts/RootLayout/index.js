@@ -4,6 +4,7 @@ import {
   arrayOf,
   node,
   oneOf,
+  func,
 } from 'prop-types';
 import jwtDecode from 'jwt-decode';
 
@@ -13,7 +14,12 @@ import RootLayoutUserView from './RootLayoutUserView';
 import './RootLayout.scss';
 
 /* eslint-disable react/jsx-props-no-spreading */
-const RootLayout = ({ children, type }) => {
+const RootLayout = ({
+  children,
+  type,
+  onOpenMenuButtonClick,
+  onCloseMenuButtonClick,
+}) => {
   /* eslint-disable no-undef */
   const token = localStorage.getItem('token');
   const user = token ? jwtDecode(token) : {};
@@ -26,10 +32,15 @@ const RootLayout = ({ children, type }) => {
             {children}
           </RootLayoutGuestView>
         ) : (
-          <RootLayoutUserView currentUser={user}>
+          <RootLayoutUserView
+            currentUser={user}
+            onOpenMenuButtonClick={onOpenMenuButtonClick}
+            onCloseMenuButtonClick={onCloseMenuButtonClick}
+          >
             {children}
           </RootLayoutUserView>
         )}
+        <div className="footer">&copy; 2019 - 2020 LN Creative Development Ltd</div>
       </div>
     </>
   );
@@ -37,13 +48,18 @@ const RootLayout = ({ children, type }) => {
 
 RootLayout.defaultProps = {
   type: 'user',
+  onOpenMenuButtonClick: null,
+  onCloseMenuButtonClick: null,
 };
+
 RootLayout.propTypes = {
   children: oneOfType([
     arrayOf(node).isRequired,
     node,
   ]).isRequired,
   type: oneOf(['guest', 'user']),
+  onOpenMenuButtonClick: func,
+  onCloseMenuButtonClick: func,
 };
 
 export default RootLayout;

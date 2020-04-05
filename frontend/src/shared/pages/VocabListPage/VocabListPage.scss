@@ -26,9 +26,12 @@
     }
 
     .header {
+      padding: 8px 12px;
+
       .icon-type-plus {
         margin: 8px 0 0;
       }
+      flex-direction: row-reverse;
     }
 
     input[type="file"] {

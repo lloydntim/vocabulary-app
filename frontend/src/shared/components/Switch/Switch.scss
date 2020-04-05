@@ -21,7 +21,7 @@
     &~ .switch-background {
       display: block;
       position: relative;
-      border: solid $dark-grey 2px; 
+      border: solid $dark-grey 2px;
       border-radius: 10px;
       background-color: $dark-grey;
       width: 36px;
@@ -45,7 +45,10 @@
         &:after {
           left: 16px;
         }
-      }  
+      }
     }
+  }
+  &.is-disabled {
+    opacity: .5;
   }
 }

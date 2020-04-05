@@ -4,9 +4,9 @@ import gql from 'graphql-tag';
 import { useMutation } from '@apollo/react-hooks';
 import { Link, useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-
+import { useForm } from '../../hooks';
 import { RootLayout } from '../../layouts';
-import { Message, Input } from '../../components';
+import { Message, Input, Button } from '../../components';
 
 import './LoginPage.scss';
 
@@ -21,10 +21,9 @@ export const LOGIN = gql`
 const LoginPage = () => {
   const { push } = useHistory();
   const { t } = useTranslation();
-
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [status, setStatusMessage] = useState('');
+  const inputNames = ['username', 'password'];
+  const { formData, updateFormData, isFormValid } = useForm(inputNames);
+  const { username, password } = formData;
   const [responseMessage, setResponseMessage] = useState('');
   const [
     login,
@@ -39,7 +38,7 @@ const LoginPage = () => {
       onError: (error) => {
         const errorMessage = error.message;
         if (errorMessage.includes('username')) {
-          setResponseMessage(t('messages_error_usernameDoesNotExists', { email }));
+          setResponseMessage(t('messages_error_usernameDoesNotExists', { username: username.value }));
         } else if (errorMessage.includes('password')) {
           setResponseMessage(t('messages_error_passwordIsIncorrect'));
         } else {
@@ -56,40 +55,36 @@ const LoginPage = () => {
         <form>
           <Input
             label={t('common_form_label_username')}
+            inputRef={username.ref}
+            required
             autoComplete="username"
-            name="username"
-            type="text"
+            name={username.name}
             placeholder={t('common_form_placeholder_username')}
-            value={username}
-            onChange={setUsername}
-            onFocus={() => { setResponseMessage(''); setStatusMessage(''); }}
+            value={username.value}
+            onChange={updateFormData}
+            onBlur={updateFormData}
           />
           <Input
-            label={t('common_form_label_password')}
-            autoComplete="current-password"
-            name="password"
+            label={t('common_form_placeholder_password')}
+            inputRef={password.ref}
+            // autoComplete="new-password"
+            required
+            name={password.name}
             type="password"
-            placeholder={t('common_form_placeholder_password')}
-            value={password}
-            onChange={setPassword}
-            onFocus={() => { setResponseMessage(''); setStatusMessage(''); }}
+            placeholder={t('common_form_label_password')}
+            value={password.value}
+            onChange={updateFormData}
+            onBlur={updateFormData}
           />
-          <button
-            type="button"
-            className="button button-primary"
-            onClick={() => {
-              if (username.length < 1) {
-                setStatusMessage(t('messages_error_usernameEmpty'));
-              } else if (password.length < 1) {
-                setStatusMessage(t('messages_error_passwordEmpty'));
-              } else {
-                login({ variables: { username, password } });
-              }
-            }}
-          >
-            {t('common_button_login')}
-          </button>
-          { status && <Message type="error" id="status" content={status} /> }
+          <Button
+            type="primary"
+            disabled={!isFormValid}
+            text={t('common_button_login')}
+            onClick={() => login({ variables: {
+              username: username.value.toLowerCase(),
+              password: password.value,
+            } })}
+          />
         </form>
 
         <div className="link-group">

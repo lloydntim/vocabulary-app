@@ -2,6 +2,8 @@ import { gql } from 'apollo-server-express';
 import {
   register,
   login,
+  verify,
+  resendVerificationToken,
   createPasswordToken,
   getPasswordToken,
   updatePassword,
@@ -31,6 +33,7 @@ export const typeDefs = gql`
     username: String
     email: String
     password: String
+    isVerified: String
     refreshToken: String
     accessToken: String
   }
@@ -70,6 +73,8 @@ export const typeDefs = gql`
   type Mutation {
     register(username: String, email: String, password: String): Auth
     login(username: String, password: String): Auth
+    verify(token: String):Auth
+    resendVerificationToken(username: String, email: String):Auth
     createPasswordToken(email: String): Auth
     updatePassword(resetPasswordToken: String, password: String): Auth
     updateUser(id: ID, username: String, email: String): User
@@ -93,6 +98,8 @@ export const resolvers = {
   Mutation: {
     login,
     register,
+    verify,
+    resendVerificationToken,
     createPasswordToken,
     updatePassword,
     updateUser,

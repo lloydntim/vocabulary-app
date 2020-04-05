@@ -1,16 +1,15 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import gql from 'graphql-tag';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import { Link, Redirect } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import jwtDecode from 'jwt-decode';
+import Joyride from 'react-joyride';
 
+import { vocabListsPageJoyride } from '../../joyrides';
+import { useForm, useStickyHeader, useJoyride } from '../../hooks';
 import { RootLayout, Overlay, Dialog } from '../../layouts';
-import {
-  IconButton,
-  Icon,
-  Message,
-} from '../../components';
+import { Button, IconButton, Icon, Message, Input } from '../../components';
 
 import './VocabListsPage.scss';
 
@@ -61,51 +60,54 @@ const VocabListsPage = () => {
   if (!token) return <Redirect to="/" />;
 
   const creatorId = jwtDecode(token).id;
-  const [file, setFile] = useState('');
-  const [title, setTitle] = useState('');
+  const inputNames = ['title', 'listFile'];
+  const { formData, updateFormData, isFormValid, resetFormData } = useForm(inputNames);
+  const { title, listFile } = formData;
+
   const [isEditTitleMode, setEditTitleMode] = useState(false);
-  const [status, setStatusMessage] = useState('');
-  const [currentList, setCurrentList] = useState({});
+  const [currentList, setCurrentList] = useState({ name: '', id: '' });
   const [isDialogVisible, setDialogVisibility] = useState(false);
   const [isOverlayVisible, setOverlayVisibility] = useState(false);
-  const { loading, error, data } = useQuery(GET_LISTS, {
-    variables: { creatorId },
-    // onCompleted: (data) => {
-    //   if (data.getLists.length > 0)
-    // console.log('date', new Date(data.getLists[0].createdAt).getTime());
-    // },
+  const [responseMessage, setResponseMessage] = useState('');
+  const { run, stepIndex, steps, styles, locale, callback, updateJoyride } = useJoyride(vocabListsPageJoyride);
+  const { loading, error, data } = useQuery(GET_LISTS, { variables: { creatorId }, onError: (error) => setResponseMessage(error.message.split(':')[1].trim()) });
+  const [addList] = useMutation(ADD_LIST, {
+    onError: (error) => setResponseMessage(error.message.split(':')[1].trim()),
+    refetchQueries: [{ query: GET_LISTS, variables: { creatorId } }],
   });
-  const [addList] = useMutation(ADD_LIST,
-    { refetchQueries: [{ query: GET_LISTS, variables: { creatorId } }] });
   const [
     updateList,
     { loading: updateListMutationLoading, error: updateListMutationError },
   ] = useMutation(UPDATE_LIST, {
+    onError: (error) => setResponseMessage(error.message.split(':')[1].trim()),
     refetchQueries: [{ query: GET_LISTS, variables: { creatorId } }],
   });
   const [
     removeList,
     { loading: removeMutationLoading, error: removeMutationError },
   ] = useMutation(REMOVE_LIST, {
+    onError: (error) => setResponseMessage(error.message.split(':')[1].trim()),
     refetchQueries: [{ query: GET_LISTS, variables: { creatorId } }],
   });
-  const subHeader = useRef(null);
-  const [isSticky, setIsSticky] = useState(false);
-  useEffect(() => {
-    const onScroll = () => {
-      const { offsetTop, offsetHeight } = subHeader.current;
-      const isSticky = document.documentElement.scrollTop > (offsetTop + offsetHeight);
-      setIsSticky(isSticky);
-    };
-    window.addEventListener('scroll', onScroll);
+  const { stickyHeaderRef, isHeaderSticky } = useStickyHeader();
 
-    return () => {
-      window.removeEventListener('scroll', onScroll);
-    };
+  useEffect(() => {
+    /* eslint-disable no-undef */
+    const isVocablistsJoyrideFinished = localStorage.getItem('isVocablistsJoyrideFinished');
+    if (isVocablistsJoyrideFinished === null) {
+      updateJoyride({ run: true, stepIndex });
+      localStorage.setItem('isVocablistsJoyrideFinished', false);
+    }
+    if (isVocablistsJoyrideFinished === 'false') {
+      updateJoyride({ run: true, stepIndex });
+    }
   }, []);
 
   return (
-    <RootLayout>
+    <RootLayout
+      onOpenMenuButtonClick={() => updateJoyride({ run: false })}
+      onCloseMenuButtonClick={() => updateJoyride({ run: true, stepIndex: 2 })}
+    >
       <div className="vocab-lists-page page">
         {data && (
           <>
@@ -123,89 +125,86 @@ const VocabListsPage = () => {
             >
               {t('vocablists_dialog_messsage_deleteListWarning', { listName: currentList.name })}
             </Dialog>
+
             <Overlay
+              title={t(`vocablists_form_title_${isEditTitleMode ? 'editTitle' : 'newList'}`)}
               isVisible={isOverlayVisible}
               onCloseButtonClick={() => {
-                setTitle('');
-                setFile('');
-                setStatusMessage('');
+                resetFormData();
                 setEditTitleMode(false);
                 setOverlayVisibility(false);
+                updateJoyride({ run: false });
               }}
             >
-              <h1>{isEditTitleMode ? t('vocablists_form_title_editTitle') : t('vocablists_form_title_newList')}</h1>
-
               <form>
-                <label htmlFor="title">
-                  <span>{t('vocablists_form_label_title')}</span>
-                  <input
-                    name="title"
-                    type="text"
-                    placeholder={t('vocablists_form_placeholder_title')}
-                    value={title}
-                    onFocus={() => setStatusMessage('')}
-                    onChange={({ target: { value } }) => setTitle(value)}
-                  />
-                </label>
+                <Input
+                  label={t('vocablists_form_label_title')}
+                  inputRef={title.ref}
+                  required
+                  autoComplete="title"
+                  name={title.name}
+                  minLength={3}
+                  maxLength={35}
+                  pattern={/^[A-Za-zÀ-ÖØ-öø-ÿ0-9 _-]{1,}$/}
+                  placeholder={t('vocablists_form_placeholder_title')}
+                  value={title.value}
+                  onChange={updateFormData}
+                  onBlur={updateFormData}
+                />
                 {!isEditTitleMode && (
-                  <>
-                    <label htmlFor="document">
-                      <input
-                        name="document"
-                        type="file"
-                        onFocus={() => setStatusMessage('')}
-                        onChange={({ target: { files } }) => {
-                          setFile(files[0]);
-                        }}
-                      />
-                    </label>
-                    {file.name && <Message type="info" content={file.name} />}
-                  </>
+                  <Input
+                    label={t('common_button_upload')}
+                    inputRef={listFile.ref}
+                    type="file"
+                    name={listFile.name}
+                    pattern={/\.[xls(?x)|csv]+$/}
+                    onChange={updateFormData}
+                  />
                 )}
-
-                <button
-                  className="button button-secondary"
-                  type="button"
+                <Button
+                  type="secondary"
+                  disabled={!isFormValid}
+                  text={t(`vocablists_form_button_${isEditTitleMode ? 'edit' : 'add'}`)}
                   onClick={() => {
-                    const titleMinLength = 3;
-                    const titleMaxLength = 35;
-
-                    if (title.length < titleMinLength || title.length > titleMaxLength) {
-                      setStatusMessage(t('messages_error_titleMinMaxLength', { titleMinLength, titleMaxLength }));
-                    } else if (!title.match(/^[A-Za-zÀ-ÖØ-öø-ÿ0-9_-]/g)) {
-                      setStatusMessage(t('messages_error_titleNotValid'));
-                    } else if (isEditTitleMode) {
-                      updateList({ variables: { id: currentList.id, name: title } });
-                      setEditTitleMode(false);
-                      setStatusMessage('');
-                      setOverlayVisibility(false);
-                    } else if (file && !file.name.match(/\.[xls(?x)|csv]+$/)) {
-                      setStatusMessage(t('messages_error_fileTypeIncorrect'));
+                    updateJoyride({ run: true, stepIndex: 6 });
+                    if (!isEditTitleMode) {
+                      addList({ variables: { name: title.value, file: listFile.files[0], creatorId } });
                     } else {
-                      addList({ variables: { name: title, file, creatorId } });
-                      setOverlayVisibility(false);
-                      setTitle('');
-                      setFile('');
-                      setStatusMessage('');
+                      updateList({ variables: { id: currentList.id, name: title.value } });
+                      setEditTitleMode(false);
                     }
+                    setOverlayVisibility(false);
                   }}
-                >
-                  {isEditTitleMode ? t('vocablists_form_button_edit') : t('vocablists_form_button_add')}
-                </button>
-                { status && <Message type="error" id="status" content={status} /> }
+                />
               </form>
             </Overlay>
+
+            <Joyride
+              steps={steps(t)}
+              run={run}
+              callback={callback({ isOverlayVisible, run, updateJoyride })}
+              stepIndex={stepIndex}
+              styles={styles}
+              locale={locale(t)}
+              continuous
+              showProgress
+              showSkipButton
+            />
 
             <div className="content">
               <h1>{t('vocablists_title')}</h1>
 
-              <div ref={subHeader} className={`sub-header ${isSticky ? 'is-sticky' : ''}`}>
+              <div ref={stickyHeaderRef} className={`sub-header ${isHeaderSticky ? 'is-sticky' : ''}`}>
                 <IconButton
                   icon="add-list"
                   type="primary"
                   onClick={() => {
-                    setTitle('');
+                    resetFormData();
                     setOverlayVisibility(true);
+                    updateJoyride({
+                      run: stepIndex === 2 ? false : run,
+                      stepIndex: stepIndex === 2 ? 3 : stepIndex,
+                    });
                   }}
                 />
               </div>
@@ -218,7 +217,7 @@ const VocabListsPage = () => {
                         icon="edit"
                         type="secondary"
                         onClick={() => {
-                          setTitle(list.name);
+                          updateFormData({ name: title.name, value: list.name });
                           setCurrentList(list);
                           setEditTitleMode(true);
                           setOverlayVisibility(true);
@@ -252,7 +251,7 @@ const VocabListsPage = () => {
         )}
         {(error
         || removeMutationError
-        || updateListMutationError) && <Message type="error" content={t('messages_error_pleaseTryAgain')} />}
+        || updateListMutationError) && <Message type="error" content={responseMessage} />}
 
         {(loading
         || removeMutationLoading

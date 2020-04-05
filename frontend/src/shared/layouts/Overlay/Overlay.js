@@ -5,29 +5,33 @@ import {
   node,
   bool,
   func,
+  string,
 } from 'prop-types';
 
-import { Icon } from '../../components';
+import { IconButton } from '../../components';
 
 import './Overlay.scss';
 
 /* eslint-disable react/jsx-props-no-spreading */
-const Overlay = ({ children, isVisible, onCloseButtonClick }) => (
+const Overlay = ({ children, title, isVisible, onCloseButtonClick }) => (
   <div className={`overlay ${isVisible ? 'is-visible' : 'is-hidden'}`}>
-    <button
-      className="button-circle button-circle-secondary"
-      type="button"
+    <IconButton
+      icon="close"
+      type="secondary"
       onClick={onCloseButtonClick}
-    >
-      <Icon type="close" />
-    </button>
-
+    />
+    {title && <h1>{title}</h1>}
     {children}
 
   </div>
 );
 
+Overlay.defaultProps = {
+  title: '',
+};
+
 Overlay.propTypes = {
+  title: string,
   isVisible: bool.isRequired,
   children: oneOfType([
     arrayOf(node).isRequired,

@@ -8,12 +8,14 @@ const Switch = ({
   name,
   label,
   isActive,
+  disabled,
   onChange,
 }) => (
-  <label className="switch" htmlFor={name}>
+  <label className={`switch ${disabled ? 'is-disabled' : ''} `} htmlFor={name}>
     {label && <span className="switch-label-text">{label}</span>}
     <input
       id={name}
+      disabled={disabled}
       className="switch-checkbox"
       type="checkbox"
       checked={isActive}
@@ -23,10 +25,15 @@ const Switch = ({
   </label>
 );
 
+Switch.defaultProps = {
+  disabled: false,
+};
+
 Switch.propTypes = {
   name: string.isRequired,
   label: string.isRequired,
   isActive: bool.isRequired,
+  disabled: bool,
   onChange: func.isRequired,
 };
 

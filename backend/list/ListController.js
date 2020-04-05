@@ -18,7 +18,7 @@ const checkTextString = (string, {
   minStringLength = 2,
   maxStringLength = 25,
   match = '',
-  errorMessage = 'Invalid String',
+  errorMessage = t('translate_error_invalidWord'),
 } = {}) => {
   const re = new RegExp(match,'g');
   const stringLength = string.length;
@@ -43,8 +43,8 @@ const sanitizeList = (list) => list
     return [srcLang, srcText, tgtLang, tgtText]
   });
 
-export const getListVocabTranslation = async (parent, args, { currentUser }) => {
-  if (!currentUser.loggedIn) throw new AuthenticationError('User must be logged in!');
+export const getListVocabTranslation = async (parent, args, { currentUser, t }) => {
+  if (!currentUser.loggedIn) throw new AuthenticationError(t('auth_error_userMustBeLoggedIn'));
   try {
     const projectId = GCS_PROJECT_ID;
     const location = GCS_PROJECT_LOCATION;
@@ -69,31 +69,31 @@ export const getListVocabTranslation = async (parent, args, { currentUser }) => 
 
     return { targetText: response.translations[0].translatedText };
   } catch (error) {
-    throw new ApolloError('This text could not be translated');
+    throw new ApolloError(t('translate_error_couldNotBeTranslated'));
   }
 };
-export const getList = async (parent, args, { currentUser }) => {
-  if (!currentUser.loggedIn) throw new AuthenticationError('User must be logged in!');
+export const getList = async (parent, args, { currentUser, t }) => {
+  if (!currentUser.loggedIn) throw new AuthenticationError(t('auth_error_userMustBeLoggedIn'));
   try {
     const { id, name } = args;
     return id ? await List.findById(id) : await List.findOne({ name });
   } catch (error) {
-    throw new Error(`List with id ${id} could not be retrieved`);
+    throw new Error(t('list_error_listCouldNotBeRetrieved'));
   }
 };
 
-export const getLists = async (parent, args, { currentUser }) => {
-  if (!currentUser.loggedIn) throw new AuthenticationError('User must be logged in!');
+export const getLists = async (parent, args, { currentUser, t }) => {
+  if (!currentUser.loggedIn) throw new AuthenticationError(t('auth_error_userMustBeLoggedIn'));
   try {
     const { creatorId } = args;
     return await List.find({ creatorId });
   } catch (error) {
-    throw new Error('Lists could not be retrieved');
+    throw new Error(t('list_error_listCouldNotBeRetrieved'));
   }
 };
 
-export const addList = async (parent, args, { currentUser }) => {
-  if (!currentUser.loggedIn) throw new AuthenticationError('User must be logged in!');
+export const addList = async (parent, args, { currentUser, t }) => {
+  if (!currentUser.loggedIn) throw new AuthenticationError(t('auth_error_userMustBeLoggedIn'));
   try {
     const { file, name, data, creatorId } = args;
     const listData = data || [];
@@ -112,24 +112,24 @@ export const addList = async (parent, args, { currentUser }) => {
             throw new Error(error);
           })
           .on('end', () => {
-            console.info('File successfully processed');
+            console.info(t('common_success_fileSuccessfullyProcessed'));
             const buffer = Buffer.concat(bufferArray);
             const [ list ] = xlsx.parse(buffer);
             res(List.create({ name, data: sanitizeList(list.data), creatorId }));
           })
           .on('close', (e) => {
-            console.log('File stream closed.')
+            console.log(t('common_success_fileStreamClosed'))
           })
         )
       );
     }
   } catch (error) {
-    throw new Error ('List could not be added.');
+    throw new Error (t('list_error_listCouldNotBeAdded'));
   };
 };
 
-export const updateList = async (parent, args, { currentUser }) => {
-  if (!currentUser.loggedIn) throw new AuthenticationError('User must be logged in!');
+export const updateList = async (parent, args, { currentUser, t }) => {
+  if (!currentUser.loggedIn) throw new AuthenticationError(t('auth_error_userMustBeLoggedIn'));
   try {
     let $set = {};
     const { id, name, data, file } = args;
@@ -149,13 +149,13 @@ export const updateList = async (parent, args, { currentUser }) => {
             throw new Error(error);
           })
           .on('end', () => {
-            console.info('File successfully processed');
+            console.info(t('common_success_fileSuccessfullyProcessed'));
             const buffer = Buffer.concat(bufferArray);
             const [ list ] = xlsx.parse(buffer);
             res(existingData.concat(sanitizeList(list.data)));
           })
           .on('close', (e) => {
-            console.log('File stream closed.')
+            console.log(t('common_success_fileStreamClosed'))
           })
         )) : data;
     }
@@ -164,17 +164,17 @@ export const updateList = async (parent, args, { currentUser }) => {
     }
     return await List.findByIdAndUpdate(id, { $set }, { new: true });
   } catch (error) {
-    throw new Error('List could not be updated');
+    throw new Error(t('list_error_listCouldNotBeUpdated'));
   };
 };
 
-export const removeList = async (parent, args, { currentUser }) => {
-  if (!currentUser.loggedIn) throw new AuthenticationError('User must be logged in!');
+export const removeList = async (parent, args, { currentUser, t }) => {
+  if (!currentUser.loggedIn) throw new AuthenticationError(t('auth_error_userMustBeLoggedIn'));
   try {
     const { id: _id , creatorId } = args;
     return creatorId ? await List.deleteMany({ creatorId }) : await List.findOneAndDelete({ _id });
   } catch (error) {
-    throw new Error('List could not be removed');
+    throw new Error(t('list_error_listCouldNotBeRemoved'));
   };
 };
 

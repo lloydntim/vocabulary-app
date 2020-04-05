@@ -1,127 +1,143 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  string,
-  func,
-  bool,
-  number,
-  shape,
-  arrayOf,
-  oneOfType,
-} from 'prop-types';
+import Cookies from 'js-cookie';
+import { func, bool, object, string } from 'prop-types';
 
-import { Message, AutoComplete } from '../../components';
+import { Input, Button } from '../../components';
 
 const VocabForm = ({
-  sourceLanguageInputValue,
-  targetLanguageInputValue,
-  sourceTextInputValue,
-  targetTextInputValue,
-  sourceLanguageDataList,
-  targetLanguageDataList,
-  status,
-  translateVocabButtonText,
-  submitVocabButtonText,
-  onInputFocus,
-  onSourceLanguageInputChange,
-  onTargetLanguageInputChange,
-  onSourceLanguageDataListClick,
-  onTargetLanguageDataListClick,
-  onSourceTextInputChange,
-  onTargetTextInputChange,
+  id,
+  form,
+  translatedText,
+  setTranslatedText,
+  isEditMode,
   onTranslateVocabButtonClick,
   onSubmitVocabButtonClick,
 }) => {
-  const { t } = useTranslation();
+  const {
+    formData: {
+      sourceLanguage, targetLanguage, sourceText, targetText,
+    },
+    updateFormData,
+    setInitFormData,
+    isFormValid,
+  } = form;
+  const { t, i18n } = useTranslation();
+
+  const languages = [
+    { value: 'en', text: t('common_languages_english') },
+    { value: 'de', text: t('common_languages_german') },
+    { value: 'es', text: t('common_languages_spanish') },
+    { value: 'fr', text: t('common_languages_french') },
+    { value: 'pt', text: t('common_languages_portuguese') },
+  ];
+
+  if (!isEditMode) {
+    useEffect(() => {
+      /* eslint-disable no-undef */
+      const sourceLanguageCookieKey = `source-language-${id}`;
+      const targetLanguageCookieKey = `target-language-${id}`;
+      // console.log('Target Language', (Cookies.get(targetLanguageCookieKey) || 'target language not defined'));
+
+      if (typeof Cookies.get(sourceLanguageCookieKey) === 'undefined') {
+        Cookies.set(sourceLanguageCookieKey, i18n.language);
+      }
+
+      if (typeof Cookies.get(targetLanguageCookieKey) === 'undefined') {
+        Cookies.set(targetLanguageCookieKey, '');
+      }
+
+      const [sourceLanguage] = languages.filter(({ value }) => value === Cookies.get(sourceLanguageCookieKey));
+      const targetLanguage = !Cookies.get(targetLanguageCookieKey) ? '' : languages.filter(({ value }) => value === Cookies.get(targetLanguageCookieKey))[0].text;
+
+      setInitFormData({ sourceLanguage: sourceLanguage.text, targetLanguage });
+    }, []);
+  }
+
   return (
     <form>
-      <AutoComplete
-        value={sourceLanguageInputValue}
+      <Input
+        inputRef={sourceLanguage.ref}
+        value={sourceLanguage.value}
         placeholder={t('vocablist_form_placeholder_selectSourceLanguage')}
-        onFocus={onInputFocus}
-        dataList={sourceLanguageDataList}
-        onChange={onSourceLanguageInputChange}
-        onClick={onSourceLanguageDataListClick}
+        name={sourceLanguage.name}
+        dataList={languages}
+        onChange={updateFormData}
+        onDataListClick={({ value }) => Cookies.set(`source-language-${id}`, value)}
       />
-      <label htmlFor="source-text">
-        <span>{t('vocablist_form_label_sourceText')}</span>
-        <input
-          name="source-text"
-          type="text"
-          placeholder={(t('vocablist_form_placeholder_sourceText'))}
-          value={sourceTextInputValue}
-          onFocus={onInputFocus}
-          onChange={onSourceTextInputChange}
-        />
-      </label>
+      <Input
+        label={t('vocablist_form_label_sourceText')}
+        inputRef={sourceText.ref}
+        name={sourceText.name}
+        required
+        placeholder={t('vocablist_form_placeholder_sourceText')}
+        value={sourceText.value}
+        maxLength={150}
+        maxLengthErrorMessage={t('messages_error_sourcePhraseMaxLength')}
+        requiredErrorMessage={t('messages_error_sourcePhraseEmpty')}
+        onChange={updateFormData}
+        onBlur={updateFormData}
+      />
       <div className="separator" />
-      <AutoComplete
-        value={targetLanguageInputValue}
-        placeholder={(t('vocablist_form_placeholder_selectTargetLanguage'))}
-        onFocus={onInputFocus}
-        dataList={targetLanguageDataList}
-        onChange={onTargetLanguageInputChange}
-        onClick={onTargetLanguageDataListClick}
+      <Input
+        inputRef={targetLanguage.ref}
+        value={targetLanguage.value}
+        placeholder={t('vocablist_form_placeholder_selectTargetLanguage')}
+        name={targetLanguage.name}
+        dataList={languages}
+        onChange={updateFormData}
+        onDataListClick={({ value }) => Cookies.set(`target-language-${id}`, value)}
       />
-      <label htmlFor="target-text">
-        <span>{t('vocablist_form_label_targetText')}</span>
-        <input
-          name="target-text"
-          type="text"
-          placeholder={(t('vocablist_form_placeholder_targetText'))}
-          value={targetTextInputValue}
-          onFocus={onInputFocus}
-          onChange={onTargetTextInputChange}
+      <Input
+        label={t('vocablist_form_label_targetText')}
+        inputRef={targetText.ref}
+        name={targetText.name}
+        placeholder={t('vocablist_form_placeholder_targetText')}
+        value={translatedText}
+        onChange={({ value }) => setTranslatedText(value)}
+        onBlur={({ value }) => setTranslatedText(value)}
+      />
+      {!isEditMode && (
+        <Button
+          type="tertiary"
+          text={t('common_button_translate')}
+          onClick={() => {
+            // console.log('slCookie', Cookies.get(`source-language-${id}`));
+            // console.log('tlCookie', Cookies.get(`target-language-${id}`));
+            onTranslateVocabButtonClick({
+              sourceLanguageCode: Cookies.get(`source-language-${id}`),
+              targetLanguageCode: Cookies.get(`target-language-${id}`),
+              sourceText: sourceText.value,
+            });
+          }}
         />
-      </label>
-      {translateVocabButtonText && (
-        <button
-          className="button button-secondary"
-          type="button"
-          onClick={onTranslateVocabButtonClick}
-        >
-          {translateVocabButtonText}
-        </button>
       )}
-      <button
-        className="button button-secondary"
-        type="button"
-        onClick={onSubmitVocabButtonClick}
-      >
-        {submitVocabButtonText}
-      </button>
-      { status && <Message type="error" id="status" content={status} /> }
+      <Button
+        disabled={!isFormValid}
+        type="secondary"
+        text={t(`common_button_${isEditMode ? 'update' : 'create'}`)}
+        onClick={() => onSubmitVocabButtonClick({
+          sourceLanguage: sourceLanguage.value,
+          targetLanguage: targetLanguage.value,
+          sourceText: sourceText.value,
+          targetText: translatedText,
+        })}
+      />
     </form>
   );
 };
 VocabForm.defaultProps = {
-  translateVocabButtonText: '',
+  onTranslateVocabButtonClick: null,
+  isEditMode: false,
 };
 
 VocabForm.propTypes = {
-  sourceLanguageInputValue: string.isRequired,
-  targetLanguageInputValue: string.isRequired,
-  sourceTextInputValue: string.isRequired,
-  targetTextInputValue: string.isRequired,
-  sourceLanguageDataList: arrayOf(shape({
-    value: oneOfType([string, number, bool]),
-    text: string,
-  })).isRequired,
-  targetLanguageDataList: arrayOf(shape({
-    value: oneOfType([string, number, bool]),
-    text: string,
-  })).isRequired,
-  status: string.isRequired,
-  translateVocabButtonText: string,
-  submitVocabButtonText: string.isRequired,
-  onInputFocus: func.isRequired,
-  onSourceLanguageInputChange: func.isRequired,
-  onTargetLanguageInputChange: func.isRequired,
-  onSourceTextInputChange: func.isRequired,
-  onTargetTextInputChange: func.isRequired,
-  onSourceLanguageDataListClick: func.isRequired,
-  onTargetLanguageDataListClick: func.isRequired,
-  onTranslateVocabButtonClick: func.isRequired,
+  id: string.isRequired,
+  form: object.isRequired,
+  translatedText: string.isRequired,
+  setTranslatedText: func.isRequired,
+  isEditMode: bool,
+  onTranslateVocabButtonClick: func,
   onSubmitVocabButtonClick: func.isRequired,
 };
 

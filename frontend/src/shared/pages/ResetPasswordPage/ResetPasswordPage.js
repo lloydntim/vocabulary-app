@@ -4,8 +4,9 @@ import { useQuery, useMutation } from '@apollo/react-hooks';
 import { useParams, useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
+import { useForm } from '../../hooks';
 import { RootLayout } from '../../layouts';
-import { Message, Input } from '../../components';
+import { Message, Input, Button } from '../../components';
 
 import './ResetPasswordPage.scss';
 
@@ -26,10 +27,7 @@ export const UPDATE_PASSWORD_TOKEN = gql`
 `;
 
 const ResetPasswordPage = () => {
-  const [password, setPassword] = useState('');
-  const [passwordConfirm, setPasswordConfirm] = useState('');
   const [responseMessage, setResponseMessage] = useState('');
-  const [status, setStatusMessage] = useState('');
   const { push } = useHistory();
   const { t } = useTranslation();
   const { token: resetPasswordToken } = useParams();
@@ -55,67 +53,67 @@ const ResetPasswordPage = () => {
       },
       onError: (error) => {
         const message = error.message.includes('email')
-          ? t('messages_error_emailDoesNotExist', { email }) : t('messages_error_somethingWentWrong');
+          ? t('messages_error_emailDoesNotExist', { email }) : error.message;
         setResponseMessage(message);
       },
     },
   );
+
+  const inputNames = ['password', 'passwordConfirm'];
+  const { formData: { password, passwordConfirm }, updateFormData, isFormValid } = useForm(inputNames);
+
+  const passwordsMatching = password.value === passwordConfirm.value;
+  const isSubmitButtonDisabled = !(isFormValid && passwordsMatching);
+  const passwordMinLength = 7;
+  const passwordMaxLength = 15;
+  const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.*[0-9])/;
+
   return (
     <RootLayout>
-      <div className="reset-password-page">
-        <h1>Reset Password</h1>
+      <div className="reset-password-page page">
+        <h1>{t('resetPassword_title')}</h1>
         {
           data && (
             <form>
               <Input
-                label={t('common_form_label_password')}
-                autoComplete="current-password"
-                name="password"
+                label={t('common_form_placeholder_password')}
+                inputRef={password.ref}
+                autoComplete="new-password"
+                required
+                name={password.name}
                 type="password"
-                placeholder={t('common_form_placeholder_password')}
-                value={password}
-                onChange={setPassword}
-                onFocus={() => { setResponseMessage(''); setStatusMessage(''); }}
+                minLength={passwordMinLength}
+                maxLength={passwordMaxLength}
+                pattern={passwordPattern}
+                placeholder={t('common_form_label_password')}
+                value={password.value}
+                onChange={updateFormData}
+                onBlur={updateFormData}
               />
               <Input
                 label={t('common_form_label_confirmPassword')}
+                inputRef={passwordConfirm.ref}
+                required
                 autoComplete="new-password"
-                name="password-confirm"
+                name={passwordConfirm.name}
                 type="password"
+                minLength={passwordMinLength}
+                maxLength={passwordMaxLength}
+                pattern={passwordPattern}
                 placeholder={t('common_form_placeholder_confirmPassword')}
-                value={passwordConfirm}
-                onChange={setPasswordConfirm}
-                onFocus={() => { setResponseMessage(''); setStatusMessage(''); }}
+                value={passwordConfirm.value}
+                onChange={updateFormData}
+                onBlur={updateFormData}
               />
-              <button
-                type="button"
-                onClick={() => {
-                  const passwordMinLength = 7;
-                  const passwordMaxLength = 15;
-                  if (password !== passwordConfirm) {
-                    setStatusMessage(t('messages_error_passwordsNotMatching'));
-                  } else if (password.length < passwordMinLength) {
-                    setStatusMessage(t('messages_error_passwordMinLength', { passwordMinLength }));
-                  } else if (password.length > passwordMaxLength) {
-                    setStatusMessage(t('messages_error_passwordMaxLength', { passwordMaxLength }));
-                  } else if (!password.match(/^(?=.*[a-z])/)) {
-                    setStatusMessage(t('messages_error_passwordMustContainLowercaseChar'));
-                  } else if (!password.match(/^(?=.*[A-Z])/)) {
-                    setStatusMessage(t('messages_error_passwordMustContainUppercaseChar'));
-                  } else if (!password.match(/^(?=.*[!@#$%^&*])/)) {
-                    setStatusMessage(t('messages_error_passwordMustContainSpecialChar'));
-                  } else if (!password.match(/^(?=.*[0-9])/)) {
-                    setStatusMessage(t('messages_error_passwordMustContainNumber'));
-                  } else {
-                    updatePassword({ variables: { resetPasswordToken, password } });
-                  }
-                  setPassword('');
-                  setPasswordConfirm('');
-                }}
-              >
-                {t('common_button_submit')}
-              </button>
-              { status && <Message type="error" id="status" content={status} /> }
+
+              { (passwordConfirm.value.length > 0 && !passwordsMatching) && <Message type="error" content={t('messages_error_passwordsNotMatching')} /> }
+
+              <Button
+                type="primary"
+                disabled={isSubmitButtonDisabled}
+                text={t('common_button_submit')}
+                onClick={() => updatePassword({ variables: { resetPasswordToken, password: password.value } })}
+              />
             </form>
           )
         }

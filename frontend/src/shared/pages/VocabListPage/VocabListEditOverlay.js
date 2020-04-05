@@ -1,56 +1,55 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { string, bool, func } from 'prop-types';
+import { bool, func } from 'prop-types';
 
-import { Message } from '../../components';
+import { useForm } from '../../hooks';
 import { Overlay } from '../../layouts';
+import { Button, Input } from '../../components';
 
 const VocabListItemEditOverlay = ({
-  newTitle,
   isVisible,
-  status,
-  onNewTitleInputChange,
   onCloseButtonClick,
   onUpdateTitleButtonClick,
 }) => {
   const { t } = useTranslation();
+  const {
+    formData: { newTitle },
+    updateFormData,
+    isFormValid,
+  } = useForm(['newTitle']);
   return (
     <Overlay
+      title={t('vocablist_form_title_vocabListTitle')}
       isVisible={isVisible}
       onCloseButtonClick={onCloseButtonClick}
     >
-      <h1>{t('vocablist_form_title_vocabListTitle')}</h1>
-
       <form>
-        <label htmlFor="title">
-          <span>{t('vocablist_form_label_vocabListTitle')}</span>
-          <input
-            autoComplete="title"
-            name="title"
-            type="text"
-            placeholder={t('vocablist_form_placeholder_newVocabListTitle')}
-            value={newTitle}
-            onChange={onNewTitleInputChange}
-          />
-        </label>
-        <button
-          className="button button-secondary"
-          type="button"
-          onClick={onUpdateTitleButtonClick}
-        >
-          {t('vocablist_form_button_updateTitle')}
-        </button>
-        { status && <Message type="error" id="status" content={status} /> }
+        <Input
+          label={t('vocablist_form_label_vocabListTitle')}
+          inputRef={newTitle.ref}
+          required
+          name={newTitle.name}
+          minLength={3}
+          maxLength={35}
+          pattern={/^[A-Za-zÀ-ÖØ-öø-ÿ0-9_-]/g}
+          placeholder={t('vocablist_form_placeholder_newVocabListTitle')}
+          value={newTitle.value}
+          onChange={updateFormData}
+          onBlur={updateFormData}
+        />
+        <Button
+          type="secondary"
+          disabled={!isFormValid}
+          text={t('vocablist_form_button_updateTitle')}
+          onClick={() => onUpdateTitleButtonClick(newTitle.value)}
+        />
       </form>
     </Overlay>
   );
 };
 
 VocabListItemEditOverlay.propTypes = {
-  newTitle: string.isRequired,
   isVisible: bool.isRequired,
-  status: string.isRequired,
-  onNewTitleInputChange: func.isRequired,
   onCloseButtonClick: func.isRequired,
   onUpdateTitleButtonClick: func.isRequired,
 };

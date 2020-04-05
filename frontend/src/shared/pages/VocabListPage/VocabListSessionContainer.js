@@ -1,39 +1,12 @@
+import { string, func, arrayOf } from 'prop-types';
 import React, { useState, useEffect } from 'react';
-import { string, arrayOf } from 'prop-types';
+import { useStopwatch } from '../../hooks';
 
 import VocabListSessionHeader from './VocabListSessionHeader';
 import VocabListSessionBody from './VocabListSessionBody';
 import VocabListSessionFooter from './VocabListSessionFooter';
 
-const useStopWatch = () => {
-  const [ticker, setTicker] = useState(0);
-  const [time, setTime] = useState(0);
-  const [isActivated, setIsActivated] = useState(true);
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTicker((ticker) => ticker + 1);
-    }, 1000);
-
-    return () => {
-      clearInterval(timer);
-      setTicker(0);
-    };
-  }, []);
-
-  useEffect(() => {
-    setTime((time) => time + (isActivated ? 1 : 0));
-    // if (isActivated) console.log(`${time} seconds passed.`);
-  }, [ticker, isActivated]);
-
-  return {
-    time,
-    start: () => setIsActivated(true),
-    stop: () => setIsActivated(false),
-    reset: () => setTime(0),
-  };
-};
-
-const VocabListSessionContainer = ({ list }) => {
+const VocabListSessionContainer = ({ list, setJoyride }) => {
   const [count, setCount] = useState(0);
   const [isLanguageSwitched, toggleLanguage] = useState(false);
   const [translationInputValue, setTranslationInputValue] = useState('');
@@ -41,10 +14,7 @@ const VocabListSessionContainer = ({ list }) => {
   const [hintsNeeded, setHintsNeeded] = useState(0);
   const [status, setStatusMessage] = useState('');
   const [reportData, setReportData] = useState({});
-  const {
-    time,
-    reset,
-  } = useStopWatch();
+  const { time, reset } = useStopwatch();
   const currentVocab = list.length > 0 ? list[count] : [];
   const [langA, langB, textA, textB] = currentVocab;
 
@@ -52,6 +22,18 @@ const VocabListSessionContainer = ({ list }) => {
   const targetLanguage = !isLanguageSwitched ? langB : langA;
   const sourceText = !isLanguageSwitched ? textA : textB;
   const targetText = !isLanguageSwitched ? textB : textA;
+
+  useEffect(() => {
+    /* eslint-disable no-undef */
+    const isVocablistPlayModeJoyrideFinished = localStorage.getItem('isVocablistPlayModeJoyrideFinished');
+    if (isVocablistPlayModeJoyrideFinished === null) {
+      setJoyride({ run: true, stepIndex: 17 });
+      localStorage.setItem('isVocablistPlayModeJoyrideFinished', false);
+    }
+    if (isVocablistPlayModeJoyrideFinished === 'false') {
+      setJoyride({ run: true, stepIndex: 17 });
+    }
+  }, []);
 
   return (
     <>
@@ -76,7 +58,7 @@ const VocabListSessionContainer = ({ list }) => {
           if (status) setStatusMessage('');
         }}
         onVocabTranslationSubmitButtonClick={() => {
-          const statusMessage = targetText === translationInputValue ? 'success' : 'error';
+          const statusMessage = targetText === translationInputValue.trim() ? 'success' : 'error';
           if (statusMessage === 'success') {
             const vocabResultData = {
               index: count,
@@ -140,6 +122,7 @@ const VocabListSessionContainer = ({ list }) => {
 
 VocabListSessionContainer.propTypes = {
   list: arrayOf(arrayOf(string)).isRequired,
+  setJoyride: func.isRequired,
 };
 
 export default VocabListSessionContainer;

@@ -1,13 +1,16 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import gql from 'graphql-tag';
 import { useQuery, useLazyQuery, useMutation } from '@apollo/react-hooks';
 import { useParams, useHistory, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import Joyride from 'react-joyride';
 import jwtDecode from 'jwt-decode';
 
+import { useStickyHeader, useJoyride } from '../../hooks';
 import { RootLayout } from '../../layouts';
 import { Switch, Message, Icon } from '../../components';
 
+import { vocabListPageJoyride } from '../../joyrides';
 import VocabListSessionContainer from './VocabListSessionContainer';
 import VocabListEditOverlay from './VocabListEditOverlay';
 import VocabListEditContainer from './VocabListEditContainer';
@@ -64,12 +67,11 @@ const VocabListPage = () => {
   const { t } = useTranslation();
   const [isEditMode, setEditMode] = useState(true);
   const [{ name, list, shuffledList }, setVocabListData] = useState({ name: '', list: [], shuffledList: [] });
-  const [status, setStatusMessage] = useState('');
 
   const [translatedText, setTranslatedText] = useState('');
   const [isOverlayVisible, setOverlayVisibility] = useState(false);
+  const [responseMessage, setResponseMessage] = useState('');
 
-  const [newTitle, setNewTitle] = useState('');
   const { id } = useParams();
   const { push } = useHistory();
   const { loading, error, data } = useQuery(
@@ -101,7 +103,9 @@ const VocabListPage = () => {
   const [
     addList,
     { loading: addListMutationLoading, error: addListMutationError },
-  ] = useMutation(ADD_LIST, { onCompleted: (data) => push(`/vocablist/${data.addList.id}`) }, {
+  ] = useMutation(ADD_LIST, {
+    onCompleted: (data) => push(`/vocablist/${data.addList.id}`),
+    onError: (error) => setResponseMessage(error.message.split(':')[1].trim()),
     refetchQueries: [{ query: GET_LISTS, variables: { creatorId } }],
   });
 
@@ -117,22 +121,23 @@ const VocabListPage = () => {
           .sort(() => (0.5 - Math.random())) : [];
       setVocabListData({ name, list, shuffledList });
     },
+    onError: (error) => setResponseMessage(error.message.split(':')[1].trim()),
     refetchQueries: [{ query: GET_LIST, variables: { id } }],
   });
 
-  const subHeader = useRef(null);
-  const [isSticky, setIsSticky] = useState(false);
-  useEffect(() => {
-    const onScroll = () => {
-      const { offsetTop, offsetHeight } = subHeader.current;
-      const isSticky = document.documentElement.scrollTop > (offsetTop + offsetHeight);
-      setIsSticky(isSticky);
-    };
-    window.addEventListener('scroll', onScroll);
+  const { stickyHeaderRef, isHeaderSticky } = useStickyHeader();
+  const { run, stepIndex, steps, styles, callback, updateJoyride, locale } = useJoyride(vocabListPageJoyride);
 
-    return () => {
-      window.removeEventListener('scroll', onScroll);
-    };
+  useEffect(() => {
+    /* eslint-disable no-undef */
+    const isVocablistEditModeJoyrideFinished = localStorage.getItem('isVocablistEditModeJoyrideFinished');
+    if (isVocablistEditModeJoyrideFinished === null) {
+      updateJoyride({ run: true, stepIndex });
+      localStorage.setItem('isVocablistEditModeJoyrideFinished', false);
+    }
+    if (isVocablistEditModeJoyrideFinished === 'false') {
+      updateJoyride({ run: true, stepIndex });
+    }
   }, []);
 
   return (
@@ -141,31 +146,27 @@ const VocabListPage = () => {
         {data && (
           <>
             <VocabListEditOverlay
-              newTitle={newTitle}
               isVisible={isOverlayVisible}
-              status={status}
-              onCloseButtonClick={() => {
+              onCloseButtonClick={() => setOverlayVisibility(false)}
+              onUpdateTitleButtonClick={(name) => {
                 setOverlayVisibility(false);
-                setStatusMessage('');
-              }}
-              onNewTitleInputChange={({ target: { value } }) => setNewTitle(value)}
-              onUpdateTitleButtonClick={() => {
-                const titleMinLength = 3;
-                const titleMaxLength = 35;
-                if (newTitle.length > titleMinLength || newTitle.length < titleMaxLength) {
-                  setStatusMessage(t('messages_error_titleMinMaxLength', { titleMinLength, titleMaxLength }));
-                } else if (newTitle.match(/^[A-Za-zÀ-ÖØ-öø-ÿ0-9_-]/g)) {
-                  setStatusMessage(t('messages_error_titleNotValid'));
-                } else {
-                  setOverlayVisibility(false);
-                  setStatusMessage('');
-                  updateList({ variables: { id, name: newTitle } });
-                }
+                updateList({ variables: { id, name } });
               }}
             />
             <div className="content">
+              <Joyride
+                steps={steps(t)}
+                run={run}
+                callback={callback({ isOverlayVisible, run, updateJoyride })}
+                stepIndex={stepIndex}
+                styles={styles}
+                locale={locale(t)}
+                showProgress
+                continuous
+                showSkipButton
+              />
               <h1>{name}</h1>
-              <div ref={subHeader} className={`sub-header ${isSticky ? 'is-sticky' : ''}`}>
+              <div ref={stickyHeaderRef} className={`sub-header ${isHeaderSticky ? 'is-sticky' : ''}`}>
                 <Link to="/vocablists">
                   <div className="icon">
                     <Icon type="home" />
@@ -173,12 +174,13 @@ const VocabListPage = () => {
                 </Link>
                 <Switch
                   name="edit-mode"
-                  label={isEditMode ? t('vocablist_switch_label_editMode') : t('vocablist_switch_label_practiceMode')}
+                  label={t(`vocablist_switch_label_${isEditMode ? 'edit' : 'practice'}Mode`)}
                   isActive={isEditMode}
+                  disabled={list.length < 1}
                   onChange={({ target }) => setEditMode(target.checked)}
                 />
               </div>
-              {!isEditMode ? <VocabListSessionContainer list={shuffledList} />
+              {!isEditMode ? <VocabListSessionContainer list={shuffledList} setJoyride={updateJoyride} />
                 : (
                   <VocabListEditContainer
                     id={id}
@@ -189,6 +191,7 @@ const VocabListPage = () => {
                     getListVocabTranslation={getListVocabTranslation}
                     translatedText={translatedText}
                     setTranslatedText={setTranslatedText}
+                    setJoyride={updateJoyride}
                   />
                 )}
             </div>
@@ -204,7 +207,7 @@ const VocabListPage = () => {
         {(updateListMutationError
           || addListMutationError
           || getListVocabTransError
-        ) && <Message type="error" content={t('messages_error_pleaseTryAgain')} />}
+        ) && <Message type="error" content={responseMessage} />}
       </div>
     </RootLayout>
   );

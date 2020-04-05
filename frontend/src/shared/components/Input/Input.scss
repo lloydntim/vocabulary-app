@@ -3,10 +3,15 @@
 .input {
   display: flex;
   position: relative;
+  flex-direction: column;
 
   > .input-element {
     margin: 0 0 16px;
     padding: 12px 40px 12px 12px;
+
+    &:focus {
+      border-width: 2px;
+    }
   }
 
   .icon-button {
@@ -24,6 +29,99 @@
   &.input-type-text {
     .icon-button {
       opacity: .5;
+    }
+  }
+
+  &.input-type-file {
+    > .input-label {
+      z-index: 1;
+      display: flex;
+      width: 100%;
+      justify-content: center;
+      position: absolute;
+      align-items: center;
+      padding: 16px 0;
+      color: $white;
+      font-size: 18px;
+      background-color: $dark-blue;
+      border-radius: 8px;
+      pointer-events: none;
+    }
+
+    > .input-element {
+      width: 100%;
+      height: 50px;
+      overflow: hidden;
+      outline: none;
+      padding: 0;
+
+      &:before {
+        content: "";
+        outline: none;
+        color: $dark-blue;
+        padding: 16px;
+        border-radius: 8px;
+        margin: 0 0 16px;
+        border: 1px solid $dark-blue;
+        font-size: 18px;
+        width: 100%;
+        background-color: $dark-blue;
+        display: flex;
+        justify-content: center;
+        cursor: pointer;
+        position: relative;
+      }
+    }
+  }
+
+  &.input-is-invalid {
+    > .input-element {
+      border-color: $red;
+
+      &::placeholder {
+        color: $red;
+      }
+    }
+  }
+
+  .datalist {
+    position: relative;
+    width: 100%;
+    bottom: 12px;
+
+    .datalist-item {
+      border-radius: 0;
+      margin: 0;
+      padding: 0;
+      border-bottom: 0;
+      width: 100%;
+
+      &:last-of-type {
+        border-bottom: $green solid 1px;
+      }
+
+      .datalist-item-button {
+        position: relative;
+        z-index: 10;
+        text-align: left;
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
+        background-color: $white;
+        padding: 12px;
+        border: none;
+        font-size: 16px;
+        outline: none;
+
+        span {
+          font-weight: $bold;
+          display: inline-flex;
+
+          &:last-of-type {
+            font-weight: $normal;
+          }
+        }
+      }
     }
   }
 }
