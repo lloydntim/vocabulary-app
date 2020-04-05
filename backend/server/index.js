@@ -34,7 +34,7 @@ i18next
 
 app.use(cookieParser());
 app.use(cors({
-  origin: process.env.NODE_ENV === 'development' ? ? 'http://localhost:3005' : 'https://thevocapp.netlify.com',
+  origin: process.env.NODE_ENV === 'development' ? 'http://localhost:3005' : 'https://thevocapp.netlify.com',
   credentials: true,
 }));
 app.use(i18nextMiddleware.handle(i18next));
