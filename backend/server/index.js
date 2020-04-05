@@ -34,7 +34,8 @@ i18next
 
 app.use(cookieParser());
 app.use(cors({
-  origin: 'http://localhost:3005',
+  origin: process.env.NODE_ENV === 'development' ? 'http://localhost:3000/graphql' : 'https://vocab-list-app.herokuapp.com/graphql',
+
   credentials: true,
 }));
 app.use(i18nextMiddleware.handle(i18next));

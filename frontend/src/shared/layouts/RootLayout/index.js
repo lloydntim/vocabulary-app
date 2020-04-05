@@ -23,11 +23,12 @@ const RootLayout = ({
   /* eslint-disable no-undef */
   const token = localStorage.getItem('token');
   const user = token ? jwtDecode(token) : {};
+  const isGuest = type === 'guest';
 
   return (
     <>
-      <div>
-        {type === 'guest' ? (
+      <div className={`root-layout ${isGuest ? 'is-guest' : ''}`}>
+        {isGuest ? (
           <RootLayoutGuestView>
             {children}
           </RootLayoutGuestView>
