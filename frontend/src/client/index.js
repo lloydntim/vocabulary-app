@@ -23,7 +23,7 @@ const authLink = setContext((parent, { headers }) => {
   return {
     headers: {
       ...headers,
-      cookies: document.cookie,
+      customCookies: document.cookie,
       authorization: token ? `Bearer ${token}` : '',
     },
   };
