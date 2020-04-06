@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import gql from 'graphql-tag';
 import { useQuery, useLazyQuery, useMutation } from '@apollo/react-hooks';
-import { useParams, useHistory, Link } from 'react-router-dom';
+import { useParams, useHistory, Link, Redirect } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Joyride from 'react-joyride';
 import jwtDecode from 'jwt-decode';
@@ -10,7 +10,7 @@ import { useStickyHeader, useJoyride } from '../../hooks';
 import { RootLayout } from '../../layouts';
 import { Switch, Message, Icon } from '../../components';
 
-import { vocabListPageJoyride } from '../../joyrides';
+import { vocabListPageJoyride, vocabListSessionJoyride } from '../../joyrides';
 import VocabListSessionContainer from './VocabListSessionContainer';
 import VocabListEditOverlay from './VocabListEditOverlay';
 import VocabListEditContainer from './VocabListEditContainer';
@@ -66,6 +66,7 @@ export const ADD_LIST = gql`
 const VocabListPage = () => {
   const { t } = useTranslation();
   const { stickyHeaderRef, isHeaderSticky } = useStickyHeader();
+  const vocabListPlayModeJoyride = useJoyride(vocabListSessionJoyride);
   const { run, stepIndex, steps, styles, callback, updateJoyride, locale } = useJoyride(vocabListPageJoyride);
 
   const [isEditMode, setEditMode] = useState(true);
@@ -101,7 +102,10 @@ const VocabListPage = () => {
 
   /* eslint-disable  no-undef */
   const token = localStorage.getItem('token');
-  const creatorId = jwtDecode(token).id;
+
+  if (!token) return <Redirect to="/" />;
+
+  const { id: creatorId, username } = jwtDecode(token);
 
   const [
     addList,
@@ -123,7 +127,7 @@ const VocabListPage = () => {
           .map((translation) => translation)
           .sort(() => (0.5 - Math.random())) : [];
       setVocabListData({ name, list, shuffledList });
-      updateJoyride({ stepIndex: 12 });
+      updateJoyride({ run: true, stepIndex: 12 });
     },
     onError: (error) => setResponseMessage(error.message.split(':')[1].trim()),
     refetchQueries: [{ query: GET_LIST, variables: { id } }],
@@ -131,10 +135,11 @@ const VocabListPage = () => {
 
   useEffect(() => {
     /* eslint-disable no-undef */
-    const isVocablistEditModeJoyrideFinished = localStorage.getItem('isVocablistEditModeJoyrideFinished');
+    const isVocablistEditModeJoyrideFinishedKey = `isVocablistEditModeJoyrideFinished-${username}`;
+    const isVocablistEditModeJoyrideFinished = localStorage.getItem(isVocablistEditModeJoyrideFinishedKey);
     if (isVocablistEditModeJoyrideFinished === null) {
       updateJoyride({ run: true, stepIndex });
-      localStorage.setItem('isVocablistEditModeJoyrideFinished', false);
+      localStorage.setItem(isVocablistEditModeJoyrideFinishedKey, false);
     }
     if (isVocablistEditModeJoyrideFinished === 'false') {
       updateJoyride({ run: true, stepIndex });
@@ -158,7 +163,7 @@ const VocabListPage = () => {
               <Joyride
                 steps={steps(t)}
                 run={run}
-                callback={callback({ isOverlayVisible, run, updateJoyride })}
+                callback={callback({ isOverlayVisible, username, run, updateJoyride })}
                 stepIndex={stepIndex}
                 styles={styles}
                 locale={locale(t)}
@@ -181,7 +186,7 @@ const VocabListPage = () => {
                   onChange={({ target }) => setEditMode(target.checked)}
                 />
               </div>
-              {!isEditMode ? <VocabListSessionContainer list={shuffledList} setJoyride={updateJoyride} />
+              {!isEditMode ? <VocabListSessionContainer list={shuffledList} joyride={vocabListPlayModeJoyride} />
                 : (
                   <VocabListEditContainer
                     id={id}

@@ -77,7 +77,6 @@ const VocabListEditContainer = ({
                 const newVocabItem = [sourceLanguage, targetLanguage, sourceText, translatedText];
                 const data = list.concat([newVocabItem]);
                 updateList({ variables: { id, data } });
-                setJoyride({ run: true, stepIndex: 12 });
                 setAddVocabOverlayVisibility(false);
               }}
             />
@@ -128,7 +127,7 @@ const VocabListEditContainer = ({
             onBlur={newVocabListForm.updateFormData}
           />
           <Button
-            type="primary"
+            type="secondary"
             disabled={!newVocabListForm.isFormValid}
             text={t('common_button_create')}
             onClick={() => {

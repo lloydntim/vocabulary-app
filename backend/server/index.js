@@ -18,21 +18,44 @@ const app = new Express();
 
 dotEnv.config();
 
+import translationEn from '../locales/en/translation.json';
+import translationDe from '../locales/de/translation.json';
+import translationEs from '../locales/es/translation.json';
+import translationPt from '../locales/pt/translation.json';
+import translationFr from '../locales/fr/translation.json';
+
 i18next
-  .use(Backend)
+  // .use(Backend)
   .use(i18nextMiddleware.LanguageDetector)
   .init({
-    // debug: true,
-    backend: {
-      loadPath: resolve(__dirname, '../locales/{{lng}}/{{ns}}.json'),
-      addPath: resolve(__dirname, '../locales/{{lng}}/{{ns}}.missing.json'),
+    debug: true,
+    // backend: {
+    //   loadPath: resolve(__dirname, '../locales/{{lng}}/{{ns}}.json'),
+    //   addPath: resolve(__dirname, '../locales/{{lng}}/{{ns}}.missing.json'),
+    // },
+    resources: {
+      en: {
+        translation: translationEn,
+      },
+      de: {
+        translation: translationDe,
+      },
+      es: {
+        translation: translationEs,
+      },
+      pt: {
+        translation: translationPt,
+      },
+      fr: {
+        translation: translationFr,
+      },
     },
     fallbackLng: 'en',
     preload: ['en', 'de', 'es', 'pt', 'fr'],
     saveMissing: true
   });
 
-app.use(cookieParser());
+// app.use(cookieParser());
 app.use(cors({
   origin: process.env.NODE_ENV === 'development' ? 'http://localhost:3005' : 'https://thevocapp.netlify.com',
   credentials: true,
@@ -42,15 +65,20 @@ app.use(i18nextMiddleware.handle(i18next));
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  context: ({ req }) => {
-    const token = req.headers.authorization ? req.headers.authorization.split(' ')[1] : '';
+  context: ({ req: { headers: { authorization, custom: cookiesFallback }, t, i18n/*,  cookies: { i18next } */ } }) => {
+    const token = authorization ? authorization.split(' ')[1] : '';
+    console.log('cookiesFallback', cookiesFallback);
+    // console.log('i18next', i18next);
     const currentUser = getCurrentUser(token);
-    const { t, i18n, cookies: { i18next } } = req;
-    const currentLanguage = i18next;
-
-    console.log('cookies', req.cookies);
-    console.log('currentLanguage', currentLanguage);
-    i18n.changeLanguage(currentLanguage);
+    const cookies = cookiesFallback.split(';').reduce((object, cookieData) => {
+      const [key, value] = cookieData.split('=');
+      const formattedKey = key.trim().replace(/-[a-z0-9]/g, (v) => String.prototype.toUpperCase.apply(v.substring(1)));
+      object[formattedKey] = value;
+      return object;
+    }, {});
+    const currentLanguage = /* i18next || */ cookies.i18next;
+    i18n.changeLanguage(cookies.i18next);
+    console.log(t('auth_email_subject_passwordReset'));
 
     return { t, currentUser };
   },

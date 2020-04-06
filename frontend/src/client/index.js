@@ -13,7 +13,7 @@ import { ApolloProvider } from '@apollo/react-hooks';
 import routes from '../shared/routes';
 import i18n from './i18n';
 
-const uri = process.env.NODE_ENV === 'development' ? 'http://localhost:3000/graphql' : 'http://vocab-list-app.herokuapp.com:443/graphql';
+const uri = process.env.NODE_ENV === 'development' ? 'http://localhost:3000/graphql' : 'https://vocab-list-app.herokuapp.com/graphql';
 const cache = new InMemoryCache();
 const link = createUploadLink({ uri, credentials: 'include' });
 

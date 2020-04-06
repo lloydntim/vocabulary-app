@@ -1,12 +1,17 @@
-import { string, func, arrayOf } from 'prop-types';
 import React, { useState, useEffect } from 'react';
+import { string, arrayOf, object } from 'prop-types';
+import Joyride from 'react-joyride';
+import { useTranslation } from 'react-i18next';
+import jwtDecode from 'jwt-decode';
+
 import { useStopwatch } from '../../hooks';
 
 import VocabListSessionHeader from './VocabListSessionHeader';
 import VocabListSessionBody from './VocabListSessionBody';
 import VocabListSessionFooter from './VocabListSessionFooter';
 
-const VocabListSessionContainer = ({ list, setJoyride }) => {
+const VocabListSessionContainer = ({ list, joyride }) => {
+  const { t } = useTranslation();
   const [count, setCount] = useState(0);
   const [isLanguageSwitched, toggleLanguage] = useState(false);
   const [translationInputValue, setTranslationInputValue] = useState('');
@@ -15,6 +20,12 @@ const VocabListSessionContainer = ({ list, setJoyride }) => {
   const [status, setStatusMessage] = useState('');
   const [reportData, setReportData] = useState({});
   const { time, reset } = useStopwatch();
+
+  /* eslint-disable no-undef */
+  const token = localStorage.getItem('token');
+  const { username } = jwtDecode(token);
+
+  const { run, stepIndex, steps, styles, callback, updateJoyride, locale } = joyride;
   const currentVocab = list.length > 0 ? list[count] : [];
   const [langA, langB, textA, textB] = currentVocab;
 
@@ -23,20 +34,44 @@ const VocabListSessionContainer = ({ list, setJoyride }) => {
   const sourceText = !isLanguageSwitched ? textA : textB;
   const targetText = !isLanguageSwitched ? textB : textA;
 
+  // useEffect(() => {
+  //   /* eslint-disable no-undef */
+  //   const isVocablistPlayModeJoyrideFinished = localStorage.getItem('isVocablistPlayModeJoyrideFinished');
+  //   if (isVocablistPlayModeJoyrideFinished === null) {
+  //     setJoyride({ run: true, stepIndex: 17 });
+  //     localStorage.setItem('isVocablistPlayModeJoyrideFinished', false);
+  //   }
+  //   if (isVocablistPlayModeJoyrideFinished === 'false') {
+  //     setJoyride({ run: true, stepIndex: 17 });
+  //   }
+  // }, []);
+
   useEffect(() => {
     /* eslint-disable no-undef */
-    const isVocablistPlayModeJoyrideFinished = localStorage.getItem('isVocablistPlayModeJoyrideFinished');
+    const isVocablistPlayModeJoyrideFinishedKey = `isVocablistPlayModeJoyrideFinished-${username}`;
+    const isVocablistPlayModeJoyrideFinished = localStorage.getItem(isVocablistPlayModeJoyrideFinishedKey);
     if (isVocablistPlayModeJoyrideFinished === null) {
-      setJoyride({ run: true, stepIndex: 17 });
-      localStorage.setItem('isVocablistPlayModeJoyrideFinished', false);
+      updateJoyride({ run: true, stepIndex });
+      localStorage.setItem(isVocablistPlayModeJoyrideFinishedKey, false);
     }
     if (isVocablistPlayModeJoyrideFinished === 'false') {
-      setJoyride({ run: true, stepIndex: 17 });
+      updateJoyride({ run: true, stepIndex });
     }
   }, []);
 
   return (
     <>
+      <Joyride
+        steps={steps(t)}
+        run={run}
+        callback={callback({ username, run, updateJoyride })}
+        stepIndex={stepIndex}
+        styles={styles}
+        locale={locale(t)}
+        showProgress
+        continuous
+        showSkipButton
+      />
       <VocabListSessionHeader
         sourceLanguage={sourceLanguage}
         targetLanguage={targetLanguage}
@@ -122,7 +157,7 @@ const VocabListSessionContainer = ({ list, setJoyride }) => {
 
 VocabListSessionContainer.propTypes = {
   list: arrayOf(arrayOf(string)).isRequired,
-  setJoyride: func.isRequired,
+  joyride: object.isRequired,
 };
 
 export default VocabListSessionContainer;
