@@ -19,13 +19,11 @@ const link = createUploadLink({ uri, credentials: 'include' });
 
 const authLink = setContext((parent, { headers }) => {
   const token = localStorage.getItem('token');
-  // console.log('cookie', document.cookie);
 
   return {
     headers: {
       ...headers,
-      cookie: document.cookie,
-      custom: document.cookie,
+      cookies: document.cookie,
       authorization: token ? `Bearer ${token}` : '',
     },
   };
