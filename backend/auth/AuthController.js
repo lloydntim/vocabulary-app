@@ -133,7 +133,7 @@ export const resendVerificationToken = async (parent, args, { t }) => {
     if (!user) throw AuthenticationError(t('auth_error_userHasNoSuchEmail', { username }));
     if (user.isVerified) throw new AuthenticationError(t('auth_error_userAlreadyVerified', { username }));
 
-    sendVerificationEmail({ email: user.email, id: user.id });
+    sendVerificationEmail({ email: user.email, id: user.id }, t);
   } catch(error) {
     throw new AuthenticationError(error);
   }

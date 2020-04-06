@@ -65,6 +65,9 @@ export const ADD_LIST = gql`
 
 const VocabListPage = () => {
   const { t } = useTranslation();
+  const { stickyHeaderRef, isHeaderSticky } = useStickyHeader();
+  const { run, stepIndex, steps, styles, callback, updateJoyride, locale } = useJoyride(vocabListPageJoyride);
+
   const [isEditMode, setEditMode] = useState(true);
   const [{ name, list, shuffledList }, setVocabListData] = useState({ name: '', list: [], shuffledList: [] });
 
@@ -120,13 +123,11 @@ const VocabListPage = () => {
           .map((translation) => translation)
           .sort(() => (0.5 - Math.random())) : [];
       setVocabListData({ name, list, shuffledList });
+      updateJoyride({ stepIndex: 12 });
     },
     onError: (error) => setResponseMessage(error.message.split(':')[1].trim()),
     refetchQueries: [{ query: GET_LIST, variables: { id } }],
   });
-
-  const { stickyHeaderRef, isHeaderSticky } = useStickyHeader();
-  const { run, stepIndex, steps, styles, callback, updateJoyride, locale } = useJoyride(vocabListPageJoyride);
 
   useEffect(() => {
     /* eslint-disable no-undef */

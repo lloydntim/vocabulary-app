@@ -11,11 +11,15 @@ const steps = (t) => [
     target: '.sub-header .icon',
     disableBeacon: true,
     content: t('vocablist_joyride_content_home'),
+    disableOverlayClose: true,
+    showSkipButton: false,
   },
   {
     title: t('vocablist_joyride_title_enterPlayMode'),
     target: '.sub-header .switch',
     content: t('vocablist_joyride_content_enterPlayMode'),
+    disableOverlayClose: true,
+    showSkipButton: false,
   },
   {
     title: t('vocablist_joyride_title_addVocab'),
@@ -31,11 +35,17 @@ const steps = (t) => [
     target: '.overlay.is-visible .tab-title:nth-of-type(1)',
     content: t('vocablist_joyride_content_createVocab'),
     disableBeacon: true,
+    hideCloseButton: true,
+    hideBackButton: true,
+    disableOverlayClose: true,
+    showSkipButton: false,
   },
   {
     title: t('vocablist_joyride_title_uploadVocabList'),
     target: '.overlay.is-visible .tab-title:nth-of-type(2)',
     content: t('vocablist_joyride_content_uploadVocabList'),
+    disableOverlayClose: true,
+    showSkipButton: false,
   },
   {
     title: t('vocablist_joyride_title_createVocabIntro'),
@@ -45,6 +55,8 @@ const steps = (t) => [
     disableBeacon: true,
     disableOverlayClose: true,
     hideCloseButton: true,
+    hideBackButton: true,
+    showSkipButton: false,
   },
   {
     title: t('vocablist_joyride_title_selectSourceLanguage'),
@@ -53,33 +65,36 @@ const steps = (t) => [
     spotlightClicks: true,
     disableBeacon: true,
     disableOverlayClose: true,
-    hideCloseButton: true,
+    showSkipButton: false,
   },
   {
-    title: t('vocablist_joyride_title_selectSourceText'),
+    title: t('vocablist_joyride_title_enterSourceText'),
     target: '.overlay.is-visible input[name=sourceText]',
-    content: t('vocablist_joyride_content_selectSourceText'),
+    content: t('vocablist_joyride_content_enterSourceText'),
     spotlightClicks: true,
     disableBeacon: true,
     disableOverlayClose: true,
     hideCloseButton: true,
+    showSkipButton: false,
   },
   {
     title: t('vocablist_joyride_title_selectTargetLanguage'),
     target: '.overlay.is-visible input[name=targetLanguage]',
     content: t('vocablist_joyride_content_selectTargetLanguage'),
-    spotlightClicks: true,
+    // spotlightClicks: true,
     disableBeacon: true,
-    disableOverlayClose: true,
-    hideCloseButton: true,
+    showSkipButton: false,
+    event: 'click',
+    offset: 0,
+    placement: 'top',
   },
   {
     title: t('vocablist_joyride_title_selectTargetText'),
     target: '.overlay.is-visible input[name=targetText]',
     content: t('vocablist_joyride_content_selectTargetText'),
-    disableBeacon: true,
     disableOverlayClose: true,
     hideCloseButton: true,
+    showSkipButton: false,
   },
   {
     title: t('vocablist_joyride_title_translatetText'),
@@ -89,6 +104,7 @@ const steps = (t) => [
     disableBeacon: true,
     disableOverlayClose: true,
     hideCloseButton: true,
+    showSkipButton: false,
   },
   {
     title: t('vocablist_joyride_title_createVocabButton'),
@@ -98,34 +114,40 @@ const steps = (t) => [
     disableBeacon: true,
     disableOverlayClose: true,
     hideCloseButton: true,
+    showSkipButton: false,
   },
   {
     title: t('vocablist_joyride_title_newVocabCreated'),
     target: '.list .list-item:nth-of-type(1)',
     content: t('vocablist_joyride_content_newVocabCreated'),
     spotlightClicks: true,
+    showSkipButton: false,
   },
   {
     title: t('vocablist_joyride_title_selectVocabEntry'),
     target: '.checkbox-container',
     content: t('vocablist_joyride_content_selectVocabEntry'),
     spotlightClicks: true,
+    showSkipButton: false,
   },
   {
     title: t('vocablist_joyride_title_editVocabEntry'),
     target: '.icon-type-edit',
     content: t('vocablist_joyride_content_editVocabEntry'),
+    showSkipButton: false,
   },
   {
     title: t('vocablist_joyride_title_deleteVocabEntries'),
     target: '.icon-type-delete',
     content: t('vocablist_joyride_content_deleteVocabEntries'),
+    showSkipButton: false,
   },
   {
     title: t('vocablist_joyride_title_createVocabList'),
     target: '.icon-type-add-list',
     content: t('vocablist_joyride_content_createVocabList'),
     hideNextButton: true,
+    showSkipButton: false,
   },
   // Play mode
   {
@@ -133,27 +155,32 @@ const steps = (t) => [
     target: '.icon-type-swap',
     content: t('vocablist_joyride_content_playmodeSwapLanguages'),
     spotlightClicks: true,
+    showSkipButton: false,
   },
   {
     title: t('vocablist_joyride_title_playmodeBackButtonText'),
     target: '.icon-type-backward',
     content: t('vocablist_joyride_content_playmodeBackButtonText'),
     spotlightClicks: true,
+    showSkipButton: false,
   },
   {
     title: t('vocablist_joyride_title_playmodeForwardButtonText'),
     target: '.icon-type-forward',
     content: t('vocablist_joyride_content_playmodeForwardButtonText'),
+    showSkipButton: false,
   },
   {
     title: t('vocablist_joyride_title_revealAnswer'),
     target: '.icon-type-view',
     content: t('vocablist_joyride_content_revealAnswer'),
+    showSkipButton: false,
   },
   {
     title: t('vocablist_joyride_title_refreshSession'),
     target: '.icon-type-refresh',
     content: t('vocablist_joyride_content_refreshSession'),
+    showSkipButton: false,
   },
 ];
 
@@ -165,7 +192,9 @@ const callback = (props) => (data) => {
   if ([EVENTS.STEP_AFTER, EVENTS.TARGET_NOT_FOUND].includes(type)) {
     updateJoyride({ stepIndex: index + (action === ACTIONS.PREV ? -1 : 1) });
 
-    if (index === 15) {
+    if (index === 11) {
+      updateJoyride({ stepIndex: index + (action === ACTIONS.PREV ? -1 : 0) });
+    } else if (index === 15) {
       setTimeout(() => {
         updateJoyride({ stepIndex: 16, run: !run });
         /* eslint-disable no-undef */

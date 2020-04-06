@@ -33,13 +33,10 @@ const RootLayoutUserView = ({
         }}
       >
         <h1>{t('menu_title')}</h1>
-        <nav>
+        <nav className="menu">
           <ul>
             <li>
               <Link to={`/user/${currentUser.id}`}>{t('profile_title')}</Link>
-            </li>
-            <li>
-              <Link to="/vocablists">{t('vocablists_title')}</Link>
             </li>
             <li>
               <Link to="/about">{t('about_title')}</Link>

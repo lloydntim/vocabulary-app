@@ -59,7 +59,7 @@ const VocabListsPage = () => {
 
   if (!token) return <Redirect to="/" />;
 
-  const creatorId = jwtDecode(token).id;
+  const { id: creatorId, username } = jwtDecode(token);
   const inputNames = ['title', 'listFile'];
   const { formData, updateFormData, isFormValid, resetFormData } = useForm(inputNames);
   const { title, listFile } = formData;
@@ -72,6 +72,7 @@ const VocabListsPage = () => {
   const { run, stepIndex, steps, styles, locale, callback, updateJoyride } = useJoyride(vocabListsPageJoyride);
   const { loading, error, data } = useQuery(GET_LISTS, { variables: { creatorId }, onError: (error) => setResponseMessage(error.message.split(':')[1].trim()) });
   const [addList] = useMutation(ADD_LIST, {
+    onCompleted: () => updateJoyride({ run: true, stepIndex: 6 }),
     onError: (error) => setResponseMessage(error.message.split(':')[1].trim()),
     refetchQueries: [{ query: GET_LISTS, variables: { creatorId } }],
   });
@@ -93,10 +94,11 @@ const VocabListsPage = () => {
 
   useEffect(() => {
     /* eslint-disable no-undef */
-    const isVocablistsJoyrideFinished = localStorage.getItem('isVocablistsJoyrideFinished');
+    const isVocablistsJoyrideFinishedKey = `isVocablistsJoyrideFinished-${username}`;
+    const isVocablistsJoyrideFinished = localStorage.getItem(isVocablistsJoyrideFinishedKey);
     if (isVocablistsJoyrideFinished === null) {
       updateJoyride({ run: true, stepIndex });
-      localStorage.setItem('isVocablistsJoyrideFinished', false);
+      localStorage.setItem(isVocablistsJoyrideFinishedKey, false);
     }
     if (isVocablistsJoyrideFinished === 'false') {
       updateJoyride({ run: true, stepIndex });
@@ -166,7 +168,7 @@ const VocabListsPage = () => {
                   disabled={!isFormValid}
                   text={t(`vocablists_form_button_${isEditTitleMode ? 'edit' : 'add'}`)}
                   onClick={() => {
-                    updateJoyride({ run: true, stepIndex: 6 });
+                    updateJoyride({ run: false, stepIndex });
                     if (!isEditTitleMode) {
                       addList({ variables: { name: title.value, file: listFile.files[0], creatorId } });
                     } else {
@@ -182,12 +184,12 @@ const VocabListsPage = () => {
             <Joyride
               steps={steps(t)}
               run={run}
-              callback={callback({ isOverlayVisible, run, updateJoyride })}
+              callback={callback({ username, isOverlayVisible, run, updateJoyride })}
               stepIndex={stepIndex}
               styles={styles}
               locale={locale(t)}
               continuous
-              showProgress
+              showProgress={false}
               showSkipButton
             />
 

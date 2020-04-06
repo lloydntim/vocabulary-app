@@ -15,7 +15,7 @@ import i18n from './i18n';
 
 const uri = process.env.NODE_ENV === 'development' ? 'http://localhost:3000/graphql' : 'https://vocab-list-app.herokuapp.com/graphql';
 const cache = new InMemoryCache();
-const link = createUploadLink({ uri, credentials: 'include' });
+const link = createUploadLink({ uri, fetchOptions: { credentials: 'include' } });
 
 const authLink = setContext((parent, { headers }) => {
   const token = localStorage.getItem('token');

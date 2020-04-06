@@ -48,6 +48,8 @@ const server = new ApolloServer({
     const { t, i18n, cookies: { i18next } } = req;
     const currentLanguage = i18next;
 
+    console.log('cookies', req.cookies);
+    console.log('currentLanguage', currentLanguage);
     i18n.changeLanguage(currentLanguage);
 
     return { t, currentUser };
