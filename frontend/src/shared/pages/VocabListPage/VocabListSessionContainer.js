@@ -34,18 +34,6 @@ const VocabListSessionContainer = ({ list, joyride }) => {
   const sourceText = !isLanguageSwitched ? textA : textB;
   const targetText = !isLanguageSwitched ? textB : textA;
 
-  // useEffect(() => {
-  //   /* eslint-disable no-undef */
-  //   const isVocablistPlayModeJoyrideFinished = localStorage.getItem('isVocablistPlayModeJoyrideFinished');
-  //   if (isVocablistPlayModeJoyrideFinished === null) {
-  //     setJoyride({ run: true, stepIndex: 17 });
-  //     localStorage.setItem('isVocablistPlayModeJoyrideFinished', false);
-  //   }
-  //   if (isVocablistPlayModeJoyrideFinished === 'false') {
-  //     setJoyride({ run: true, stepIndex: 17 });
-  //   }
-  // }, []);
-
   useEffect(() => {
     /* eslint-disable no-undef */
     const isVocablistPlayModeJoyrideFinishedKey = `isVocablistPlayModeJoyrideFinished-${username}`;
@@ -68,7 +56,7 @@ const VocabListSessionContainer = ({ list, joyride }) => {
         stepIndex={stepIndex}
         styles={styles}
         locale={locale(t)}
-        showProgress
+        showProgress={false}
         continuous
         showSkipButton
       />

@@ -40,16 +40,16 @@ const VocabListSessionBody = ({
   const { t } = useTranslation();
   const sumArrayObjectProps = (array, prop) => array
     .map((object) => object[prop])
-    .reduce((a, b) => a + b);
+    .reduce((a, b) => a + b, []);
 
-  const report = vocabsReport.vocab_1 ? Object.values(vocabsReport) : [];
+  const report = vocabsReport.vocab_0 ? Object.values(vocabsReport) : [];
 
   let totalAttempts = '';
   let totalHints = '';
   let totalTime = '';
   if (isVocabTranslationCorrect && (vocabsTotalCount === currentVocab)) {
-    totalAttempts = sumArrayObjectProps(report, 'attemptsNeeded');
-    totalHints = sumArrayObjectProps(report, 'hintsNeeded');
+    totalAttempts = sumArrayObjectProps(report, 'attemptsNeeded') || 0;
+    totalHints = sumArrayObjectProps(report, 'hintsNeeded') || 0;
     totalTime = formattedTime(sumArrayObjectProps(report, 'duration')).getTime();
   }
 
@@ -64,21 +64,34 @@ const VocabListSessionBody = ({
               type="success"
               content={t('vocablist_message_sessionCompleted')}
             />
-            <p>
-              {t('vocablist_message_sessionTotalAttempts')}
-              :
-              {totalAttempts}
-            </p>
-            <p>
-              {t('vocablist_message_sessionTotalHints')}
-              :
-              {totalHints}
-            </p>
-            <p>
-              {t('vocablist_message_sessionTotalTime')}
-              {totalTime}
-              {t('vocablist_message_sessionTimeSeconds')}
-            </p>
+            <h2 className="results-title">{t('vocablist_title_sessionResults')}</h2>
+            <div className="container">
+              <div>
+                {t('vocablist_message_sessionTotalAttempts')}
+                :
+              </div>
+              <div>
+                {totalAttempts}
+              </div>
+
+              <div>
+                {t('vocablist_message_sessionTotalHints')}
+                :
+              </div>
+              <div>
+                {totalHints}
+              </div>
+
+              <div>
+                {t('vocablist_message_sessionTotalTime')}
+                :
+              </div>
+              <div>
+                {totalTime}
+                &nbsp;
+                {t('vocablist_message_sessionTimeSeconds')}
+              </div>
+            </div>
           </>
         ) : (
           <>

@@ -23,15 +23,16 @@ const steps = (t) => [
     disableBeacon: true,
     hideBackButton: true,
     showSkipButton: false,
-    disableOverlayClose: true,
   },
   {
     title: t('vocablists_joyride_title_createVocabList'),
     target: '.icon-type-add-list',
     spotlightClicks: true,
+    disableBeacon: true,
     content: t('vocablists_joyride_content_createVocabList'),
     hideFooter: true,
     disableOverlayClose: true,
+    hideCloseButton: true,
   },
   {
     title: t('vocablists_joyride_title_enterTitle'),
@@ -57,6 +58,8 @@ const steps = (t) => [
     spotlightClicks: true,
     disableOverlayClose: true,
     showSkipButton: false,
+    hideCloseButton: true,
+    styles: { buttonNext: { display: 'none' } },
   },
   {
     title: t('vocablists_joyride_title_yourVocabList'),
@@ -70,7 +73,6 @@ const steps = (t) => [
     title: t('vocablists_joyride_title_editVocabList'),
     target: '.list-item:first-child .icon-type-edit',
     content: t('vocablists_joyride_content_editVocabList'),
-    disableOverlayClose: true,
     showSkipButton: false,
   },
   {

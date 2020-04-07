@@ -64,6 +64,9 @@ const VocabListEditContainer = ({
               form={addVocabForm}
               translatedText={translatedText}
               setTranslatedText={setTranslatedText}
+              onTargetLanguageDataListClick={() => {
+                setJoyride({ run: true, stepIndex: 9 });
+              }}
               onTranslateVocabButtonClick={({ sourceLanguageCode, targetLanguageCode, sourceText }) => {
                 getListVocabTranslation({
                   variables: {
@@ -161,7 +164,7 @@ const VocabListEditContainer = ({
         selectedVocabs={selectedVocabs}
         onDeleteVocabsButtonClick={() => setDialogVisibility(true)}
         onAddVocabButtonClick={() => {
-          setJoyride({ run: true, stepIndex: 3 });
+          setJoyride({ run: true, stepIndex: 2 });
           setAddVocabOverlayVisibility(true);
         }}
         onAddVocabListButtonClick={() => setAddVocabOverlayVisibility(true)}

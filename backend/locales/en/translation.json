@@ -6,7 +6,7 @@
   "auth_error_userAlreadyVerified": "User {{username}} has already been verified.",
   "auth_error_userEmailCouldNotBeVerified": "User email could not be verified.",
   "auth_error_userHasNoSuchEmail": "User {{username}} has no such email. Please double-check.",
-  "auth_error_couldUpdateUserWithEmail": "Could not update user with email ${email}.",
+  "auth_error_couldUpdateUserWithEmail": "Could not update user with email {{email}}.",
   "auth_error_passwordTokenInvalid": "Password reset token is invalid or has expired.",
 
   "auth_email_subject_emailVerification": "Email Verification",

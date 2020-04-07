@@ -10,6 +10,10 @@ const VocabForm = ({
   form,
   translatedText,
   setTranslatedText,
+  onSourceLanguageChange,
+  onTargetLanguageChange,
+  onSourceLanguageDataListClick,
+  onTargetLanguageDataListClick,
   isEditMode,
   onTranslateVocabButtonClick,
   onSubmitVocabButtonClick,
@@ -37,7 +41,6 @@ const VocabForm = ({
       /* eslint-disable no-undef */
       const sourceLanguageCookieKey = `source-language-${id}`;
       const targetLanguageCookieKey = `target-language-${id}`;
-      // console.log('Target Language', (Cookies.get(targetLanguageCookieKey) || 'target language not defined'));
 
       if (typeof Cookies.get(sourceLanguageCookieKey) === 'undefined') {
         Cookies.set(sourceLanguageCookieKey, i18n.language);
@@ -62,8 +65,14 @@ const VocabForm = ({
         placeholder={t('vocablist_form_placeholder_selectSourceLanguage')}
         name={sourceLanguage.name}
         dataList={languages}
-        onChange={updateFormData}
-        onDataListClick={({ value }) => Cookies.set(`source-language-${id}`, value)}
+        onChange={(data) => {
+          updateFormData(data);
+          if (onSourceLanguageChange) onSourceLanguageChange(data);
+        }}
+        onDataListClick={({ value }) => {
+          Cookies.set(`source-language-${id}`, value);
+          if (onSourceLanguageDataListClick) onSourceLanguageDataListClick({ value });
+        }}
       />
       <Input
         label={t('vocablist_form_label_sourceText')}
@@ -85,8 +94,14 @@ const VocabForm = ({
         placeholder={t('vocablist_form_placeholder_selectTargetLanguage')}
         name={targetLanguage.name}
         dataList={languages}
-        onChange={updateFormData}
-        onDataListClick={({ value }) => Cookies.set(`target-language-${id}`, value)}
+        onChange={(data) => {
+          updateFormData(data);
+          if (onTargetLanguageChange) onTargetLanguageChange(data);
+        }}
+        onDataListClick={({ value }) => {
+          Cookies.set(`target-language-${id}`, value);
+          if (onTargetLanguageDataListClick) onTargetLanguageDataListClick({ value });
+        }}
       />
       <Input
         label={t('vocablist_form_label_targetText')}
@@ -128,6 +143,10 @@ const VocabForm = ({
 };
 VocabForm.defaultProps = {
   onTranslateVocabButtonClick: null,
+  onSourceLanguageChange: null,
+  onTargetLanguageChange: null,
+  onSourceLanguageDataListClick: null,
+  onTargetLanguageDataListClick: null,
   isEditMode: false,
 };
 
@@ -136,6 +155,10 @@ VocabForm.propTypes = {
   form: object.isRequired,
   translatedText: string.isRequired,
   setTranslatedText: func.isRequired,
+  onSourceLanguageChange: func,
+  onTargetLanguageChange: func,
+  onSourceLanguageDataListClick: func,
+  onTargetLanguageDataListClick: func,
   isEditMode: bool,
   onTranslateVocabButtonClick: func,
   onSubmitVocabButtonClick: func.isRequired,

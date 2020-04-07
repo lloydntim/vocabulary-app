@@ -130,6 +130,7 @@ const UserPage = () => {
       },
     },
   );
+
   return (
     <RootLayout>
       <div className="user-page page">
@@ -168,7 +169,7 @@ const UserPage = () => {
               onBlur={updateFormData}
             />
             <Button
-              type="primary"
+              type="secondary"
               disabled={!isFormValid}
               text={t('profile_form_button_updateEmail')}
               onClick={() => {
@@ -187,7 +188,7 @@ const UserPage = () => {
               icon="edit"
               type="secondary"
               onClick={() => {
-                updateFormData(email.name)(data.getUser.email);
+                updateFormData({ name: email.name, value: data.getUser.email });
                 setOverlayVisibility(true);
               }}
               disabled={!data}
@@ -201,20 +202,18 @@ const UserPage = () => {
                 <h3>{currentUser.username}</h3>
               </div>
 
-              <table>
-                <tbody>
-                  <tr>
-                    <td>{t('common_form_label_email')}</td>
-                    <td>{currentUser.email}</td>
-                  </tr>
-                  <tr>
-                    <td>{t('profile_form_label_userIsVerified')}</td>
-                    <td>{currentUser.isVerified === 'false' ? 'is not verified' : 'verified'}</td>
-                  </tr>
-                </tbody>
-              </table>
-              <br />
-              <br />
+              <div className="container">
+                <div>
+                  {t('common_form_label_email')}
+                  :
+                </div>
+                <div>{currentUser.email}</div>
+                <div>
+                  {t('profile_table_cell_verificationStatus')}
+                  :
+                </div>
+                <div>{currentUser.isVerified === 'false' ? t('profile_table_cell_verified') : t('profile_table_cell_notVerified')}</div>
+              </div>
 
               {currentUser.isVerified === 'false' && (
                 <Button

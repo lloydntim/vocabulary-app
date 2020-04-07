@@ -96,7 +96,10 @@ const VocabListPage = () => {
   const [getListVocabTranslation,
     { getListVocabTransLoading, getListVocabTransError }] = useLazyQuery(
     GET_LIST_VOCAB_TRANSLATION, {
-      onCompleted: ({ getListVocabTranslation: { targetText } }) => setTranslatedText(targetText),
+      onCompleted: ({ getListVocabTranslation: { targetText } }) => {
+        setTranslatedText(targetText);
+        updateJoyride({ run: true, stepIndex: 10 });
+      },
     },
   );
 
@@ -127,7 +130,7 @@ const VocabListPage = () => {
           .map((translation) => translation)
           .sort(() => (0.5 - Math.random())) : [];
       setVocabListData({ name, list, shuffledList });
-      updateJoyride({ run: true, stepIndex: 12 });
+      updateJoyride({ run: true, stepIndex: 11 });
     },
     onError: (error) => setResponseMessage(error.message.split(':')[1].trim()),
     refetchQueries: [{ query: GET_LIST, variables: { id } }],
