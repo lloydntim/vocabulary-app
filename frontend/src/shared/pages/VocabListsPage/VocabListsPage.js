@@ -188,7 +188,7 @@ const VocabListsPage = () => {
               styles={styles}
               locale={locale(t)}
               continuous
-              showProgress
+              showProgress={false}
               showSkipButton
             />
 

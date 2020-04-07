@@ -170,7 +170,7 @@ const VocabListPage = () => {
                 stepIndex={stepIndex}
                 styles={styles}
                 locale={locale(t)}
-                showProgress
+                showProgress={false}
                 continuous
                 showSkipButton
               />
