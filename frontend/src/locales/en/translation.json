@@ -58,6 +58,8 @@
 
   "signup_title": "User Registration",
 
+  "verify_title": "Email Verification",
+
   "forgotPassword_title": "Forgot Password",
 
   "resetPassword_title": "Reset Password",
@@ -147,7 +149,7 @@
   "vocablist_joyride_title_selectTargetLanguage": "Select a Target Language",
   "vocablist_joyride_content_selectTargetLanguage": "This is the language who want to translate to. \nOnce it has been selected the app will remember it for other translations.",
   "vocablist_joyride_title_selectTargetText": "Target Text or Phrase",
-  "vocablist_joyride_content_selectTargetText": "We will use the Translate button to make our translation appear here, but you could also enter a word or phrase manually later.",
+  "vocablist_joyride_content_selectTargetText": "This is the translation we have received, you could also enter a word or phrase manually.",
   "vocablist_joyride_title_translatetText": "Translate your Word or Phrase",
   "vocablist_joyride_content_translateText": "Once you press the button, you will receive a translation shortly. After you have, press next.",
   "vocablist_joyride_title_createVocabButton": "Create a vocabulary",
@@ -204,6 +206,7 @@
   "messages_error_passwordEmpty": "Please enter a password.",
   "messages_error_passwordMinLength": "Password must be at least {{passwordMinLength}} characters long.",
   "messages_error_passwordMaxLength": "Password must not be longer than {{passwordMaxLength}} characters.",
+  "messages_error_passwordMustContain": "Password must contain at least one number, one uppercase and one special character.",
   "messages_error_passwordMustContainUppercaseChar": "Password must contain at least one uppercase character.",
   "messages_error_passwordMustContainLowercaseChar": "Password must contain at least one lowercase character.",
   "messages_error_passwordMustContainSpecialChar": "Password must contain at least one special character.",

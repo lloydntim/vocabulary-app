@@ -63,6 +63,7 @@ const VocabForm = ({
         inputRef={sourceLanguage.ref}
         value={sourceLanguage.value}
         placeholder={t('vocablist_form_placeholder_selectSourceLanguage')}
+        autoComplete="off"
         name={sourceLanguage.name}
         dataList={languages}
         onChange={(data) => {
@@ -77,6 +78,7 @@ const VocabForm = ({
       <Input
         label={t('vocablist_form_label_sourceText')}
         inputRef={sourceText.ref}
+        autoComplete="off"
         name={sourceText.name}
         required
         placeholder={t('vocablist_form_placeholder_sourceText')}
@@ -91,6 +93,7 @@ const VocabForm = ({
       <Input
         inputRef={targetLanguage.ref}
         value={targetLanguage.value}
+        autoComplete="off"
         placeholder={t('vocablist_form_placeholder_selectTargetLanguage')}
         name={targetLanguage.name}
         dataList={languages}
@@ -106,6 +109,7 @@ const VocabForm = ({
       <Input
         label={t('vocablist_form_label_targetText')}
         inputRef={targetText.ref}
+        autoComplete="off"
         name={targetText.name}
         placeholder={t('vocablist_form_placeholder_targetText')}
         value={translatedText}

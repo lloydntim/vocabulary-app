@@ -74,9 +74,11 @@ const steps = (t) => [
     title: t('vocablist_joyride_title_selectTargetLanguage'),
     target: '.overlay.is-visible input[name=targetLanguage]',
     content: t('vocablist_joyride_content_selectTargetLanguage'),
-    // spotlightClicks: true,
-    disableBeacon: true,
+    spotlightClicks: true,
+    // disableBeacon: true,
+    // spotlightPadding: 40,
     showSkipButton: false,
+    disableOverlayClose: true,
     event: 'click',
     offset: 0,
     placement: 'top',
@@ -157,11 +159,12 @@ const callback = (props) => (data) => {
 
   if ([EVENTS.STEP_AFTER, EVENTS.TARGET_NOT_FOUND].includes(type)) {
     updateJoyride({ stepIndex: index + (action === ACTIONS.PREV ? -1 : 1) });
-    // if (index === 15) {
+    if (index === 8 && action === ACTIONS.NEXT) {
+      updateJoyride({ run: true, stepIndex: 10 });
     /* eslint-disable no-undef */
     // localStorage.setItem(`isVocablistEditModeJoyrideFinished-${username}`, true);
     // } else if (index === 21) {
-    // }
+    }
   } else if (finishedStatuses.includes(status)) {
     /* eslint-disable no-undef */
     updateJoyride({ run: !run, stepIndex: 0 });

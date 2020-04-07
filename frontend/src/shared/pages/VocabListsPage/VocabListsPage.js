@@ -143,7 +143,7 @@ const VocabListsPage = () => {
                   label={t('vocablists_form_label_title')}
                   inputRef={title.ref}
                   required
-                  autoComplete="title"
+                  autoComplete="off"
                   name={title.name}
                   minLength={3}
                   maxLength={35}
@@ -168,7 +168,6 @@ const VocabListsPage = () => {
                   disabled={!isFormValid}
                   text={t(`vocablists_form_button_${isEditTitleMode ? 'edit' : 'add'}`)}
                   onClick={() => {
-                    updateJoyride({ run: false, stepIndex });
                     if (!isEditTitleMode) {
                       addList({ variables: { name: title.value, file: listFile.files[0], creatorId } });
                     } else {

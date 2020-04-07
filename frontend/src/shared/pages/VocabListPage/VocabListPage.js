@@ -98,7 +98,7 @@ const VocabListPage = () => {
     GET_LIST_VOCAB_TRANSLATION, {
       onCompleted: ({ getListVocabTranslation: { targetText } }) => {
         setTranslatedText(targetText);
-        updateJoyride({ run: true, stepIndex: 10 });
+        updateJoyride({ run: true, stepIndex: 8 });
       },
     },
   );

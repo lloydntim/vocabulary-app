@@ -212,7 +212,7 @@ const UserPage = () => {
                   {t('profile_table_cell_verificationStatus')}
                   :
                 </div>
-                <div>{currentUser.isVerified === 'false' ? t('profile_table_cell_verified') : t('profile_table_cell_notVerified')}</div>
+                <div>{currentUser.isVerified !== 'false' ? t('profile_table_cell_verified') : t('profile_table_cell_notVerified')}</div>
               </div>
 
               {currentUser.isVerified === 'false' && (

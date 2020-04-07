@@ -65,7 +65,6 @@ const steps = (t) => [
     title: t('vocablists_joyride_title_yourVocabList'),
     target: '.list-item:first-child',
     content: t('vocablists_joyride_content_yourVocabList'),
-    spotlightClicks: true,
     showSkipButton: false,
     hideBackButton: true,
   },
@@ -73,13 +72,14 @@ const steps = (t) => [
     title: t('vocablists_joyride_title_editVocabList'),
     target: '.list-item:first-child .icon-type-edit',
     content: t('vocablists_joyride_content_editVocabList'),
+    disableBeacon: true,
     showSkipButton: false,
   },
   {
     title: t('vocablists_joyride_title_deleteVocabList'),
     target: '.list-item:first-child .icon-type-delete',
     content: t('vocablists_joyride_content_deleteVocabList'),
-    disableOverlayClose: true,
+    disableBeacon: true,
     showSkipButton: false,
   },
 ];

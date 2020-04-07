@@ -40,16 +40,16 @@ const VocabListSessionBody = ({
   const { t } = useTranslation();
   const sumArrayObjectProps = (array, prop) => array
     .map((object) => object[prop])
-    .reduce((a, b) => a + b, []);
+    .reduce((a, b) => Number(a + b), []);
 
   const report = vocabsReport.vocab_0 ? Object.values(vocabsReport) : [];
 
-  let totalAttempts = '';
-  let totalHints = '';
-  let totalTime = '';
+  let totalAttempts = 0;
+  let totalHints = 0;
+  let totalTime = 0;
   if (isVocabTranslationCorrect && (vocabsTotalCount === currentVocab)) {
-    totalAttempts = sumArrayObjectProps(report, 'attemptsNeeded') || 0;
-    totalHints = sumArrayObjectProps(report, 'hintsNeeded') || 0;
+    totalAttempts = sumArrayObjectProps(report, 'attemptsNeeded');
+    totalHints = sumArrayObjectProps(report, 'hintsNeeded');
     totalTime = formattedTime(sumArrayObjectProps(report, 'duration')).getTime();
   }
 

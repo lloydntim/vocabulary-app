@@ -70,7 +70,7 @@ const SignUpPage = () => {
             label={t('common_form_label_username')}
             inputRef={username.ref}
             required
-            autoComplete="username"
+            autoComplete="off"
             name={username.name}
             minLength={3}
             maxLength={16}
@@ -84,7 +84,7 @@ const SignUpPage = () => {
             label={t('common_form_label_email')}
             inputRef={email.ref}
             required
-            autoComplete="email"
+            autoComplete="on"
             name={email.name}
             type="email"
             placeholder={t('common_form_placeholder_email')}
@@ -95,13 +95,14 @@ const SignUpPage = () => {
           <Input
             label={t('common_form_placeholder_password')}
             inputRef={password.ref}
-            autoComplete="new-password"
+            autoComplete="off"
             required
             name={password.name}
             type="password"
             minLength={passwordMinLength}
             maxLength={passwordMaxLength}
             pattern={passwordPattern}
+            patternErrorMessage={t('messages_error_passwordMustContain')}
             placeholder={t('common_form_label_password')}
             value={password.value}
             onChange={updateFormData}
@@ -117,6 +118,7 @@ const SignUpPage = () => {
             minLength={passwordMinLength}
             maxLength={passwordMaxLength}
             pattern={passwordPattern}
+            patternErrorMessage={t('messages_error_passwordMustContain')}
             placeholder={t('common_form_placeholder_confirmPassword')}
             value={passwordConfirm.value}
             onChange={updateFormData}

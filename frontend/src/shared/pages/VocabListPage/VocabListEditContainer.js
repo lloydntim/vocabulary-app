@@ -64,6 +64,9 @@ const VocabListEditContainer = ({
               form={addVocabForm}
               translatedText={translatedText}
               setTranslatedText={setTranslatedText}
+              onTargetLanguageChange={() => {
+                setJoyride({ run: false, stepIndex: 7 });
+              }}
               onTargetLanguageDataListClick={() => {
                 setJoyride({ run: true, stepIndex: 9 });
               }}
@@ -120,6 +123,7 @@ const VocabListEditContainer = ({
             label={t('vocablist_form_label_newVocabListTitle')}
             inputRef={newVocabListForm.formData.title.ref}
             required
+            autoComplete="off"
             name={newVocabListForm.formData.title.name}
             minLength={3}
             maxLength={35}

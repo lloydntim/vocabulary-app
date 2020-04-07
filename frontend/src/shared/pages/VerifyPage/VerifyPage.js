@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import gql from 'graphql-tag';
 import { useMutation } from '@apollo/react-hooks';
 import { Redirect, useParams, useHistory } from 'react-router-dom';
@@ -22,6 +22,7 @@ const VerifyPage = () => {
   const { t } = useTranslation();
   const { token: verificationToken } = useParams();
   const { push } = useHistory();
+  const [responseMessage, setResponseMessage] = useState('');
 
   /* eslint-disable  no-undef */
   const token = localStorage.getItem('token') || '';
@@ -37,9 +38,10 @@ const VerifyPage = () => {
       localStorage.setItem('token', verify.token);
       push(`/user/${creatorId}`);
     },
-  /*   onError: (error) => {
-      console.log('error', error);
-    }, */
+    onError: (error) => {
+      const errorMessage = error.message.split(':')[2].trim();
+      setResponseMessage(errorMessage);
+    },
   });
 
   useEffect(() => {
@@ -51,13 +53,13 @@ const VerifyPage = () => {
     <RootLayout>
       <div className="verify-page page">
         <div className="content">
-          <h1>{t('verify_title_emailVerification')}</h1>
+          <h1>{t('verify_title')}</h1>
           {!data && (
             <div>.</div>
           )}
 
           {verifyMutationLoading && <Message type="info" content={t('messages_info_loading')} /> }
-          {verifyMutationError && <Message type="error" content={t('messages_error_pleaseTryAgain')} />}
+          {verifyMutationError && <Message type="error" content={responseMessage} />}
         </div>
       </div>
     </RootLayout>

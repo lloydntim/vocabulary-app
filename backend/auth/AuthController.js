@@ -28,15 +28,15 @@ const nodemailerAuthConfig = {
 };
 const nodemailerMailgun = nodemailer.createTransport(mg(nodemailerAuthConfig));
 
-const sendVerificationEmail =  async (user, t) => {
+const sendVerificationEmail =  async ({ email, username }, t) => {
   try {
     const { token } = await Token.create({ userId: user.id, token: crypto.randomBytes(20).toString('hex') });
     const domain = NODE_ENV === 'development' ? `http://${HOST}:${CLIENT_DEV_PORT}` : CLIENT_HOST;
     const mailOptions = {
-      to: user.email,
+      to: email,
       from: 'email-verification@lloydntim.com',
       subject: t('auth_email_subject_emailVerification'),
-      text: t('auth_email_content_emailVerificationMessage', { domain, token, interpolation: { escapeValue: false } }),
+      text: t('auth_email_content_emailVerificationMessage', { username, domain, token, interpolation: { escapeValue: false } }),
     };
 
     await nodemailerMailgun.sendMail(mailOptions);
@@ -133,7 +133,7 @@ export const resendVerificationToken = async (parent, args, { t }) => {
     if (!user) throw AuthenticationError(t('auth_error_userHasNoSuchEmail', { username }));
     if (user.isVerified) throw new AuthenticationError(t('auth_error_userAlreadyVerified', { username }));
 
-    sendVerificationEmail({ email: user.email, id: user.id }, t);
+    sendVerificationEmail(user, t);
   } catch(error) {
     throw new AuthenticationError(error);
   }
@@ -159,7 +159,7 @@ export const createPasswordToken = async (parent, args, { t }) => {
       to: currentUser.email,
       from: 'password-reset@lloydntim.com',
       subject: t('auth_email_subject_passwordReset'),
-      text: t('auth_email_subject_passwordResetMessage', { resetPasswordToken, domain, interpolation: { escapeValue: false } }),
+      text: t('auth_email_subject_passwordResetMessage', { username: currentUser.username, resetPasswordToken, domain, interpolation: { escapeValue: false } }),
     };
     return await nodemailerMailgun.sendMail(mailOptions);
   } catch (error) {
@@ -204,7 +204,7 @@ export const updatePassword = async (parents, args, { t }) => {
       to: email,
       from: 'password-reset@lloydntim.com',
       subject: t('auth_email_subject_passwordChanged'),
-      text: t('auth_email_content_passwordChangeMessage', { email }),
+      text: t('auth_email_content_passwordChangeMessage', { email, username }),
     };
     nodemailerMailgun.sendMail(mailOptions);
     return { token };
