@@ -60,9 +60,10 @@
 
   .container {
     padding: 24px 12px;
+    font-size: 14px;
 
     display: grid;
-    grid-template-columns: 50% 50%;
+    grid-template-columns: 25% 75%;
     grid-template-rows: 32px 32px;
     grid-column-gap: 12px;
     grid-row-gap: 12px;

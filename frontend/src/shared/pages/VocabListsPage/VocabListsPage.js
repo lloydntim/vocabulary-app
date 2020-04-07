@@ -72,7 +72,7 @@ const VocabListsPage = () => {
   const { run, stepIndex, steps, styles, locale, callback, updateJoyride } = useJoyride(vocabListsPageJoyride);
   const { loading, error, data } = useQuery(GET_LISTS, { variables: { creatorId }, onError: (error) => setResponseMessage(error.message.split(':')[1].trim()) });
   const [addList] = useMutation(ADD_LIST, {
-    onCompleted: () => updateJoyride({ run: true, stepIndex: 6 }),
+    onCompleted: () => setTimeout(() => updateJoyride({ run: true, stepIndex: 6 }), 500),
     onError: (error) => setResponseMessage(error.message.split(':')[1].trim()),
     refetchQueries: [{ query: GET_LISTS, variables: { creatorId } }],
   });
@@ -188,7 +188,7 @@ const VocabListsPage = () => {
               styles={styles}
               locale={locale(t)}
               continuous
-              showProgress={false}
+              showProgress
               showSkipButton
             />
 
@@ -202,10 +202,7 @@ const VocabListsPage = () => {
                   onClick={() => {
                     resetFormData();
                     setOverlayVisibility(true);
-                    updateJoyride({
-                      run: stepIndex === 2 ? false : run,
-                      stepIndex: stepIndex === 2 ? 3 : stepIndex,
-                    });
+                    updateJoyride({ run: true, stepIndex: 3 });
                   }}
                 />
               </div>

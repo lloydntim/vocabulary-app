@@ -39,6 +39,8 @@ const steps = (t) => [
     target: '.overlay.is-visible input',
     content: t('vocablists_joyride_content_enterTitle'),
     spotlightClicks: true,
+    disableBeacon: true,
+    placement: 'bottom',
     disableOverlayClose: true,
     hideBackButton: true,
     showSkipButton: false,
@@ -63,7 +65,7 @@ const steps = (t) => [
   },
   {
     title: t('vocablists_joyride_title_yourVocabList'),
-    target: '.list-item:first-child',
+    target: '.list .list-item:first-child',
     content: t('vocablists_joyride_content_yourVocabList'),
     showSkipButton: false,
     hideBackButton: true,
@@ -86,19 +88,19 @@ const steps = (t) => [
 
 const callback = (props) => (data) => {
   const { index, status, type, action } = data;
-  const { isOverlayVisible, username, run, updateJoyride } = props;
+  const { username, run, updateJoyride } = props;
   const finishedStatuses = [STATUS.FINISHED, STATUS.SKIPPED];
 
   if ([EVENTS.STEP_AFTER, EVENTS.TARGET_NOT_FOUND].includes(type)) {
     updateJoyride({ stepIndex: index + (action === ACTIONS.PREV ? -1 : 1) });
 
-    if (isOverlayVisible && index === 2) {
-      setTimeout(() => updateJoyride({ run: true }), 400);
-    } else if (isOverlayVisible && index === 3) {
-      updateJoyride({ run: true, stepIndex: 4 });
-    } else if (isOverlayVisible && index === 5) {
-      updateJoyride({ run: true, stepIndex: index + (action === ACTIONS.PREV ? -1 : 0) });
-    }
+    // if (isOverlayVisible && index === 2) {
+    //   setTimeout(() => updateJoyride({ run: true }), 400);
+    // } else if (isOverlayVisible && index === 3) {
+    //   // updateJoyride({ run: true, stepIndex: 4 });
+    // } else if (isOverlayVisible && index === 5) {
+    //   // updateJoyride({ run: true, stepIndex: index + (action === ACTIONS.PREV ? -1 : 0) });
+    // }
   } else if (finishedStatuses.includes(status)) {
     /* eslint-disable no-undef */
     localStorage.setItem(`isVocablistsJoyrideFinished-${username}`, true);

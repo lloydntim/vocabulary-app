@@ -28,9 +28,9 @@ const nodemailerAuthConfig = {
 };
 const nodemailerMailgun = nodemailer.createTransport(mg(nodemailerAuthConfig));
 
-const sendVerificationEmail =  async ({ email, username }, t) => {
+const sendVerificationEmail =  async ({ email, username, id }, t) => {
   try {
-    const { token } = await Token.create({ userId: user.id, token: crypto.randomBytes(20).toString('hex') });
+    const { token } = await Token.create({ userId: id, token: crypto.randomBytes(20).toString('hex') });
     const domain = NODE_ENV === 'development' ? `http://${HOST}:${CLIENT_DEV_PORT}` : CLIENT_HOST;
     const mailOptions = {
       to: email,
@@ -41,6 +41,7 @@ const sendVerificationEmail =  async ({ email, username }, t) => {
 
     await nodemailerMailgun.sendMail(mailOptions);
   } catch(error) {
+    console.log(error);
     throw new ApolloError(error);
   }
 };
