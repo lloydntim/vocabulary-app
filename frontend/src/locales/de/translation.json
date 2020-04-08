@@ -182,7 +182,7 @@
   "messages_error_usernameEmpty": "Bitte geben Sie einen Benutzernamen ein.",
   "messages_error_usernameTaken": "Dieser Benutzername ist vergeben, bitte wählen Sie einen anderen.",
   "messages_error_usernameDoesNotExists": "Der Benutzer {{username}} existiert nicht.",
-  "messages_error_usernameRequirements": "Der Benutzername muss aus {{usernameMinLength}} bis {{usernameMaxLength}} Kleinbuchstaben bestehen und darf Unterstriche und Bindestriche enthalten.",
+  "messages_error_usernameRequirements": "Der Benutzername kann reguläre Zeichen, Zahlen, Unterstriche, Punkte und Bindestriche enthalten.",
   "messages_error_emailCouldNotBeUpdated": "Die E-Mail-Adresse des Benutzers {{username}} konnte nicht aktualisiert werden.",
   "messages_error_emailTaken": "Diese E-Mail wird genommen, bitte wählen Sie eine andere.",
   "messages_error_emailEmpty": "Bitte geben Sie eine E-Mail ein.",

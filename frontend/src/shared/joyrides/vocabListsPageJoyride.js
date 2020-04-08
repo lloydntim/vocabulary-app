@@ -13,7 +13,7 @@ const steps = (t) => [
     content: <div><h4>{t('vocablists_joyride_content_welcomeToVocapp')}</h4></div>,
     disableBeacon: true,
     disableOverlayClose: true,
-    showSkipButton: false,
+    // showSkipButton: false,
   },
   {
     title: t('vocablists_joyride_title_menu'),
@@ -22,7 +22,7 @@ const steps = (t) => [
     spotlightClicks: false,
     disableBeacon: true,
     hideBackButton: true,
-    showSkipButton: false,
+    // showSkipButton: false,
   },
   {
     title: t('vocablists_joyride_title_createVocabList'),
@@ -43,7 +43,7 @@ const steps = (t) => [
     placement: 'bottom',
     disableOverlayClose: true,
     hideBackButton: true,
-    showSkipButton: false,
+    // showSkipButton: false,
   },
   {
     title: t('vocablists_joyride_title_uploadFile'),
@@ -51,7 +51,7 @@ const steps = (t) => [
     // spotlightClicks: true,
     content: t('vocablists_joyride_content_uploadFile'),
     disableOverlayClose: true,
-    showSkipButton: false,
+    // showSkipButton: false,
   },
   {
     title: t('vocablists_joyride_title_addVocabList'),
@@ -59,7 +59,7 @@ const steps = (t) => [
     content: t('vocablists_joyride_content_addVocabList'),
     spotlightClicks: true,
     disableOverlayClose: true,
-    showSkipButton: false,
+    // showSkipButton: false,
     hideCloseButton: true,
     styles: { buttonNext: { display: 'none' } },
   },
@@ -67,7 +67,7 @@ const steps = (t) => [
     title: t('vocablists_joyride_title_yourVocabList'),
     target: '.list .list-item:first-child',
     content: t('vocablists_joyride_content_yourVocabList'),
-    showSkipButton: false,
+    // showSkipButton: false,
     hideBackButton: true,
   },
   {
@@ -75,14 +75,14 @@ const steps = (t) => [
     target: '.list-item:first-child .icon-type-edit',
     content: t('vocablists_joyride_content_editVocabList'),
     disableBeacon: true,
-    showSkipButton: false,
+    // showSkipButton: false,
   },
   {
     title: t('vocablists_joyride_title_deleteVocabList'),
     target: '.list-item:first-child .icon-type-delete',
     content: t('vocablists_joyride_content_deleteVocabList'),
     disableBeacon: true,
-    showSkipButton: false,
+    // showSkipButton: false,
   },
 ];
 

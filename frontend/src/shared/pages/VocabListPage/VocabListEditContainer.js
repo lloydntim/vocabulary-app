@@ -95,6 +95,7 @@ const VocabListEditContainer = ({
                 type="file"
                 name={addVocabListForm.formData.fileList.name}
                 pattern={/\.[xls(?x)|csv]+$/}
+                patternErrorMessage={t('messages_error_fileTypeIncorrect')}
                 onChange={addVocabListForm.updateFormData}
               />
               <Button

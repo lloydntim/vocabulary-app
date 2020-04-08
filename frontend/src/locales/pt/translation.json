@@ -182,7 +182,7 @@
   "messages_error_usernameEmpty": "Por favor, digite um nome de usuário.",
   "messages_error_usernameTaken": "Este nome de usuário é utilizado, escolha outro.",
   "messages_error_usernameDoesNotExists": "O usuário {{username}} não existe.",
-  "messages_error_usernameRequirements": "O nome de usuário deve ter caracteres em minúscula {{usernameMinLength}} para {{usernameMaxLength}} e pode conter, sublinhados e hífens.",
+  "messages_error_usernameRequirements": "O nome de usuário pode conter caracteres regulares, números, sublinhados, pontos e hífens.",
   "messages_error_emailCouldNotBeUpdated": "O email do usuário {{username}} não pôde ser atualizado.",
   "messages_error_emailTaken": "Este e-mail é recebido, escolha outro.",
   "messages_error_emailEmpty": "Digite um email.",

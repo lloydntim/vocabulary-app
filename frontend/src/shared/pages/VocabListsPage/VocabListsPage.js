@@ -160,6 +160,7 @@ const VocabListsPage = () => {
                     type="file"
                     name={listFile.name}
                     pattern={/\.[xls(?x)|csv]+$/}
+                    patternErrorMessage={t('messages_error_fileTypeIncorrect')}
                     onChange={updateFormData}
                   />
                 )}

@@ -104,15 +104,17 @@ const Input = (props) => {
         value={value}
         onChange={({ target: { value, files } }) => {
           const error = resolveError(value, files, validationProps);
-          if (type === 'password' || type === 'file') setErrorMessage(error);
+          if (errorMessage || type === 'password' || type === 'file') setErrorMessage(error);
           if (dataList) setDataListVisibility(true);
-          if (files) setFileName(files[0].name);
+          if (type === 'file' && files) setFileName(files[0].name);
+          if (type === 'file' && error) setFileName('');
           onChange({ value, files, error, required, name });
         }}
         onFocus={onFocus}
         onBlur={({ target: { value, files } }) => {
           const error = resolveError(value, files, validationProps);
 
+          if (type === 'file' && !errorMessage) setFileName(fileName);
           setErrorMessage(error);
           if (onBlur) onBlur({ value, files, error, required, name });
         }}
@@ -153,7 +155,7 @@ const Input = (props) => {
            }
         </ul>
       )}
-      {(!errorMessage) && fileName && <Message type="info" content={fileName} />}
+      {(!errorMessage && fileName) && <Message type="info" content={fileName} />}
       {errorMessage && <Message type="error" content={errorMessage} />}
     </label>
   );

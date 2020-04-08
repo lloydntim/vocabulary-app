@@ -197,7 +197,7 @@
   "messages_error_usernameEmpty": "Pleaser enter a username.",
   "messages_error_usernameTaken": "This username is taken, please choose another one.",
   "messages_error_usernameDoesNotExists": "The user {{username}} does not exist.",
-  "messages_error_usernameRequirements": "Username must be {{usernameMinLength}} to {{usernameMaxLength}} lowercase characters and can contain, underscores and hyphens.",
+  "messages_error_usernameRequirements": "Username can contain regular characters, numbers, underscores, dots and hyphens.",
   "messages_error_emailCouldNotBeUpdated": "Email of user {{username}} could not be updated.",
   "messages_error_emailTaken": "This email is taken, please choose another one.",
   "messages_error_emailEmpty": "Please enter an email.",

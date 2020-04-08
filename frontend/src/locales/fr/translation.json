@@ -182,7 +182,7 @@
   "messages_error_usernameEmpty": "Veuillez saisir un nom d'utilisateur.",
   "messages_error_usernameTaken": "Ce nom d'utilisateur est pris, veuillez en choisir un autre.",
   "messages_error_usernameDoesNotExists": "L'utilisateur {{username}} n'existe pas.",
-  "messages_error_usernameRequirements": "Le nom d'utilisateur doit être de {{usernameMinLength}} à {{usernameMaxLength}} caractères minuscules et peut contenir, des traits de soulignement et des tirets.",
+  "messages_error_usernameRequirements": "Le nom d'utilisateur peut contenir des caractères, des chiffres, des traits de soulignement, des points et des tirets normaux.",
   "messages_error_emailCouldNotBeUpdated": "L'e-mail de l'utilisateur {{username}} n'a pas pu être mis à jour.",
   "messages_error_emailTaken": "Cet e-mail est pris, veuillez en choisir un autre.",
   "messages_error_emailEmpty": "Veuillez saisir un e-mail.",

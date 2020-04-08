@@ -74,8 +74,9 @@ const SignUpPage = () => {
             name={username.name}
             minLength={3}
             maxLength={16}
-            pattern={/^[a-zA-Z0-9_-]{1,}$/}
+            pattern={/^[a-zA-Z0-9_.-]{1,}$/g}
             placeholder={t('common_form_placeholder_username')}
+            patternErrorMessage={t('messages_error_usernameRequirements')}
             value={username.value}
             onChange={updateFormData}
             onBlur={updateFormData}
@@ -115,10 +116,6 @@ const SignUpPage = () => {
             autoComplete="new-password"
             name={passwordConfirm.name}
             type="password"
-            minLength={passwordMinLength}
-            maxLength={passwordMaxLength}
-            pattern={passwordPattern}
-            patternErrorMessage={t('messages_error_passwordMustContain')}
             placeholder={t('common_form_placeholder_confirmPassword')}
             value={passwordConfirm.value}
             onChange={updateFormData}
