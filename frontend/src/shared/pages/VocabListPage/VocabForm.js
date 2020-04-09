@@ -51,6 +51,7 @@ const VocabForm = ({
       }
 
       const [sourceLanguage] = languages.filter(({ value }) => value === Cookies.get(sourceLanguageCookieKey));
+      console.log('sourceLanguage', sourceLanguage);
       const targetLanguage = !Cookies.get(targetLanguageCookieKey) ? '' : languages.filter(({ value }) => value === Cookies.get(targetLanguageCookieKey))[0].text;
 
       setInitFormData({ sourceLanguage: sourceLanguage.text, targetLanguage });
