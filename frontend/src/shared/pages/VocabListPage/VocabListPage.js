@@ -152,6 +152,7 @@ const VocabListPage = () => {
   return (
     <RootLayout>
       <div className="vocab-list-page page">
+        <button onClick={methodDoesNotExist}>Break the world</button>
         {data && (
           <>
             <VocabListEditOverlay

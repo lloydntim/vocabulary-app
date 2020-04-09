@@ -90,6 +90,7 @@ const server = new ApolloServer({
   },
   formatError: (error) => {
     console.log('Error', error);
+    Sentry.captureException(error);
     throw new Error(error.message);
   },
 });
