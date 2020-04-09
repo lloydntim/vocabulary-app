@@ -74,7 +74,7 @@ const SignUpPage = () => {
             name={username.name}
             minLength={3}
             maxLength={16}
-            pattern={/^[a-zA-Z0-9_.-]{1,}$/g}
+            pattern={/^[a-zA-ZÀ-ÖØ-öø-ÿ0-9_.-]{1,}$/g}
             placeholder={t('common_form_placeholder_username')}
             patternErrorMessage={t('messages_error_usernameRequirements')}
             value={username.value}

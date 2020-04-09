@@ -43,7 +43,8 @@ const sanitizeList = (list) => list
     return [srcLang, srcText, tgtLang, tgtText]
   });
 
-export const getListVocabTranslation = async (parent, args, { currentUser, t }) => {
+export const getListVocabTranslation = async (parent, args, { currentUser, t, Sentry }) => {
+  Sentry.configureScope((scope) => scope.setUser({ username }));
   if (!currentUser.loggedIn) throw new AuthenticationError(t('auth_error_userMustBeLoggedIn'));
   try {
     const projectId = GCS_PROJECT_ID;
@@ -69,30 +70,36 @@ export const getListVocabTranslation = async (parent, args, { currentUser, t }) 
 
     return { targetText: response.translations[0].translatedText };
   } catch (error) {
+    Sentry.captureException(error);
     throw new ApolloError(t('translate_error_couldNotBeTranslated'));
   }
 };
-export const getList = async (parent, args, { currentUser, t }) => {
+export const getList = async (parent, args, { currentUser, t, Sentry }) => {
+  Sentry.configureScope((scope) => scope.setUser({ username }));
   if (!currentUser.loggedIn) throw new AuthenticationError(t('auth_error_userMustBeLoggedIn'));
   try {
     const { id, name } = args;
     return id ? await List.findById(id) : await List.findOne({ name });
   } catch (error) {
+    Sentry.captureException(error);
     throw new Error(t('list_error_listCouldNotBeRetrieved'));
   }
 };
 
-export const getLists = async (parent, args, { currentUser, t }) => {
+export const getLists = async (parent, args, { currentUser, t, Sentry }) => {
+  Sentry.configureScope((scope) => scope.setUser({ username: currentUser.username }));
   if (!currentUser.loggedIn) throw new AuthenticationError(t('auth_error_userMustBeLoggedIn'));
   try {
     const { creatorId } = args;
     return await List.find({ creatorId });
   } catch (error) {
+    Sentry.captureException(error);
     throw new Error(t('list_error_listCouldNotBeRetrieved'));
   }
 };
 
-export const addList = async (parent, args, { currentUser, t }) => {
+export const addList = async (parent, args, { currentUser, t, Sentry }) => {
+  Sentry.configureScope((scope) => scope.setUser({ username: currentUser.username }));
   if (!currentUser.loggedIn) throw new AuthenticationError(t('auth_error_userMustBeLoggedIn'));
   try {
     const { file, name, data, creatorId } = args;
@@ -124,11 +131,13 @@ export const addList = async (parent, args, { currentUser, t }) => {
       );
     }
   } catch (error) {
+    Sentry.captureException(error);
     throw new Error (t('list_error_listCouldNotBeAdded'));
   };
 };
 
-export const updateList = async (parent, args, { currentUser, t }) => {
+export const updateList = async (parent, args, { currentUser, t, Sentry }) => {
+  Sentry.configureScope((scope) => scope.setUser({ username: currentUser.username }));
   if (!currentUser.loggedIn) throw new AuthenticationError(t('auth_error_userMustBeLoggedIn'));
   try {
     let $set = {};
@@ -164,16 +173,19 @@ export const updateList = async (parent, args, { currentUser, t }) => {
     }
     return await List.findByIdAndUpdate(id, { $set }, { new: true });
   } catch (error) {
+    Sentry.captureException(error);
     throw new Error(t('list_error_listCouldNotBeUpdated'));
   };
 };
 
-export const removeList = async (parent, args, { currentUser, t }) => {
+export const removeList = async (parent, args, { currentUser, t, Sentry }) => {
+  Sentry.configureScope((scope) => scope.setUser({ username: currentUser.username }));
   if (!currentUser.loggedIn) throw new AuthenticationError(t('auth_error_userMustBeLoggedIn'));
   try {
     const { id: _id , creatorId } = args;
     return creatorId ? await List.deleteMany({ creatorId }) : await List.findOneAndDelete({ _id });
   } catch (error) {
+    Sentry.captureException(error);
     throw new Error(t('list_error_listCouldNotBeRemoved'));
   };
 };
