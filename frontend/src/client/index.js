@@ -11,11 +11,12 @@ import { ApolloProvider } from '@apollo/react-hooks';
 
 import * as Sentry from '@sentry/browser';
 
-Sentry.init({dsn: "https://1637c069c831464e822f715e513a0cc9@o375178.ingest.sentry.io/5195592"});
 
 /* eslint-disable react/jsx-props-no-spreading, no-unused-vars, no-undef */
 import routes from '../shared/routes';
 import i18n from './i18n';
+
+Sentry.init({ dsn: 'https://1637c069c831464e822f715e513a0cc9@o375178.ingest.sentry.io/5195592' });
 
 const uri = process.env.NODE_ENV === 'development' ? 'http://localhost:3000/graphql' : 'https://vocab-list-app.herokuapp.com/graphql';
 const cache = new InMemoryCache();
