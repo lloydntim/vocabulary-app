@@ -58,6 +58,7 @@ i18next
     saveMissing: true
   });
 
+
 app.use(Sentry.Handlers.requestHandler());
 
 // app.use(cookieParser());
@@ -88,7 +89,7 @@ const server = new ApolloServer({
     return { t, currentUser, Sentry };
   },
   formatError: (error) => {
-    // console.log('Error', error.message);
+    console.log('Error', error);
     throw new Error(error.message);
   },
 });

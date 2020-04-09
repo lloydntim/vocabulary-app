@@ -75,7 +75,7 @@ export const getListVocabTranslation = async (parent, args, { currentUser, t, Se
   }
 };
 export const getList = async (parent, args, { currentUser, t, Sentry }) => {
-  Sentry.configureScope((scope) => scope.setUser({ username }));
+  Sentry.configureScope((scope) => scope.setUser({ username: currentUser.username }));
   if (!currentUser.loggedIn) throw new AuthenticationError(t('auth_error_userMustBeLoggedIn'));
   try {
     const { id, name } = args;
