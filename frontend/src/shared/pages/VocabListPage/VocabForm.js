@@ -43,14 +43,14 @@ const VocabForm = ({
       const targetLanguageCookieKey = `target-language-${id}`;
 
       if (typeof Cookies.get(sourceLanguageCookieKey) === 'undefined') {
-        Cookies.set(sourceLanguageCookieKey, i18n.language.substr(0, 2));
+        Cookies.set(sourceLanguageCookieKey, i18n.language);
       }
 
       if (typeof Cookies.get(targetLanguageCookieKey) === 'undefined') {
         Cookies.set(targetLanguageCookieKey, '');
       }
 
-      const [sourceLanguage] = languages.filter(({ value }) => value === Cookies.get(sourceLanguageCookieKey));
+      const [sourceLanguage] = languages.filter(({ value }) => value === Cookies.get(sourceLanguageCookieKey).substr(0, 2));
       console.log('sourceLanguage', Cookies.get(sourceLanguageCookieKey));
       const targetLanguage = !Cookies.get(targetLanguageCookieKey) ? '' : languages.filter(({ value }) => value === Cookies.get(targetLanguageCookieKey))[0].text;
 
