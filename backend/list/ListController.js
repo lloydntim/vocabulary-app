@@ -44,7 +44,7 @@ const sanitizeList = (list) => list
   });
 
 export const getListVocabTranslation = async (parent, args, { currentUser, t, Sentry }) => {
-  Sentry.configureScope((scope) => scope.setUser({ username }));
+  Sentry.configureScope((scope) => scope.setUser({ username: currentUser.username }));
   if (!currentUser.loggedIn) throw new AuthenticationError(t('auth_error_userMustBeLoggedIn'));
   try {
     const projectId = GCS_PROJECT_ID;
