@@ -4,6 +4,7 @@ import gql from 'graphql-tag';
 import { useMutation } from '@apollo/react-hooks';
 import { Link, useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import * as Sentry from '@sentry/browser';
 import { useForm } from '../../hooks';
 import { RootLayout } from '../../layouts';
 import { Message, Input, Button } from '../../components';
@@ -37,6 +38,7 @@ const LoginPage = () => {
       },
       onError: (error) => {
         const errorMessage = error.message;
+        Sentry.captureException(error);
         if (errorMessage.includes('username')) {
           setResponseMessage(t('messages_error_usernameDoesNotExists', { username: username.value }));
         } else if (errorMessage.includes('password')) {

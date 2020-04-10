@@ -7,7 +7,7 @@
     "test": "jest",
     "lint": "eslint --fix src/**/*.js",
     "build": "webpack --config config/webpack.config.js --mode=production",
-    "start": "webpack-dev-server --config config/webpack.config.js --port 3005",
+    "start": "webpack-dev-server --config config/webpack.config.js --port 3005 --host 0.0.0.0",
     "tools:generate-locales": "node ./src/tools/translateJSON.js"
   },
   "author": "Lloyd Ntim",
