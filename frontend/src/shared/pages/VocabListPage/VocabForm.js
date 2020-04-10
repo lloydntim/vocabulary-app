@@ -43,7 +43,7 @@ const VocabForm = ({
       const targetLanguageCookieKey = `target-language-${id}`;
 
       if (typeof Cookies.get(sourceLanguageCookieKey) === 'undefined') {
-        Cookies.set(sourceLanguageCookieKey, i18n.language);
+        Cookies.set(sourceLanguageCookieKey, i18n.language.substr(0, 2));
       }
 
       if (typeof Cookies.get(targetLanguageCookieKey) === 'undefined') {
