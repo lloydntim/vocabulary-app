@@ -130,7 +130,7 @@
         font-size: 14px;
         color: inherit;
       }
-      textarea {
+      .textarea {
         background-color: $grey;
         border: solid 1px $green;
         resize: none;
@@ -141,17 +141,17 @@
         &::placeholder {
           color: $green;
         }
+      }
 
-        &.message {
-          text-align: left;
+      .message {
+        text-align: left;
 
-          &.message-success {
-            pointer-events: none;
-          }
+        &.message-success {
+          pointer-events: none;
+        }
 
-          &::placeholder {
-            color: inherit;
-          }
+        &::placeholder {
+          color: inherit;
         }
       }
     }

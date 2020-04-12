@@ -100,7 +100,7 @@ const VocabListSessionBody = ({
             <label htmlFor="translation">
               <textarea
                 id="translation"
-                className={`message message-${vocabTranslationStatusMessage}`}
+                className={`${!vocabTranslationStatusMessage ? 'textarea' : ''} message message-${vocabTranslationStatusMessage}`}
                 rows="4"
                 value={vocabTranslationInputValue}
                 placeholder={t('vocablist_form_placeholder_enterTranslation')}
