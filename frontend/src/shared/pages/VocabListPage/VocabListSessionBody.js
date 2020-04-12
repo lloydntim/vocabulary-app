@@ -8,7 +8,7 @@ import {
 } from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
-import { Message } from '../../components';
+import { Message, Icon, Button } from '../../components';
 
 const formattedTime = (time) => {
   const formatDigits = (value) => ((value < 10) ? `0${value}` : value);
@@ -97,26 +97,23 @@ const VocabListSessionBody = ({
           <>
             <p>{vocabSourceText}</p>
 
-            <label htmlFor="translation">
+            <label className={`textarea ${vocabTranslationStatusMessage ? `textarea-status-${vocabTranslationStatusMessage}` : ''}`} htmlFor="translation">
               <textarea
                 id="translation"
-                className={`${!vocabTranslationStatusMessage ? 'textarea' : ''} message message-${vocabTranslationStatusMessage}`}
+                className="textarea-element"
                 rows="4"
                 value={vocabTranslationInputValue}
                 placeholder={t('vocablist_form_placeholder_enterTranslation')}
                 onFocus={onVocabTranslationInputFocus}
                 onChange={onVocabTranslationInputChange}
               />
+              {vocabTranslationStatusMessage && <Icon type={isVocabTranslationCorrect ? 'tick' : 'close'} />}
             </label>
-
-            <button
-              className={`button button-secondary ${vocabTranslationInputValue < 1 ? 'is-disabled' : ''}`}
-              disabled={vocabTranslationInputValue < 1}
-              type="button"
+            <Button
+              type={`${isVocabTranslationCorrect ? 'tertiary' : 'secondary'}`}
+              text={t(`common_button_${isVocabTranslationCorrect ? 'next' : 'submit'}`)}
               onClick={onVocabTranslationSubmitButtonClick}
-            >
-              {t('common_button_submit')}
-            </button>
+            />
           </>
         )}
     </>

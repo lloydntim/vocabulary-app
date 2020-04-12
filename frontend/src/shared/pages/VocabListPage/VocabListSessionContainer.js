@@ -81,29 +81,25 @@ const VocabListSessionContainer = ({ list, joyride }) => {
           if (status) setStatusMessage('');
         }}
         onVocabTranslationSubmitButtonClick={() => {
-          const statusMessage = targetText === translationInputValue.trim() ? 'success' : 'error';
-          if (statusMessage === 'success') {
-            const vocabResultData = {
-              index: count,
-              duration: time,
-              textLength: targetText.length,
-              attemptsNeeded,
-              hintsNeeded,
-            };
-            const result = { ...reportData, ...{ [`vocab_${count}`]: vocabResultData } };
-            setReportData(result);
-          } else {
-            setAttemptsNeeded(attemptsNeeded + 1);
-          }
-          setStatusMessage(statusMessage);
-        }}
-      />
+          if (status !== 'success') {
+            const statusMessage = targetText === translationInputValue.trim() ? 'success' : 'error';
 
-      <VocabListSessionFooter
-        isNextVocabButtonDisabled={status !== 'success'}
-        onPreviousVocabButtonClick={() => {
-          if (count > 0) {
-            setCount(count - 1);
+            if (statusMessage === 'success') {
+              const vocabResultData = {
+                index: count,
+                duration: time,
+                textLength: targetText.length,
+                attemptsNeeded,
+                hintsNeeded,
+              };
+              const result = { ...reportData, ...{ [`vocab_${count}`]: vocabResultData } };
+              setReportData(result);
+            } else {
+              setAttemptsNeeded(attemptsNeeded + 1);
+            }
+            setStatusMessage(statusMessage);
+          } else if (count < list.length - 1) {
+            setCount(count + 1);
             setTranslationInputValue('');
             setStatusMessage('');
 
@@ -112,9 +108,12 @@ const VocabListSessionContainer = ({ list, joyride }) => {
             setAttemptsNeeded(0);
           }
         }}
-        onNextVocabButtonClick={() => {
-          if (count < list.length - 1) {
-            setCount(count + 1);
+      />
+
+      <VocabListSessionFooter
+        onPreviousVocabButtonClick={() => {
+          if (count > 0) {
+            setCount(count - 1);
             setTranslationInputValue('');
             setStatusMessage('');
 

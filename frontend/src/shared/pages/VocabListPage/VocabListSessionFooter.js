@@ -1,12 +1,10 @@
 import React from 'react';
-import { bool, func } from 'prop-types';
+import { func } from 'prop-types';
 import { IconButton } from '../../components';
 
 /* eslint-disable react/jsx-props-no-spreading */
 const VocabListSessionFooter = ({
-  isNextVocabButtonDisabled,
   onPreviousVocabButtonClick,
-  onNextVocabButtonClick,
   onShowTranslationButtonActive,
   onShowTranslationButtonInactive,
   onRestartSessionButtonClick,
@@ -37,22 +35,12 @@ const VocabListSessionFooter = ({
           onClick={onRestartSessionButtonClick}
         />
       </li>
-      <li>
-        <IconButton
-          type="secondary"
-          icon="forward"
-          disabled={isNextVocabButtonDisabled}
-          onClick={onNextVocabButtonClick}
-        />
-      </li>
     </ul>
   </>
 );
 
 VocabListSessionFooter.propTypes = {
-  isNextVocabButtonDisabled: bool.isRequired,
   onPreviousVocabButtonClick: func.isRequired,
-  onNextVocabButtonClick: func.isRequired,
   onShowTranslationButtonActive: func.isRequired,
   onShowTranslationButtonInactive: func.isRequired,
   onRestartSessionButtonClick: func.isRequired,

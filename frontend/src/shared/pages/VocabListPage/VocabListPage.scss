@@ -130,7 +130,12 @@
         font-size: 14px;
         color: inherit;
       }
-      .textarea {
+    }
+
+    .textarea {
+      position: relative;
+
+      .textarea-element {
         background-color: $grey;
         border: solid 1px $green;
         resize: none;
@@ -143,20 +148,44 @@
         }
       }
 
-      .message {
-        text-align: left;
+      svg {
+        position: absolute;
+        display: flex;
+        bottom: 24px;
+        right: 12px;
+        width: 20px;
+        height: 20px;
+      }
 
-        &.message-success {
+      &.textarea-status-success {
+        .textarea-element {
           pointer-events: none;
+          background-color: $light-blue;
+          border-color: $blue;
+          color: $blue;
         }
 
-        &::placeholder {
-          color: inherit;
+        svg {
+          path {
+            fill: $blue;
+          }
+        }
+      }
+
+      &.textarea-status-error {
+        .textarea-element {
+          background-color: $light-red;
+          border-color: $red;
+          color: $red;
+        }
+
+        svg {
+          path {
+            fill: $red;
+          }
         }
       }
     }
-
-
 
     .results-title {
       margin: 24px 0 0;
