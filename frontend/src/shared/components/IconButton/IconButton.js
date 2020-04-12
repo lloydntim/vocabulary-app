@@ -15,7 +15,7 @@ const IconButton = ({
   onTouchEnd,
 }) => (
   <button
-    className={`icon-button icon-type-${icon} icon-button-type-${type} ${disabled ? 'is-disabled' : ''}`}
+    className={`icon-button icon-type-${icon} ${disabled ? 'is-disabled' : `icon-button-type-${type}`}`}
     type="button"
     disabled={disabled}
     onClick={onClick}

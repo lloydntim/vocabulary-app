@@ -3,13 +3,14 @@ import {
   oneOfType,
   arrayOf,
   node,
+  func,
   string,
 } from 'prop-types';
 
 import './Tabs.scss';
 
 /* eslint-disable react/jsx-props-no-spreading */
-const Tabs = ({ children, titles }) => {
+const Tabs = ({ children, titles, onTabClick }) => {
   const [selectedTab, setSelectedTab] = useState(0);
   const getSelectedClass = (selectedTab, index) => ((selectedTab === index) ? 'is-selected' : '');
   const tabs = Children.map(children, (child, index) => (
@@ -24,7 +25,10 @@ const Tabs = ({ children, titles }) => {
             key={index}
             className={`tab-title ${getSelectedClass(selectedTab, index)}`}
             type="button"
-            onClick={() => setSelectedTab(index)}
+            onClick={() => {
+              setSelectedTab(index);
+              if (onTabClick) onTabClick(index);
+            }}
           >
             {title}
           </button>
@@ -35,8 +39,13 @@ const Tabs = ({ children, titles }) => {
   );
 };
 
+Tabs.defaultProps = {
+  onTabClick: null,
+};
+
 Tabs.propTypes = {
   titles: arrayOf(string).isRequired,
+  onTabClick: func,
   children: oneOfType([
     arrayOf(node).isRequired,
     node,

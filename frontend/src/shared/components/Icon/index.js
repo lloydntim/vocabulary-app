@@ -7,7 +7,7 @@ import IconTick from './IconTick';
 import IconForward from './IconForward';
 import IconBackward from './IconBackward';
 import IconArrowRight from './IconArrowRight';
-import IconArrowBack from './IconArrowBack';
+import IconArrowLeft from './IconArrowLeft';
 import IconDelete from './IconDelete';
 import IconEdit from './IconEdit';
 import IconPlus from './IconPlus';
@@ -26,7 +26,7 @@ const Icon = ({ type }) => {
     case 'backward': return <IconBackward />;
     case 'tick': return <IconTick />;
     case 'arrow-right': return <IconArrowRight />;
-    case 'arrow-back': return <IconArrowBack />;
+    case 'arrow-left': return <IconArrowLeft />;
     case 'delete': return <IconDelete />;
     case 'edit': return <IconEdit />;
     case 'plus': return <IconPlus />;

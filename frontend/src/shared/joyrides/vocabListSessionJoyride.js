@@ -13,69 +13,61 @@ const steps = (t) => [
     content: <div><h4>{t('vocablist_joyride_content_playmodeIntro')}</h4></div>,
     disableBeacon: true,
     disableOverlayClose: true,
-    // showSkipButton: false,
   },
-  {
+  /*  {
     title: t('vocablist_joyride_title_playmodeSourceLanguage'),
     target: 'h5 > span:first-child',
     content: t('vocablist_joyride_content_playmodeSourceLanguage'),
-    // showSkipButton: false,
   },
   {
     title: t('vocablist_joyride_title_playmodeTargetLanguage'),
     target: 'h5 > span:nth-of-type(3)',
     content: t('vocablist_joyride_content_playmodeTargetLanguage'),
-    // showSkipButton: false,
-  },
+  }, */
   {
     title: t('vocablist_joyride_title_playmodeSwapLanguages'),
     target: '.icon-type-swap',
     content: t('vocablist_joyride_content_playmodeSwapLanguages'),
     spotlightClicks: true,
-    // showSkipButton: false,
   },
-  {
+  /*   {
     title: t('vocablist_joyride_title_playmodeProgress'),
     target: 'small',
     content: t('vocablist_joyride_content_playmodeProgress'),
-    // showSkipButton: false,
   },
   {
     title: t('vocablist_joyride_title_playmodeTargetTextField'),
     target: 'textarea',
     content: t('vocablist_joyride_content_playmodeTargetTextField'),
-    // showSkipButton: false,
+
   },
   {
     title: t('vocablist_joyride_title_playmodeSubmitButton'),
     target: 'button.button.button-secondary',
     content: t('vocablist_joyride_content_playmodeSubmitButton'),
-    // showSkipButton: false,
-  },
+
+  }, */
   {
     title: t('vocablist_joyride_title_playmodeBackButtonText'),
     target: '.icon-type-backward',
     content: t('vocablist_joyride_content_playmodeBackButtonText'),
     spotlightClicks: true,
-    // showSkipButton: false,
-  },
-  {
-    title: t('vocablist_joyride_title_playmodeForwardButtonText'),
-    target: '.icon-type-forward',
-    content: t('vocablist_joyride_content_playmodeForwardButtonText'),
-    // showSkipButton: false,
+
   },
   {
     title: t('vocablist_joyride_title_revealAnswer'),
     target: '.icon-type-view',
     content: t('vocablist_joyride_content_revealAnswer'),
-    // showSkipButton: false,
   },
   {
     title: t('vocablist_joyride_title_refreshSession'),
     target: '.icon-type-refresh',
     content: t('vocablist_joyride_content_refreshSession'),
-    // showSkipButton: false,
+  },
+  {
+    title: t('vocablist_joyride_title_playmodeForwardButtonText'),
+    target: '.icon-type-forward',
+    content: t('vocablist_joyride_content_playmodeForwardButtonText'),
   },
 ];
 

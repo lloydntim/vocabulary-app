@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import gql from 'graphql-tag';
 import { useQuery, useLazyQuery, useMutation } from '@apollo/react-hooks';
-import { useParams, useHistory, Link, Redirect } from 'react-router-dom';
+import { useParams, useHistory, /*  Link, */Redirect } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Joyride from 'react-joyride';
 import jwtDecode from 'jwt-decode';
 
 import { useStickyHeader, useJoyride } from '../../hooks';
 import { RootLayout } from '../../layouts';
-import { Switch, Message, Icon } from '../../components';
+import { Switch, Message, IconButton/* , Icon */ } from '../../components';
 
 import { vocabListPageJoyride, vocabListSessionJoyride } from '../../joyrides';
 import VocabListSessionContainer from './VocabListSessionContainer';
@@ -72,12 +72,12 @@ const VocabListPage = () => {
   const [isEditMode, setEditMode] = useState(true);
   const [{ name, list, shuffledList }, setVocabListData] = useState({ name: '', list: [], shuffledList: [] });
 
-  const [translatedText, setTranslatedText] = useState('');
+  const [newVocabData, setNewVocabData] = useState([]);
   const [isOverlayVisible, setOverlayVisibility] = useState(false);
   const [responseMessage, setResponseMessage] = useState('');
 
   const { id } = useParams();
-  const { push } = useHistory();
+  const { push, goBack } = useHistory();
   const { loading, error, data } = useQuery(
     GET_LIST,
     {
@@ -90,16 +90,7 @@ const VocabListPage = () => {
             .sort(() => (0.5 - Math.random())) : [];
         setVocabListData({ name, list, shuffledList });
       },
-    },
-  );
-
-  const [getListVocabTranslation,
-    { getListVocabTransLoading, getListVocabTransError }] = useLazyQuery(
-    GET_LIST_VOCAB_TRANSLATION, {
-      onCompleted: ({ getListVocabTranslation: { targetText } }) => {
-        setTranslatedText(targetText);
-        updateJoyride({ run: true, stepIndex: 8 });
-      },
+      onError: (error) => setResponseMessage(error.message.split(':')[1].trim()),
     },
   );
 
@@ -130,19 +121,38 @@ const VocabListPage = () => {
           .map((translation) => translation)
           .sort(() => (0.5 - Math.random())) : [];
       setVocabListData({ name, list, shuffledList });
-      updateJoyride({ run: true, stepIndex: 11 });
+      updateJoyride({ run: true, stepIndex: 1 });
     },
     onError: (error) => setResponseMessage(error.message.split(':')[1].trim()),
     refetchQueries: [{ query: GET_LIST, variables: { id } }],
   });
 
+  const [getListVocabTranslation,
+    { getListVocabTransLoading, getListVocabTransError }] = useLazyQuery(
+    GET_LIST_VOCAB_TRANSLATION, {
+      onCompleted: ({ getListVocabTranslation: { targetText } }) => {
+        const newVocabItem = [...newVocabData, targetText];
+        const data = list.concat([newVocabItem]);
+        updateJoyride({ run: true, stepIndex: 8 });
+        updateList({ variables: { id, data } });
+      },
+      onError: (error) => setResponseMessage(error.message.split(':')[1].trim()),
+    },
+  );
+
   useEffect(() => {
     /* eslint-disable no-undef */
     const isVocablistEditModeJoyrideFinishedKey = `isVocablistEditModeJoyrideFinished-${username}`;
     const isVocablistEditModeJoyrideFinished = localStorage.getItem(isVocablistEditModeJoyrideFinishedKey);
+    const isVocablistEditModeJoyrideProgressKey = `isVocablistEditModeJoyrideProgress-${username}`;
+    const isVocablistEditModeJoyrideProgress = localStorage.getItem(isVocablistEditModeJoyrideProgressKey);
     if (isVocablistEditModeJoyrideFinished === null) {
       updateJoyride({ run: true, stepIndex });
       localStorage.setItem(isVocablistEditModeJoyrideFinishedKey, false);
+    }
+    if (isVocablistEditModeJoyrideProgress === null) {
+      updateJoyride({ run: true, stepIndex });
+      localStorage.setItem(isVocablistEditModeJoyrideProgressKey, '');
     }
     if (isVocablistEditModeJoyrideFinished === 'false') {
       updateJoyride({ run: true, stepIndex });
@@ -151,7 +161,7 @@ const VocabListPage = () => {
 
   return (
     <RootLayout>
-      <div className="vocab-list-page page">
+      <div className={`vocab-list-page page ${isEditMode ? 'is-edit-mode' : 'is-practice-mode'}`}>
         {data && (
           <>
             <VocabListEditOverlay
@@ -176,17 +186,22 @@ const VocabListPage = () => {
               />
               <h1>{name}</h1>
               <div ref={stickyHeaderRef} className={`sub-header ${isHeaderSticky ? 'is-sticky' : ''}`}>
-                <Link to="/vocablists">
+                <IconButton
+                  icon="arrow-left"
+                  type="secondary"
+                  onClick={() => goBack()}
+                />
+                {/* <Link to="/vocablists">
                   <div className="icon">
                     <Icon type="home" />
                   </div>
-                </Link>
+                </Link> */}
                 <Switch
                   name="edit-mode"
-                  label={t(`vocablist_switch_label_${isEditMode ? 'edit' : 'practice'}Mode`)}
-                  isActive={isEditMode}
+                  label={t('vocablist_switch_label_practiceMode')}
+                  isActive={!isEditMode}
                   disabled={list.length < 1}
-                  onChange={({ target }) => setEditMode(target.checked)}
+                  onChange={({ target }) => setEditMode(!target.checked)}
                 />
               </div>
               {!isEditMode ? <VocabListSessionContainer list={shuffledList} joyride={vocabListPlayModeJoyride} />
@@ -198,8 +213,7 @@ const VocabListPage = () => {
                     addList={addList}
                     updateList={updateList}
                     getListVocabTranslation={getListVocabTranslation}
-                    translatedText={translatedText}
-                    setTranslatedText={setTranslatedText}
+                    setNewVocabData={setNewVocabData}
                     setJoyride={updateJoyride}
                   />
                 )}
@@ -207,13 +221,13 @@ const VocabListPage = () => {
           </>
         )}
 
-        {error && <Message type="error" content={error.message.split(':')[1].trim()} />}
         {(loading
           || updateListMutationLoading
           || addListMutationLoading
           || getListVocabTransLoading
-        ) && <Message type="info" content={t('messages_info_loading')} /> }
-        {(updateListMutationError
+        ) && <Message type="info" content={t('messages_info_loading')} />}
+        {(error
+          || updateListMutationError
           || addListMutationError
           || getListVocabTransError
         ) && <Message type="error" content={responseMessage} />}

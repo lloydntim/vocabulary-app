@@ -1,7 +1,7 @@
 @import '../../../client/styles.scss';
 
 .switch {
-  font-size: 11px;
+  font-size: 14px;
   display: flex;
   justify-content: flex-end;
   align-items: center;
@@ -10,6 +10,7 @@
   .switch-label-text {
     margin: 0 8px 0 0;
     display: block;
+    color: $dark-grey;
   }
 
   .switch-checkbox {
@@ -37,18 +38,32 @@
         display: flex;
       }
     }
+  }
 
-    &:checked {
-      &~ .switch-background {
-        border-color: $green;
-        background-color: $green;
-        &:after {
-          left: 16px;
-        }
+  &.is-active {
+    .switch-label-text {
+      color: $green;
+    }
+
+    .switch-background {
+      border-color: $green;
+      background-color: $green;
+      &:after {
+        left: 16px;
       }
     }
   }
+
   &.is-disabled {
-    opacity: .5;
+    opacity: .33;
+
+    .switch-label-text {
+      color: $dark-grey;
+    }
+
+    .switch-background {
+      border-color: $dark-grey;
+      background-color: $dark-grey;
+    }
   }
 }

@@ -7,10 +7,6 @@
   border: solid 1px $green;
   cursor: pointer;
 
-  &.is-disabled {
-    opacity: .5;
-  }
-
   &.icon-button-type-primary {
     border-color: $dark-green;
     background-color: $green;
@@ -32,7 +28,7 @@
       fill: $green;
     }
   }
-  
+
   &.icon-button-type-tertiary {
     border: none;
     color: $dark-green;
@@ -41,6 +37,20 @@
     path,
     polygon {
       fill: $dark-green;
+    }
+  }
+
+
+  &.is-disabled {
+    opacity: .5;
+    background-color: transparent;
+    border-color: $dark-grey;
+    svg {
+      g,
+      path,
+      polygon {
+        fill: $dark-grey;
+      }
     }
   }
 }

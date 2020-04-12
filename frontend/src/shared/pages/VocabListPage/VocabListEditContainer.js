@@ -16,8 +16,7 @@ const VocabListEditContainer = ({
   list,
   addList,
   updateList,
-  translatedText,
-  setTranslatedText,
+  setNewVocabData,
   getListVocabTranslation,
   setJoyride,
 }) => {
@@ -41,12 +40,10 @@ const VocabListEditContainer = ({
         title={t('vocablist_form_title_editVocab')}
         isVisible={isVocabEditOverlayVisible}
         form={editVocabForm}
-        translatedText={translatedText}
-        setTranslatedText={setTranslatedText}
         onCloseButtonClick={() => { setVocabEditOverlayVisibility(false); }}
         updateVocabButtonText={t('common_button_update')}
-        onUpdateVocabButtonClick={({ sourceLanguage, targetLanguage, sourceText }) => {
-          const vocabInputData = [sourceLanguage, targetLanguage, sourceText, translatedText];
+        onUpdateVocabButtonClick={({ sourceLanguage, targetLanguage, sourceText, targetText }) => {
+          const vocabInputData = [sourceLanguage, targetLanguage, sourceText, targetText];
           const data = list.map((item, index) => (count === index ? vocabInputData : item));
           updateList({ variables: { id, data } });
           setVocabEditOverlayVisibility(false);
@@ -57,20 +54,18 @@ const VocabListEditContainer = ({
         isVisible={isAddVocabOverlayVisible}
         onCloseButtonClick={() => setAddVocabOverlayVisibility(false)}
       >
-        <Tabs titles={[t('common_button_create'), t('common_button_upload')]}>
+        <Tabs
+          titles={[t('common_button_create'), t('common_button_upload')]}
+          onTabClick={(index) => {
+            if (index === 1) setJoyride({ stepIndex: 2, run: true });
+          }}
+        >
           <content>
             <VocabForm
               id={id}
               form={addVocabForm}
-              translatedText={translatedText}
-              setTranslatedText={setTranslatedText}
-              onTargetLanguageChange={() => {
-                setJoyride({ run: false, stepIndex: 7 });
-              }}
-              onTargetLanguageDataListClick={() => {
-                setJoyride({ run: true, stepIndex: 9 });
-              }}
-              onTranslateVocabButtonClick={({ sourceLanguageCode, targetLanguageCode, sourceText }) => {
+              onTranslateVocabButtonClick={({ sourceLanguage, targetLanguage, sourceLanguageCode, targetLanguageCode, sourceText }) => {
+                setNewVocabData([sourceLanguage, targetLanguage, sourceText]);
                 getListVocabTranslation({
                   variables: {
                     sourceLanguage: sourceLanguageCode,
@@ -78,11 +73,6 @@ const VocabListEditContainer = ({
                     sourceText,
                   },
                 });
-              }}
-              onSubmitVocabButtonClick={({ sourceLanguage, targetLanguage, sourceText }) => {
-                const newVocabItem = [sourceLanguage, targetLanguage, sourceText, translatedText];
-                const data = list.concat([newVocabItem]);
-                updateList({ variables: { id, data } });
                 setAddVocabOverlayVisibility(false);
               }}
             />
@@ -169,11 +159,15 @@ const VocabListEditContainer = ({
         selectedVocabs={selectedVocabs}
         onDeleteVocabsButtonClick={() => setDialogVisibility(true)}
         onAddVocabButtonClick={() => {
-          setJoyride({ run: true, stepIndex: 2 });
+          setJoyride({ stepIndex: 0, run: false });
           setAddVocabOverlayVisibility(true);
+          addVocabForm.setInitFormData({ sourceText: '', targetText: '' });
         }}
         onAddVocabListButtonClick={() => setAddVocabOverlayVisibility(true)}
-        onCreateNewVocabListButtonClick={() => setCreateVocabListOverlayVisibility(true)}
+        onCreateNewVocabListButtonClick={() => {
+          setJoyride({ stepIndex: 3, run: true });
+          setCreateVocabListOverlayVisibility(true);
+        }}
         onEditVocabListTitleButtonClick={() => setAddVocabOverlayVisibility(true)}
       />
       <VocabListEditBody
@@ -188,8 +182,7 @@ const VocabListEditContainer = ({
         }}
         onVocabEditButtonClick={(index, item) => {
           const [sourceLanguage, targetLanguage, sourceText, targetText] = item;
-          setTranslatedText(targetText);
-          editVocabForm.setInitFormData({ sourceLanguage, targetLanguage, sourceText });
+          editVocabForm.setInitFormData({ sourceLanguage, targetLanguage, sourceText, targetText });
           setCount(index);
           setVocabEditOverlayVisibility(true);
         }}
@@ -204,8 +197,7 @@ VocabListEditContainer.propTypes = {
   list: arrayOf(arrayOf(string)).isRequired,
   addList: func.isRequired,
   updateList: func.isRequired,
-  translatedText: string.isRequired,
-  setTranslatedText: func.isRequired,
+  setNewVocabData: func.isRequired,
   getListVocabTranslation: func.isRequired,
   setJoyride: func.isRequired,
 };

@@ -1,15 +1,21 @@
 @import '../../../client/styles.scss';
 
 .root-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+
   .language-selector {
     width: 100%;
     display: flex;
     max-width: 440px;
+    width: 100%;
     align-self: center;
     margin: 24px auto 0;
     position: relative;
     flex-direction: row-reverse;
     top: 8px;
+    right: 12px;
 
     .language-selector-indicator {
       margin: 0 12px 0 0;
@@ -62,15 +68,19 @@
   }
 
   .page {
+    flex: 1;
+    width: 100%;
+    padding: 0 12px;
+
     > .content {
-      margin: 0 0 32px 0;
+      margin: 0 0 42px 0;
+      flex: 1;
     }
   }
 
   .header {
     display: flex;
-    margin: 0 0 8px;
-    padding: 0 20px 0;
+    padding: 12px 20px;
     align-items: center;
     justify-content: space-between;
 
@@ -108,6 +118,7 @@
     .page {
       background-color: $green;
       margin-bottom: 32px;
+      padding: 0 20px;
     }
   }
 }

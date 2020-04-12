@@ -9,6 +9,16 @@
       margin: 0;
       border-bottom: 1px solid $grey;
 
+      .icon-type-arrow-left {
+        padding: 0;
+        border: none;
+
+        svg {
+          width: 32px;
+          height: 32px;
+        }
+      }
+
      .icon svg {
         height: 28px;
         fill: $green;
@@ -96,30 +106,57 @@
       margin: 0 0 8px 0;
     }
 
-    textarea {
-      background-color: $grey;
-      border: solid 1px $green;
-      resize: none;
-      outline: none;
-      color: $dark-green;
-      margin: 0 0 12px;
-
-      &::placeholder {
+    .source-text-static {
+      display: flex;
+      flex-direction: column;
+      span {
         color: $green;
       }
 
-      &.message {
-        text-align: left;
+      .label {
+        margin: 4px 0 8px 4px;
+        display: flex;
+        font-weight: $bold;
+        font-size: 14px;
+        color: inherit;
+      }
+    }
 
-        &.message-success {
-          pointer-events: none;
-        }
+    label {
+      .input-label {
+        margin: 4px 0 8px 4px;
+        display: flex;
+        font-weight: $bold;
+        font-size: 14px;
+        color: inherit;
+      }
+      textarea {
+        background-color: $grey;
+        border: solid 1px $green;
+        resize: none;
+        outline: none;
+        color: $dark-green;
+        margin: 0 0 12px;
 
         &::placeholder {
-          color: inherit;
+          color: $green;
+        }
+
+        &.message {
+          text-align: left;
+
+          &.message-success {
+            pointer-events: none;
+          }
+
+          &::placeholder {
+            color: inherit;
+          }
         }
       }
     }
+
+
 
     .results-title {
       margin: 24px 0 0;
@@ -150,23 +187,24 @@
       list-style: none;
       display: flex;
       margin: 0;
-      padding: 0;
+      padding: 16px 0 0;
+      border-top: solid 1px $grey;
       justify-content: space-between;
 
       > li {
         display: inline-flex;
 
-        svg {
-          path, g {
-            fill: $green;
-          }
-        }
+        // svg {
+        //   path, g {
+        //     fill: $green;
+        //   }
+        // }
       }
     }
 
     .list {
       display: flex;
-      flex-direction: column;
+      flex-direction: column-reverse;
       margin: 8px 0;
 
       .list-item {
@@ -204,7 +242,46 @@
           display: flex;
           align-self: center;
         }
+
+        &:first-of-type {
+          margin-bottom: 0;
+        }
       }
+    }
+  }
+
+  &.is-practice-mode {
+    .content {
+      flex: none;
+    }
+  }
+}
+
+.vocab-form {
+  display: flex;
+  flex-direction: column;
+  &.is-add-mode {
+    .input:nth-of-type(1) {
+      order: 1;
+    }
+    .input:nth-of-type(2) {
+      order: 3;
+      .input-label {
+        color: $dark-blue;
+      }
+      .input-element {
+        border-color: $blue;
+        &::placeholder {
+          color: $dark-blue;
+        }
+      }
+    }
+    .input:nth-of-type(3) {
+      order: 2;
+    }
+
+    .button-type-tertiary:nth-of-type(1) {
+      order: 4;
     }
   }
 }

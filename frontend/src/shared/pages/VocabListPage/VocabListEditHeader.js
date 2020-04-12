@@ -11,16 +11,16 @@ const VocabListEditHeader = ({
 }) => (
   <div className="header">
     <IconButton
-      icon="add-list"
-      type="secondary"
-      disabled={!selectedVocabs.length > 0}
-      onClick={onCreateNewVocabListButtonClick}
-    />
-    <IconButton
       type="secondary"
       icon="delete"
       disabled={!selectedVocabs.length > 0}
       onClick={onDeleteVocabsButtonClick}
+    />
+    <IconButton
+      icon="add-list"
+      type="secondary"
+      disabled={selectedVocabs.length < 2}
+      onClick={onCreateNewVocabListButtonClick}
     />
     <IconButton
       icon="plus"

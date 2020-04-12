@@ -8,8 +8,6 @@ import { Input, Button } from '../../components';
 const VocabForm = ({
   id,
   form,
-  translatedText,
-  setTranslatedText,
   onSourceLanguageChange,
   onTargetLanguageChange,
   onSourceLanguageDataListClick,
@@ -51,7 +49,6 @@ const VocabForm = ({
       }
 
       const [sourceLanguage] = languages.filter(({ value }) => value === Cookies.get(sourceLanguageCookieKey).substr(0, 2));
-      console.log('sourceLanguage', Cookies.get(sourceLanguageCookieKey));
       const targetLanguage = !Cookies.get(targetLanguageCookieKey) ? '' : languages.filter(({ value }) => value === Cookies.get(targetLanguageCookieKey))[0].text;
 
       setInitFormData({ sourceLanguage: sourceLanguage.text, targetLanguage });
@@ -59,10 +56,12 @@ const VocabForm = ({
   }
 
   return (
-    <form>
+    <form className={`vocab-form ${isEditMode ? 'is-edit-mode' : 'is-add-mode'}`}>
       <Input
+        label={t('vocablist_form_label_sourceLanguage')}
         inputRef={sourceLanguage.ref}
         value={sourceLanguage.value}
+        required
         placeholder={t('vocablist_form_placeholder_selectSourceLanguage')}
         autoComplete="off"
         name={sourceLanguage.name}
@@ -92,8 +91,10 @@ const VocabForm = ({
       />
       <div className="separator" />
       <Input
+        label={t('vocablist_form_label_targetLanguage')}
         inputRef={targetLanguage.ref}
         value={targetLanguage.value}
+        required
         autoComplete="off"
         placeholder={t('vocablist_form_placeholder_selectTargetLanguage')}
         name={targetLanguage.name}
@@ -107,24 +108,41 @@ const VocabForm = ({
           if (onTargetLanguageDataListClick) onTargetLanguageDataListClick({ value });
         }}
       />
-      <Input
-        label={t('vocablist_form_label_targetText')}
-        inputRef={targetText.ref}
-        autoComplete="off"
-        name={targetText.name}
-        placeholder={t('vocablist_form_placeholder_targetText')}
-        value={translatedText}
-        onChange={({ value }) => setTranslatedText(value)}
-        onBlur={({ value }) => setTranslatedText(value)}
-      />
-      {!isEditMode && (
+      {isEditMode && (
+        <Input
+          label={t('vocablist_form_label_targetText')}
+          inputRef={targetText.ref}
+          autoComplete="off"
+          name={targetText.name}
+          placeholder={t('vocablist_form_placeholder_targetText')}
+          value={targetText.value}
+          onChange={updateFormData}
+          onBlur={updateFormData}
+        />
+      )}
+
+      {isEditMode ? (
         <Button
+          tabIndex={-1}
+          disabled={!isFormValid}
+          type="secondary"
+          text={t('common_button_update')}
+          onClick={() => onSubmitVocabButtonClick({
+            sourceLanguage: sourceLanguage.value,
+            targetLanguage: targetLanguage.value,
+            sourceText: sourceText.value,
+            targetText: targetText.value,
+          })}
+        />
+      ) : (
+        <Button
+          disabled={!isFormValid}
           type="tertiary"
           text={t('common_button_translate')}
           onClick={() => {
-            // console.log('slCookie', Cookies.get(`source-language-${id}`));
-            // console.log('tlCookie', Cookies.get(`target-language-${id}`));
             onTranslateVocabButtonClick({
+              sourceLanguage: sourceLanguage.value,
+              targetLanguage: targetLanguage.value,
               sourceLanguageCode: Cookies.get(`source-language-${id}`),
               targetLanguageCode: Cookies.get(`target-language-${id}`),
               sourceText: sourceText.value,
@@ -132,22 +150,13 @@ const VocabForm = ({
           }}
         />
       )}
-      <Button
-        disabled={!isFormValid}
-        type="secondary"
-        text={t(`common_button_${isEditMode ? 'update' : 'create'}`)}
-        onClick={() => onSubmitVocabButtonClick({
-          sourceLanguage: sourceLanguage.value,
-          targetLanguage: targetLanguage.value,
-          sourceText: sourceText.value,
-          targetText: translatedText,
-        })}
-      />
+
     </form>
   );
 };
 VocabForm.defaultProps = {
   onTranslateVocabButtonClick: null,
+  onSubmitVocabButtonClick: null,
   onSourceLanguageChange: null,
   onTargetLanguageChange: null,
   onSourceLanguageDataListClick: null,
@@ -158,15 +167,13 @@ VocabForm.defaultProps = {
 VocabForm.propTypes = {
   id: string.isRequired,
   form: object.isRequired,
-  translatedText: string.isRequired,
-  setTranslatedText: func.isRequired,
   onSourceLanguageChange: func,
   onTargetLanguageChange: func,
   onSourceLanguageDataListClick: func,
   onTargetLanguageDataListClick: func,
   isEditMode: bool,
   onTranslateVocabButtonClick: func,
-  onSubmitVocabButtonClick: func.isRequired,
+  onSubmitVocabButtonClick: func,
 };
 
 export default VocabForm;

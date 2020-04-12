@@ -11,7 +11,7 @@ const Switch = ({
   disabled,
   onChange,
 }) => (
-  <label className={`switch ${disabled ? 'is-disabled' : ''} `} htmlFor={name}>
+  <label className={`switch ${disabled ? 'is-disabled' : ''} ${isActive ? 'is-active' : ''}`} htmlFor={name}>
     {label && <span className="switch-label-text">{label}</span>}
     <input
       id={name}

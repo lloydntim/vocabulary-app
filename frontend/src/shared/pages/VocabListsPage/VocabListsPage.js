@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import gql from 'graphql-tag';
 import { useQuery, useMutation } from '@apollo/react-hooks';
-import { Link, Redirect } from 'react-router-dom';
+import { Link, Redirect, useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import jwtDecode from 'jwt-decode';
 import Joyride from 'react-joyride';
@@ -17,6 +17,7 @@ export const ADD_LIST = gql`
   mutation AddList($name: String!, $file: Upload, $data: [[String]], $creatorId: ID!) {
     addList(name: $name, file: $file, data: $data, creatorId: $creatorId) {
       name
+      id
     }
   }
 `;
@@ -55,6 +56,7 @@ export const REMOVE_LIST = gql`
 const VocabListsPage = () => {
   /* eslint-disable  no-undef */
   const { t } = useTranslation();
+  const { push } = useHistory();
   const token = localStorage.getItem('token');
 
   if (!token) return <Redirect to="/" />;
@@ -72,7 +74,10 @@ const VocabListsPage = () => {
   const { run, stepIndex, steps, styles, locale, callback, updateJoyride } = useJoyride(vocabListsPageJoyride);
   const { loading, error, data } = useQuery(GET_LISTS, { variables: { creatorId }, onError: (error) => setResponseMessage(error.message.split(':')[1].trim()) });
   const [addList] = useMutation(ADD_LIST, {
-    onCompleted: () => setTimeout(() => updateJoyride({ run: true, stepIndex: 6 }), 1000),
+    onCompleted: (data) => {
+      console.log('data', data);
+      push(`/vocablist/${data.addList.id}`);
+    },
     onError: (error) => setResponseMessage(error.message.split(':')[1].trim()),
     refetchQueries: [{ query: GET_LISTS, variables: { creatorId } }],
   });
@@ -153,17 +158,6 @@ const VocabListsPage = () => {
                   onChange={updateFormData}
                   onBlur={updateFormData}
                 />
-                {!isEditTitleMode && (
-                  <Input
-                    label={t('common_button_upload')}
-                    inputRef={listFile.ref}
-                    type="file"
-                    name={listFile.name}
-                    pattern={/\.[xls(?x)|csv]+$/}
-                    patternErrorMessage={t('messages_error_fileTypeIncorrect')}
-                    onChange={updateFormData}
-                  />
-                )}
                 <Button
                   type="secondary"
                   disabled={!isFormValid}
@@ -198,7 +192,7 @@ const VocabListsPage = () => {
 
               <div ref={stickyHeaderRef} className={`sub-header ${isHeaderSticky ? 'is-sticky' : ''}`}>
                 <IconButton
-                  icon="add-list"
+                  icon="plus"
                   type="primary"
                   onClick={() => {
                     resetFormData();

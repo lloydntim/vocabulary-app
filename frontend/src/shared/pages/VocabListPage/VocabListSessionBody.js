@@ -55,7 +55,7 @@ const VocabListSessionBody = ({
 
   return (
     <>
-      <small>{`${currentVocab} / ${vocabsTotalCount}`}</small>
+      <small>{`${t('vocablist_sessionProgress')}: ${currentVocab} / ${vocabsTotalCount}`}</small>
 
       {(isVocabTranslationCorrect && (vocabsTotalCount === currentVocab))
         ? (

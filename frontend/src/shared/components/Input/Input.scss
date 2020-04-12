@@ -5,6 +5,14 @@
   position: relative;
   flex-direction: column;
 
+  .input-label {
+    margin: 4px 0 8px 4px;
+    display: flex;
+    font-weight: $bold;
+    font-size: 14px;
+    color: inherit;
+  }
+
   > .input-element {
     margin: 0 0 16px;
     padding: 12px 40px 12px 12px;
@@ -22,7 +30,7 @@
     padding: 8px;
     position: absolute;
     right: 8px;
-    top: 3px;
+    top: 32px;
     opacity: 1;
   }
 
@@ -43,6 +51,8 @@
       padding: 16px 0;
       color: $white;
       font-size: 18px;
+      font-weight: $normal;
+      margin: 0;
       background-color: $dark-blue;
       border-radius: 8px;
       pointer-events: none;

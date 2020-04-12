@@ -9,8 +9,6 @@ const VocabEditOverlay = ({
   title,
   isVisible,
   form,
-  translatedText,
-  setTranslatedText,
   onUpdateVocabButtonClick,
   onCloseButtonClick,
 }) => (
@@ -22,8 +20,6 @@ const VocabEditOverlay = ({
     <VocabForm
       id={id}
       form={form}
-      translatedText={translatedText}
-      setTranslatedText={setTranslatedText}
       isEditMode
       onSubmitVocabButtonClick={onUpdateVocabButtonClick}
     />
@@ -35,8 +31,6 @@ VocabEditOverlay.propTypes = {
   title: string.isRequired,
   isVisible: bool.isRequired,
   form: object.isRequired,
-  translatedText: string.isRequired,
-  setTranslatedText: func.isRequired,
   onUpdateVocabButtonClick: func.isRequired,
   onCloseButtonClick: func.isRequired,
 };
