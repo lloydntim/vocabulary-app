@@ -65,7 +65,7 @@ const ResetPasswordPage = () => {
   const passwordsMatching = password.value === passwordConfirm.value;
   const isSubmitButtonDisabled = !(isFormValid && passwordsMatching);
   const passwordMinLength = 7;
-  const passwordMaxLength = 15;
+  const passwordMaxLength = 30;
   const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.*[0-9])/;
 
   return (
