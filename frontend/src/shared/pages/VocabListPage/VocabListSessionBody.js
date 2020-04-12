@@ -55,8 +55,6 @@ const VocabListSessionBody = ({
 
   return (
     <>
-      <small>{`${t('vocablist_sessionProgress')}: ${currentVocab} / ${vocabsTotalCount}`}</small>
-
       {(isVocabTranslationCorrect && (vocabsTotalCount === currentVocab))
         ? (
           <>
@@ -95,6 +93,7 @@ const VocabListSessionBody = ({
           </>
         ) : (
           <>
+            <small>{`${t('vocablist_sessionProgress')}: ${currentVocab} / ${vocabsTotalCount}`}</small>
             <p>{vocabSourceText}</p>
 
             <label className={`textarea ${vocabTranslationStatusMessage ? `textarea-status-${vocabTranslationStatusMessage}` : ''}`} htmlFor="translation">
