@@ -156,25 +156,29 @@ export const resendVerificationToken = async (parent, args, { t, Sentry }) => {
 };
 
 export const createPasswordToken = async (parent, args, { t, Sentry }) => {
-  const { email } = args;
+  const { username } = args;
+  console.log(username);
   try {
     const resetPasswordToken = crypto.randomBytes(20).toString('hex');
     const currentUser = await User.findOneAndUpdate(
-      { email },
+      { username },
       { resetPasswordToken, resetPasswordExpires: Date.now() + 3600000 },
       { new: true } );
 
-    if (!currentUser) throw new ApolloError(t('auth_error_couldUpdateUserWithEmail', { email }));
-    Sentry.configureScope((scope) => scope.setUser({ username: currentUser.username, email }));
+    if (!currentUser) throw new ApolloError(t('user_error_userCouldNotBeFound', { username }));
+    Sentry.configureScope((scope) => scope.setUser({ username: currentUser.username, email: currentUser.email }));
 
     const domain = NODE_ENV === 'development' ? `http://${HOST}:${CLIENT_DEV_PORT}` : CLIENT_HOST;
     const mailOptions = {
       to: currentUser.email,
       from: 'password-reset@lloydntim.com',
       subject: t('auth_email_subject_passwordReset'),
-      text: t('auth_email_subject_passwordResetMessage', { username: currentUser.username, resetPasswordToken, domain, interpolation: { escapeValue: false } }),
+      text: t('auth_email_content_passwordResetMessage', { username: currentUser.username, resetPasswordToken, domain, interpolation: { escapeValue: false } }),
     };
-    return await nodemailerMailgun.sendMail(mailOptions);
+    await nodemailerMailgun.sendMail(mailOptions);
+    return {
+      message: t('auth_success_passwordEmailSent'),
+    };
   } catch (error) {
     Sentry.captureException(error);
     throw new AuthenticationError(error);

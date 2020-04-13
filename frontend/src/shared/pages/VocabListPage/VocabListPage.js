@@ -157,7 +157,6 @@ const VocabListPage = () => {
     if (isVocablistEditModeJoyrideFinished === 'false') {
       const completedSteps = JSON.parse(isVocablistEditModeJoyrideProgress);
       const lastStep = completedSteps.slice(-1).pop();
-      console.log(lastStep);
       updateJoyride({ run: true, stepIndex: lastStep });
     }
   }, []);

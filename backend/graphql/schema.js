@@ -75,7 +75,7 @@ export const typeDefs = gql`
     login(username: String, password: String): Auth
     verify(token: String):Auth
     resendVerificationToken(username: String, email: String):Auth
-    createPasswordToken(email: String): Auth
+    createPasswordToken(username: String): Auth
     updatePassword(resetPasswordToken: String, password: String): Auth
     updateUser(id: ID, username: String, email: String): User
     removeUser(id: ID): User

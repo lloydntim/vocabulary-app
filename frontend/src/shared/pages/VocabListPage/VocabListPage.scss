@@ -116,22 +116,6 @@
       margin: 0 0 8px 0;
     }
 
-    .source-text-static {
-      display: flex;
-      flex-direction: column;
-      span {
-        color: $green;
-      }
-
-      .label {
-        margin: 4px 0 8px 4px;
-        display: flex;
-        font-weight: $bold;
-        font-size: 14px;
-        color: inherit;
-      }
-    }
-
     label {
       .input-label {
         margin: 4px 0 8px 4px;
@@ -142,102 +126,17 @@
       }
     }
 
-    .textarea {
-      position: relative;
-
-      .textarea-element {
-        background-color: $grey;
-        border: solid 1px $green;
-        resize: none;
-        outline: none;
-        color: $dark-green;
-        margin: 0 0 12px;
-
-        &::placeholder {
-          color: $green;
-        }
-      }
-
-      svg {
-        position: absolute;
-        display: flex;
-        bottom: 24px;
-        right: 12px;
-        width: 20px;
-        height: 20px;
-      }
-
-      &.textarea-status-success {
-        .textarea-element {
-          pointer-events: none;
-          background-color: $light-blue;
-          border-color: $blue;
-          color: $blue;
-        }
-
-        svg {
-          path {
-            fill: $blue;
-          }
-        }
-      }
-
-      &.textarea-status-error {
-        .textarea-element {
-          background-color: $light-red;
-          border-color: $red;
-          color: $red;
-        }
-
-        svg {
-          path {
-            fill: $red;
-          }
-        }
-      }
-    }
-
-    .results-title {
-      margin: 24px 0 0;
-      padding: 0;
-      border: none;
-      display: flex;
-      justify-content: center;
-    }
-
-    .container {
-      padding: 24px 12px 48px;
-
-      display: grid;
-      grid-template-columns: 50% 50%;
-      grid-template-rows: 32px 32px;
-      grid-column-gap: 12px;
-      grid-row-gap: 12px;
-    }
-
-    p {
-      font-size: 24px;
-      padding: 24px 0 48px;
-      margin: 0 0 12px;
-      border-bottom: $grey 1px solid;
-    }
-
-    ul {
+    .vocabs-list {
       list-style: none;
       display: flex;
+      flex-direction: column;
       margin: 0;
       padding: 16px 0 0;
       border-top: solid 1px $grey;
       justify-content: space-between;
 
-      > li {
+      .list-item {
         display: inline-flex;
-
-        // svg {
-        //   path, g {
-        //     fill: $green;
-        //   }
-        // }
       }
     }
 
@@ -292,6 +191,132 @@
   &.is-practice-mode {
     .content {
       flex: none;
+
+      .source-text-static {
+        display: flex;
+        flex-direction: column;
+        span {
+          color: $green;
+        }
+
+        .label {
+          margin: 4px 0 8px 4px;
+          display: flex;
+          font-weight: $bold;
+          font-size: 14px;
+          color: inherit;
+        }
+      }
+
+      .source-text {
+        font-size: 24px;
+        padding: 24px 0 48px;
+        margin: 0 0 12px;
+        border-bottom: $grey 1px solid;
+      }
+
+      .target-text {
+        color: $dark-yellow;
+        padding: 12px;
+        height: 110px;
+        width: 100%;
+        font-size: 18px;
+        border-radius: 8px;
+        margin: 0 0 16px;
+        background-color: $light-yellow;
+        border: solid 1px $dark-yellow;
+        position: relative;
+
+        svg {
+          position: absolute;
+          display: flex;
+          bottom: 2px;
+          right: 10px;
+          width: 28px;
+          height: 28px;
+          path {
+            fill: $dark-yellow;
+          }
+        }
+      }
+
+      .textarea {
+        position: relative;
+
+        .textarea-element {
+          background-color: $grey;
+          border: solid 1px $green;
+          resize: none;
+          outline: none;
+          color: $dark-green;
+          margin: 0 0 12px;
+
+          &::placeholder {
+            color: $green;
+          }
+        }
+
+        svg {
+          position: absolute;
+          display: flex;
+          bottom: 24px;
+          right: 12px;
+          width: 20px;
+          height: 20px;
+        }
+
+        &.textarea-status-success {
+          .textarea-element {
+            pointer-events: none;
+            background-color: $light-blue;
+            border-color: $blue;
+            color: $blue;
+          }
+
+          svg {
+            path {
+              fill: $blue;
+            }
+          }
+        }
+
+        &.textarea-status-error {
+          .textarea-element {
+            background-color: $light-red;
+            border-color: $red;
+            color: $red;
+          }
+
+          svg {
+            path {
+              fill: $red;
+            }
+          }
+        }
+      }
+
+      .practice-mode-controls {
+        flex-direction: row;
+      }
+
+      .results-title {
+        margin: 24px 0 0;
+        padding: 0;
+        border: none;
+        display: flex;
+        justify-content: center;
+      }
+
+      .container {
+        padding: 24px 12px 48px;
+
+        display: grid;
+        grid-template-columns: 50% 50%;
+        grid-template-rows: 32px 32px;
+        grid-column-gap: 12px;
+        grid-row-gap: 12px;
+      }
+
     }
   }
 }

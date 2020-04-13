@@ -1,5 +1,6 @@
 {
   "auth_success_verificationEmailSent": "Se ha enviado un correo electrónico de verificación.",
+  "auth_success_passwordEmailSent": "Se ha enviado un correo electrónico de restablecimiento de contraseña.",
   "auth_error_userMustBeLoggedIn": "El usuario debe iniciar sesión.",
   "auth_error_incorrectPassword": "Contraseña incorrecta.",
   "auth_error_userAlreadyVerified": "El usuario {{username}} ya ha sido verificado.",
@@ -12,7 +13,7 @@
   "auth_email_subject_passwordReset": "Restablecimiento de contraseña.",
   "auth_email_content_passwordResetMessage": "Hola {{username}},\n\nA continuación encontrará el enlace que solicitó para restablecer su contraseña.\n{{- domain}}/#/reset/{{resetPasswordToken}}\n\n  Si no solicitó este correo electrónico y recuerda que su contraseña ignore este correo electrónico.",
   "auth_email_subject_passwordChanged": "La contraseña ha sido cambiada.",
-  "auth_email_content_passwordChangeMessage": "Hola {{username}},\n\nEsta es una confirmación de que la contraseña de su cuenta {{email}} acaba de cambiar.\n.",
+  "auth_email_content_passwordChangeMessage": "Hola {{username}},\n\nEsta es una confirmación de que la contraseña de su cuenta que utilisa el correo electrónico {{email}}, acaba de cambiar.\n.",
   "user_error_userWithIdCouldNotBeFound": "El usuario con id {{id}} no se pudo encontrar.",
   "user_error_userCouldNotBeFound": "No se pudo encontrar al usuario con el nombre de usuario {{username}}.",
   "user_error_userCouldNotBeUpdated": "El usuario no pudo ser actualizado.",

@@ -10,7 +10,7 @@ const VocabListSessionFooter = ({
   onRestartSessionButtonClick,
 }) => (
   <>
-    <ul>
+    <ul className="practice-mode-controls">
       <li>
         <IconButton
           type="secondary"

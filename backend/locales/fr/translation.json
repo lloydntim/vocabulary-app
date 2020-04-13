@@ -1,5 +1,6 @@
 {
   "auth_success_verificationEmailSent": "Un e-mail de vérification a été envoyé.",
+  "auth_success_passwordEmailSent": "Un e-mail de réinitialisation du mot de passe a été envoyé.",
   "auth_error_userMustBeLoggedIn": "L'utilisateur doit être connecté.",
   "auth_error_incorrectPassword": "Mot de passe incorrect.",
   "auth_error_userAlreadyVerified": "L'utilisateur {{username}} a déjà été vérifié.",
@@ -12,7 +13,7 @@
   "auth_email_subject_passwordReset": "Réinitialisation du mot de passe.",
   "auth_email_content_passwordResetMessage": "Bonjour {{username}},\n\nVeuillez trouver ci-dessous le lien que vous avez demandé pour réinitialiser votre mot de passe.\n{{- domain}}/#/reset/{{resetPasswordToken}}\n\n  Si vous n'avez pas demandé cet e-mail et vous en souvenez, votre mot de passe ignore cet e-mail.",
   "auth_email_subject_passwordChanged": "Le mot de passe a été changé.",
-  "auth_email_content_passwordChangeMessage": "Bonjour {{username}},\n\nIl s'agit d'une confirmation que le mot de passe de votre compte {{email}} vient d'être modifié.\n.",
+  "auth_email_content_passwordChangeMessage": "Bonjour {{username}},\n\nIl s'agit d'une confirmation que le mot de passe de votre compte qui utilise l'e-mail {{email}}, vient d'être modifié.\n.",
   "user_error_userWithIdCouldNotBeFound": "L'utilisateur avec l'identifiant {{id}} est introuvable.",
   "user_error_userCouldNotBeFound": "L'utilisateur avec le nom d'utilisateur {{username}} est introuvable.",
   "user_error_userCouldNotBeUpdated": "L'utilisateur n'a pas pu être mis à jour.",

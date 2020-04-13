@@ -107,7 +107,7 @@ const Input = (props) => {
           if (errorMessage || type === 'password' || type === 'file') setErrorMessage(error);
           if (dataList) setDataListVisibility(true);
           if (type === 'file' && files) setFileName(files[0].name);
-          if (type === 'file' && error) setFileName('');
+          if ((type === 'file' && error) || (type === 'file' && !files)) setFileName('');
           onChange({ value, files, error, required, name });
         }}
         onFocus={onFocus}

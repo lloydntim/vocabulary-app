@@ -37,15 +37,8 @@ const LoginPage = () => {
         push('/vocablists');
       },
       onError: (error) => {
-        const errorMessage = error.message;
         Sentry.captureException(error);
-        if (errorMessage.includes('username')) {
-          setResponseMessage(t('messages_error_usernameDoesNotExists', { username: username.value }));
-        } else if (errorMessage.includes('password')) {
-          setResponseMessage(t('messages_error_passwordIsIncorrect'));
-        } else {
-          setResponseMessage(t('messages_error_pleaseTryAgain'));
-        }
+        setResponseMessage(error.message.split(':')[1].trim());
       },
     },
   );

@@ -42,16 +42,7 @@ const SignUpPage = () => {
         // const responseText = username ? t('messages_success_userCreated', { username }) : t('messages_error_pleaseTryAgain');
         // setResponseMessage(responseText);
       },
-      onError: (error) => {
-        const errorMessage = error.message;
-        if (errorMessage.includes('duplicate') && errorMessage.includes('username')) {
-          setResponseMessage(t('messages_error_usernameTaken'));
-        } else if (errorMessage.includes('duplicate') && errorMessage.includes('email')) {
-          setResponseMessage(t('messages_error_emailTaken'));
-        } else {
-          setResponseMessage(t('messages_error_pleaseTryAgain'));
-        }
-      },
+      onError: (error) => setResponseMessage(error.message.split(':')[1].trim()),
     },
   );
   const passwordsMatching = password.value === passwordConfirm.value;

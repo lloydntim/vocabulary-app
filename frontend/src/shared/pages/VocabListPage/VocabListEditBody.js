@@ -14,7 +14,7 @@ const VocabListEditBody = ({
   onVocabCheckboxChange,
   onVocabEditButtonClick,
 }) => (
-  <ul className="list">
+  <ul className="vocabs-list list">
     {list.map((item, index) => {
       const [sourceLanguage, targetLanguage, sourceText, targetText] = item;
       return (

@@ -29,7 +29,9 @@ const VocabListSessionBody = ({
   vocabsTotalCount,
   currentVocab,
   vocabSourceText,
+  vocabTargetText,
   vocabTranslationInputValue,
+  isTargetTextRevealed,
   isVocabTranslationCorrect,
   vocabTranslationStatusMessage,
   vocabsReport,
@@ -94,20 +96,30 @@ const VocabListSessionBody = ({
         ) : (
           <>
             <small>{`${t('vocablist_sessionProgress')}: ${currentVocab} / ${vocabsTotalCount}`}</small>
-            <p>{vocabSourceText}</p>
+            <p className="source-text">{vocabSourceText}</p>
 
-            <label className={`textarea ${vocabTranslationStatusMessage ? `textarea-status-${vocabTranslationStatusMessage}` : ''}`} htmlFor="translation">
-              <textarea
-                id="translation"
-                className="textarea-element"
-                rows="4"
-                value={vocabTranslationInputValue}
-                placeholder={t('vocablist_form_placeholder_enterTranslation')}
-                onFocus={onVocabTranslationInputFocus}
-                onChange={onVocabTranslationInputChange}
-              />
-              {vocabTranslationStatusMessage && <Icon type={isVocabTranslationCorrect ? 'tick' : 'close'} />}
-            </label>
+            {isTargetTextRevealed ? (
+              <p className="target-text">
+                <span>
+                  {vocabTargetText}
+                </span>
+                <Icon type="view" />
+              </p>
+            ) : (
+              <label className={`textarea ${vocabTranslationStatusMessage ? `textarea-status-${vocabTranslationStatusMessage}` : ''}`} htmlFor="translation">
+                <textarea
+                  id="translation"
+                  className="textarea-element"
+                  rows="4"
+                  value={vocabTranslationInputValue}
+                  placeholder={t('vocablist_form_placeholder_enterTranslation')}
+                  onFocus={onVocabTranslationInputFocus}
+                  onChange={onVocabTranslationInputChange}
+                />
+                {vocabTranslationStatusMessage && <Icon type={isVocabTranslationCorrect ? 'tick' : 'close'} />}
+              </label>
+            )}
+
             <Button
               type={`${isVocabTranslationCorrect ? 'tertiary' : 'secondary'}`}
               text={t(`common_button_${isVocabTranslationCorrect ? 'next' : 'submit'}`)}
@@ -123,8 +135,10 @@ VocabListSessionBody.propTypes = {
   vocabsTotalCount: number.isRequired,
   currentVocab: number.isRequired,
   vocabSourceText: string.isRequired,
+  vocabTargetText: string.isRequired,
   vocabTranslationInputValue: string.isRequired,
   isVocabTranslationCorrect: bool.isRequired,
+  isTargetTextRevealed: bool.isRequired,
   vocabTranslationStatusMessage: string.isRequired,
   vocabsReport: object.isRequired,
   onVocabTranslationInputChange: func.isRequired,

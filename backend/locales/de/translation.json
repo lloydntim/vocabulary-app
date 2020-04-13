@@ -1,5 +1,6 @@
 {
   "auth_success_verificationEmailSent": "Bestätigungs-E-Mail wurde gesendet.",
+  "auth_success_passwordEmailSent": "E-Mail zum Zurücksetzen des Passworts wurde gesendet.",
   "auth_error_userMustBeLoggedIn": "Benutzer muss angemeldet sein.",
   "auth_error_incorrectPassword": "Falsches Passwort.",
   "auth_error_userAlreadyVerified": "Benutzer {{username}} wurde bereits überprüft.",
@@ -12,7 +13,7 @@
   "auth_email_subject_passwordReset": "Passwort zurücksetzen.",
   "auth_email_content_passwordResetMessage": "Hallo {{username}},\n\nNachfolgend finden Sie den Link, den Sie zum Zurücksetzen Ihres Passworts angefordert haben.\n{{- domain}}/#/reset/{{resetPasswordToken}}\n\n Wenn Sie diese E-Mail nicht angefordert haben und sich Ihr Passwort merken, ignorieren Sie diese E-Mail.",
   "auth_email_subject_passwordChanged": "Das Passwort wurde geändert.",
-  "auth_email_content_passwordChangeMessage": "Hallo {{username}},\n\nDies ist eine Bestätigung, dass das Passwort für Ihr Konto {{email}} gerade geändert wurde.\n.",
+  "auth_email_content_passwordChangeMessage": "Hallo {{username}},\n\nDies ist eine Bestätigung, dass das Passwort für Ihr Konto, das diese E-Mail {{email}} nutzt, gerade geändert wurde.\n.",
   "user_error_userWithIdCouldNotBeFound": "Benutzer mit der ID {{id}} wurde nicht gefunden.",
   "user_error_userCouldNotBeFound": "Benutzer mit Benutzername {{username}} konnte nicht gefunden werden.",
   "user_error_userCouldNotBeUpdated": "Benutzer konnte nicht aktualisiert werden.",

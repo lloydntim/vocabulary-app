@@ -74,10 +74,7 @@ const VocabListsPage = () => {
   const { run, stepIndex, steps, styles, locale, callback, updateJoyride } = useJoyride(vocabListsPageJoyride);
   const { loading, error, data } = useQuery(GET_LISTS, { variables: { creatorId }, onError: (error) => setResponseMessage(error.message.split(':')[1].trim()) });
   const [addList] = useMutation(ADD_LIST, {
-    onCompleted: (data) => {
-      console.log('data', data);
-      push(`/vocablist/${data.addList.id}`);
-    },
+    onCompleted: (data) => push(`/vocablist/${data.addList.id}`),
     onError: (error) => setResponseMessage(error.message.split(':')[1].trim()),
     refetchQueries: [{ query: GET_LISTS, variables: { creatorId } }],
   });

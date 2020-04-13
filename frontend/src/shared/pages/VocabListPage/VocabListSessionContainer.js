@@ -14,6 +14,7 @@ const VocabListSessionContainer = ({ list, joyride }) => {
   const { t } = useTranslation();
   const [count, setCount] = useState(0);
   const [isLanguageSwitched, toggleLanguage] = useState(false);
+  const [isTargetTextRevealed, setIsTargetTextRevealed] = useState(false);
   const [translationInputValue, setTranslationInputValue] = useState('');
   const [attemptsNeeded, setAttemptsNeeded] = useState(0);
   const [hintsNeeded, setHintsNeeded] = useState(0);
@@ -68,7 +69,9 @@ const VocabListSessionContainer = ({ list, joyride }) => {
       <VocabListSessionBody
         vocabsTotalCount={list.length}
         currentVocab={count + 1}
+        isTargetTextRevealed={isTargetTextRevealed}
         vocabSourceText={sourceText}
+        vocabTargetText={targetText}
         isVocabTranslationCorrect={status === 'success'}
         vocabTranslationInputValue={translationInputValue}
         vocabTranslationStatusMessage={status}
@@ -122,10 +125,10 @@ const VocabListSessionContainer = ({ list, joyride }) => {
             setAttemptsNeeded(0);
           }
         }}
-        onShowTranslationButtonActive={() => toggleLanguage(!isLanguageSwitched)}
+        onShowTranslationButtonActive={() => setIsTargetTextRevealed(true)}
         onShowTranslationButtonInactive={() => {
           setHintsNeeded(hintsNeeded + 1);
-          toggleLanguage(!isLanguageSwitched);
+          setIsTargetTextRevealed(false);
         }}
         onRestartSessionButtonClick={() => {
           setTranslationInputValue('');

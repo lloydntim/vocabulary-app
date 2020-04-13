@@ -12,8 +12,8 @@ import { Message, Input, Button } from '../../components';
 import './ForgotPasswordPage.scss';
 
 export const CREATE_PASSWORD_TOKEN = gql`
-  mutation CreatePasswordToken($email: String) {
-    createPasswordToken(email: $email) {
+  mutation CreatePasswordToken($username: String) {
+    createPasswordToken(username: $username) {
       message
     }
   }
@@ -22,16 +22,12 @@ export const CREATE_PASSWORD_TOKEN = gql`
 const ForgotPasswordPage = () => {
   const { t } = useTranslation();
 
-  const { formData: { email }, updateFormData, isFormValid } = useForm('email');
+  const { formData: { username }, updateFormData, isFormValid } = useForm(['username']);
   const [responseMessage, setResponseMessage] = useState('');
   const [createPasswordToken, { loading, error, data }] = useMutation(
     CREATE_PASSWORD_TOKEN, {
       onCompleted: (data) => setResponseMessage(data.createPasswordToken.message),
-      onError: (error) => {
-        const message = error.message.includes('email')
-          ? t('messages_error_emailDoesNotExist', { email }) : t('messages_error_somethingWentWrong');
-        setResponseMessage(message);
-      },
+      onError: (error) => setResponseMessage(error.message.split(':')[2].trim()),
     },
   );
 
@@ -42,14 +38,13 @@ const ForgotPasswordPage = () => {
 
         <form>
           <Input
-            label={t('common_form_label_email')}
-            inputRef={email.ref}
+            label={t('common_form_label_username')}
+            inputRef={username.ref}
             required
             autoComplete="email"
-            name={email.name}
-            type="email"
-            placeholder={t('common_form_placeholder_email')}
-            value={email.value}
+            name={username.name}
+            placeholder={t('common_form_placeholder_username')}
+            value={username.value}
             onChange={updateFormData}
             onBlur={updateFormData}
           />
@@ -58,7 +53,7 @@ const ForgotPasswordPage = () => {
             type="primary"
             disabled={!isFormValid}
             text={t('common_button_submit')}
-            onClick={() => createPasswordToken({ variables: { email: email.value } })}
+            onClick={() => createPasswordToken({ variables: { username: username.value } })}
           />
         </form>
 
