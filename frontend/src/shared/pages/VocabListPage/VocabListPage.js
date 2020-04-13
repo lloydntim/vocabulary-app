@@ -155,7 +155,10 @@ const VocabListPage = () => {
       localStorage.setItem(isVocablistEditModeJoyrideProgressKey, '');
     }
     if (isVocablistEditModeJoyrideFinished === 'false') {
-      updateJoyride({ run: true, stepIndex });
+      const completedSteps = JSON.parse(isVocablistEditModeJoyrideProgress);
+      const lastStep = completedSteps.slice(-1).pop();
+      console.log(lastStep);
+      updateJoyride({ run: true, stepIndex: lastStep });
     }
   }, []);
 
