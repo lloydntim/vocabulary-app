@@ -132,16 +132,13 @@ const callback = (props) => (data) => {
   const { index, type /* status, action  */ } = data;
   const { /* run,  */updateJoyride, username } = props;
   // const finishedStatuses = [STATUS.FINISHED, STATUS.SKIPPED];
-  console.log(data);
   /* eslint-disable no-undef */
   if (JSON.parse(localStorage.getItem(`isVocablistEditModeJoyrideProgress-${username}`).indexOf(index) !== -1)) {
-    console.log('works', 0);
     updateJoyride({ run: false });
   } else if ([EVENTS.STEP_AFTER, EVENTS.TARGET_NOT_FOUND].includes(type)) {
     const progress = localStorage.getItem(`isVocablistEditModeJoyrideProgress-${username}`);
     const stepsList = progress ? JSON.parse(progress) : [];
     localStorage.setItem(`isVocablistEditModeJoyrideProgress-${username}`, JSON.stringify(stepsList.concat(index)));
-    console.log('should work');
     updateJoyride({ stepIndex: 0, run: true });
   }
 
