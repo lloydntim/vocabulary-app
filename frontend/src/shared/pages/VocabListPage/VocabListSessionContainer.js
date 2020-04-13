@@ -82,7 +82,7 @@ const VocabListSessionContainer = ({ list, joyride }) => {
         }}
         onVocabTranslationSubmitButtonClick={() => {
           if (status !== 'success') {
-            const statusMessage = targetText === translationInputValue.trim() ? 'success' : 'error';
+            const statusMessage = targetText.trim() === translationInputValue.trim() ? 'success' : 'error';
 
             if (statusMessage === 'success') {
               const vocabResultData = {
