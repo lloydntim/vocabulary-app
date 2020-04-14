@@ -42,7 +42,6 @@ const LoginPage = () => {
       },
     },
   );
-
   return (
     <RootLayout type="guest">
       <div className="login-page page">
@@ -62,10 +61,9 @@ const LoginPage = () => {
           <Input
             label={t('common_form_placeholder_password')}
             inputRef={password.ref}
-            // autoComplete="new-password"
             required
             name={password.name}
-            type="password"
+            type="text"
             placeholder={t('common_form_label_password')}
             value={password.value}
             onChange={updateFormData}

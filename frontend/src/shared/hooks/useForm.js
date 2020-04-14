@@ -69,6 +69,7 @@ const useForm = (inputNames) => {
       const updatedFormData = Object.entries(formFieldEntries).reduce((input, entry) => {
         const [name, value] = entry;
         input[name].value = value;
+        updateFormData({ name, value });
         return input;
       }, formData);
       setFormData(updatedFormData);

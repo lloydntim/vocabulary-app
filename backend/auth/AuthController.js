@@ -72,7 +72,6 @@ export const register = async (parent, args, { t, Sentry }) => {
 };
 
 export const login = async (parent, args, { t, Sentry }) => {
-  console.log('login');
   const { username, password } = args;
   Sentry.configureScope((scope) => scope.setUser({ username }));
 

@@ -161,7 +161,6 @@ const VocabListEditContainer = ({
         onAddVocabButtonClick={() => {
           setJoyride({ stepIndex: 0, run: false });
           setAddVocabOverlayVisibility(true);
-          addVocabForm.setInitFormData({ sourceText: '', targetText: '' });
         }}
         onAddVocabListButtonClick={() => setAddVocabOverlayVisibility(true)}
         onCreateNewVocabListButtonClick={() => {

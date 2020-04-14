@@ -40,6 +40,7 @@ const VocabForm = ({
       const sourceLanguageCookieKey = `source-language-${id}`;
       const targetLanguageCookieKey = `target-language-${id}`;
 
+
       if (typeof Cookies.get(sourceLanguageCookieKey) === 'undefined') {
         Cookies.set(sourceLanguageCookieKey, i18n.language);
       }
@@ -50,8 +51,7 @@ const VocabForm = ({
 
       const [sourceLanguage] = languages.filter(({ value }) => value === Cookies.get(sourceLanguageCookieKey).substr(0, 2));
       const targetLanguage = !Cookies.get(targetLanguageCookieKey) ? '' : languages.filter(({ value }) => value === Cookies.get(targetLanguageCookieKey))[0].text;
-
-      setInitFormData({ sourceLanguage: sourceLanguage.text, targetLanguage });
+      setInitFormData({ sourceLanguage: sourceLanguage.text, targetLanguage, sourceText: '' });
     }, []);
   }
 
