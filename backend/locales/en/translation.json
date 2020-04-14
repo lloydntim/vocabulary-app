@@ -17,8 +17,8 @@
   "auth_email_subject_passwordChanged": "Password has been changed.",
   "auth_email_content_passwordChangeMessage": "Hello {{username}},\n\nThis is a confirmation that the password for your account using this email {{email}} has just been changed.\n.",
 
-  "user_error_userWithIdCouldNotBeFound": "User with id {{id}} could not found.",
-  "user_error_userCouldNotBeFound": "User with username {{username}} could not found.",
+  "user_error_userWithIdCouldNotBeFound": "User with id {{id}} could not be found.",
+  "user_error_userCouldNotBeFound": "User with username {{username}} could not be found.",
   "user_error_userCouldNotBeUpdated": "User could not be updated.",
   "user_error_userCouldNotBeRetrieved": "User with id {{id}} could not be retrieved.",
   "user_error_usersCouldNotBeRetrieved": "Users with could not be retrieved.",

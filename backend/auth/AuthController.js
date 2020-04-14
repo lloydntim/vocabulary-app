@@ -98,7 +98,7 @@ export const login = async (parent, args, { t, Sentry }) => {
     };
   } catch (error) {
     Sentry.captureException(error);
-    throw error.message;
+    throw new AuthenticationError(error.message);
   }
 };
 
@@ -131,7 +131,7 @@ export const verify = async (parent, args, { t, Sentry }) => {
     };
   } catch(error) {
     Sentry.captureException(error);
-    throw new AuthenticationError(error);
+    throw new AuthenticationError(error.message);
   }
 };
 
@@ -147,7 +147,7 @@ export const resendVerificationToken = async (parent, args, { t, Sentry }) => {
     sendVerificationEmail(user, t);
   } catch(error) {
     Sentry.captureException(error);
-    throw new AuthenticationError(error);
+    throw new AuthenticationError(error.message);
   }
 
   return {
@@ -181,7 +181,7 @@ export const createPasswordToken = async (parent, args, { t, Sentry }) => {
     };
   } catch (error) {
     Sentry.captureException(error);
-    throw new AuthenticationError(error);
+    throw new AuthenticationError(error.message);
   };
 };
 
@@ -231,7 +231,7 @@ export const updatePassword = async (parents, args, { t, Sentry }) => {
     return { token };
   } catch (error) {
     Sentry.captureException(error);
-    throw new AuthenticationError(error);
+    throw new AuthenticationError(error.message);
   };
 };
 

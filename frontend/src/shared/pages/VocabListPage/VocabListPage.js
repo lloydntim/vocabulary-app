@@ -142,23 +142,24 @@ const VocabListPage = () => {
 
   useEffect(() => {
     /* eslint-disable no-undef */
-    const isVocablistEditModeJoyrideFinishedKey = `isVocablistEditModeJoyrideFinished-${username}`;
-    const isVocablistEditModeJoyrideFinished = localStorage.getItem(isVocablistEditModeJoyrideFinishedKey);
+    // const isVocablistEditModeJoyrideFinishedKey = `isVocablistEditModeJoyrideFinished-${username}`;
+    // const isVocablistEditModeJoyrideFinished = localStorage.getItem(isVocablistEditModeJoyrideFinishedKey);
     const isVocablistEditModeJoyrideProgressKey = `isVocablistEditModeJoyrideProgress-${username}`;
     const isVocablistEditModeJoyrideProgress = localStorage.getItem(isVocablistEditModeJoyrideProgressKey);
-    if (isVocablistEditModeJoyrideFinished === null) {
-      updateJoyride({ run: true, stepIndex });
-      localStorage.setItem(isVocablistEditModeJoyrideFinishedKey, false);
-    }
+    // if (isVocablistEditModeJoyrideFinished === null) {
+    //   updateJoyride({ run: true, stepIndex });
+    //   localStorage.setItem(isVocablistEditModeJoyrideFinishedKey, false);
+    // }
     if (isVocablistEditModeJoyrideProgress === null) {
       updateJoyride({ run: true, stepIndex });
       localStorage.setItem(isVocablistEditModeJoyrideProgressKey, '');
     }
-    if (isVocablistEditModeJoyrideFinished === 'false') {
-      const completedSteps = JSON.parse(isVocablistEditModeJoyrideProgress);
-      const lastStep = completedSteps.slice(-1).pop();
-      updateJoyride({ run: true, stepIndex: lastStep });
-    }
+    // if (isVocablistEditModeJoyrideFinished === 'false') {
+    //   console.log('isVocablistEditModeJoyrideProgress', isVocablistEditModeJoyrideProgress);
+    //   const completedSteps = JSON.parse(isVocablistEditModeJoyrideProgress);
+    //   const lastStep = completedSteps.slice(-1).pop();
+    //   updateJoyride({ run: true, stepIndex: lastStep });
+    // }
   }, []);
 
   return (

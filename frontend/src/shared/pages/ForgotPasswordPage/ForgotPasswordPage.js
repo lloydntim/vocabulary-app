@@ -27,7 +27,7 @@ const ForgotPasswordPage = () => {
   const [createPasswordToken, { loading, error, data }] = useMutation(
     CREATE_PASSWORD_TOKEN, {
       onCompleted: (data) => setResponseMessage(data.createPasswordToken.message),
-      onError: (error) => setResponseMessage(error.message.split(':')[2].trim()),
+      onError: (error) => setResponseMessage(error.message.split(':')[1].trim()),
     },
   );
 

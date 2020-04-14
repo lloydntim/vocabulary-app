@@ -1,6 +1,5 @@
 
-// import React from 'react';
-import { /* STATUS,  ACTIONS, */ EVENTS } from 'react-joyride';
+import { ACTIONS, EVENTS } from 'react-joyride';
 
 import locale from './joyrideLocale';
 import styles from './joyrideStyling';
@@ -129,9 +128,8 @@ const steps = (t) => [
 ];
 
 const callback = (props) => (data) => {
-  const { index, type /* status, action  */ } = data;
-  const { /* run,  */updateJoyride, username } = props;
-  // const finishedStatuses = [STATUS.FINISHED, STATUS.SKIPPED];
+  const { index, type, action } = data;
+  const { updateJoyride, username } = props;
   /* eslint-disable no-undef */
   if (JSON.parse(localStorage.getItem(`isVocablistEditModeJoyrideProgress-${username}`).indexOf(index) !== -1)) {
     updateJoyride({ run: false });
@@ -139,28 +137,10 @@ const callback = (props) => (data) => {
     const progress = localStorage.getItem(`isVocablistEditModeJoyrideProgress-${username}`);
     const stepsList = progress ? JSON.parse(progress) : [];
     localStorage.setItem(`isVocablistEditModeJoyrideProgress-${username}`, JSON.stringify(stepsList.concat(index)));
-    updateJoyride({ stepIndex: 0, run: true });
+    if (action === ACTIONS.NEXT || action === ACTIONS.CLOSE) {
+      updateJoyride({ stepIndex: index, run: false });
+    }
   }
-
-  // if ([EVENTS.STEP_AFTER, EVENTS.TARGET_NOT_FOUND].includes(type)) {
-  //   const progress = localStorage.getItem(`isVocablistEditModeJoyrideProgress-${username}`);
-  //   const stepsList = progress ? JSON.parse(progress) : [];
-  //   if (stepsList.indexOf(index) === -1) {
-  //     updateJoyride({ stepIndex: index + (action === ACTIONS.PREV ? -1 : 1), run: true });
-  //     localStorage.setItem(`isVocablistEditModeJoyrideProgress-${username}`, JSON.stringify(stepsList.concat(index)));
-  //   }
-  //   if (index === 0 && (action === ACTIONS.NEXT || action === ACTIONS.CLOSE)) {
-  //     updateJoyride({ run: false, stepIndex: 0 });
-  //   } else if (index === 1 && (action === ACTIONS.NEXT || action === ACTIONS.CLOSE)) {
-  //     updateJoyride({ run: false, stepIndex: 1 });
-  //   } else if (index === 3 && (action === ACTIONS.NEXT || action === ACTIONS.CLOSE)) {
-  //     console.log('why');
-  //     updateJoyride({ run: false, stepIndex: 3 });
-  //   }
-  // } else if (finishedStatuses.includes(status)) {
-  //   updateJoyride({ run: !run, stepIndex: 0 });
-  //   localStorage.setItem(`isVocablistEditModeJoyrideFinished-${username}`, true);
-  // }
 };
 
 const vocabListsPageJoyride = {
