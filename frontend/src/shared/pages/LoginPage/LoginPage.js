@@ -63,7 +63,7 @@ const LoginPage = () => {
             inputRef={password.ref}
             required
             name={password.name}
-            type="text"
+            type="password"
             placeholder={t('common_form_label_password')}
             value={password.value}
             onChange={updateFormData}

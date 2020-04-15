@@ -34,12 +34,16 @@ const VocabForm = ({
     { value: 'pt', text: t('common_languages_portuguese') },
   ];
 
+  const sourceLanguageLabel = `vocablist_form_label_${isEditMode ? 'sourceLanguage' : 'translateFrom'}`;
+  const sourceTextLabel = `vocablist_form_label_${isEditMode ? 'sourceText' : 'text'}`;
+  const targetLanguageLabel = `vocablist_form_label_${isEditMode ? 'targetLanguage' : 'translateTo'}`;
+  const targetTextLabel = `vocablist_form_label_${isEditMode ? 'targetText' : 'translation'}`;
+
   if (!isEditMode) {
     useEffect(() => {
       /* eslint-disable no-undef */
       const sourceLanguageCookieKey = `source-language-${id}`;
       const targetLanguageCookieKey = `target-language-${id}`;
-
 
       if (typeof Cookies.get(sourceLanguageCookieKey) === 'undefined') {
         Cookies.set(sourceLanguageCookieKey, i18n.language);
@@ -58,10 +62,11 @@ const VocabForm = ({
   return (
     <form className={`vocab-form ${isEditMode ? 'is-edit-mode' : 'is-add-mode'}`}>
       <Input
-        label={t('vocablist_form_label_sourceLanguage')}
+        label={t(sourceLanguageLabel)}
         inputRef={sourceLanguage.ref}
         value={sourceLanguage.value}
         required
+        requiredErrorMessage={t('messages_error_pleaseSelectLanguage')}
         placeholder={t('vocablist_form_placeholder_selectSourceLanguage')}
         autoComplete="off"
         name={sourceLanguage.name}
@@ -76,7 +81,7 @@ const VocabForm = ({
         }}
       />
       <Input
-        label={t('vocablist_form_label_sourceText')}
+        label={t(sourceTextLabel)}
         inputRef={sourceText.ref}
         autoComplete="off"
         name={sourceText.name}
@@ -91,10 +96,11 @@ const VocabForm = ({
       />
       <div className="separator" />
       <Input
-        label={t('vocablist_form_label_targetLanguage')}
+        label={t(targetLanguageLabel)}
         inputRef={targetLanguage.ref}
         value={targetLanguage.value}
         required
+        requiredErrorMessage={t('messages_error_pleaseSelectLanguage')}
         autoComplete="off"
         placeholder={t('vocablist_form_placeholder_selectTargetLanguage')}
         name={targetLanguage.name}
@@ -110,11 +116,13 @@ const VocabForm = ({
       />
       {isEditMode && (
         <Input
-          label={t('vocablist_form_label_targetText')}
+          label={t(targetTextLabel)}
           inputRef={targetText.ref}
           autoComplete="off"
+          required
           name={targetText.name}
           placeholder={t('vocablist_form_placeholder_targetText')}
+          requiredErrorMessage={t('messages_error_targetPhraseEmpty')}
           value={targetText.value}
           onChange={updateFormData}
           onBlur={updateFormData}
