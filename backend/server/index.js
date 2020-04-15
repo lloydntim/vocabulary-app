@@ -63,7 +63,7 @@ app.use(Sentry.Handlers.requestHandler());
 
 // app.use(cookieParser());
 app.use(cors({
-  origin: process.env.NODE_ENV === 'development' ? 'http://localhost:3005' : 'https://thevocapp.netlify.com',
+  origin: process.env.NODE_ENV === 'development' ? 'http://localhost:3005' : 'https://thevocapp.netlify.app',
   credentials: true,
 }));
 app.use(i18nextMiddleware.handle(i18next));
