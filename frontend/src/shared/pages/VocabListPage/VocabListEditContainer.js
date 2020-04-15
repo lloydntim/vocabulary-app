@@ -197,11 +197,11 @@ const VocabListEditContainer = ({
             { 4: ['Portuguese', 'Portugiesisch', 'Portugais', 'Portugués', 'Português'] },
           ];
 
-          const sourceLanguageTranslation = languageMap.filter((item, index) => item[index].indexOf(sourceLanguage) !== -1);
+          const sourceLanguageTranslation = languageMap.filter((item, index) => item[index].indexOf(`${sourceLanguage.charAt(0).toUpperCase()}${sourceLanguage.slice(1)}`) !== -1);
           const sourceLanguageIndex = Object.keys(sourceLanguageTranslation[0]);
           const sourceLanguageText = languages[sourceLanguageIndex].text;
 
-          const targetLanguageTranslation = languageMap.filter((item, index) => item[index].indexOf(targetLanguage) !== -1);
+          const targetLanguageTranslation = languageMap.filter((item, index) => item[index].indexOf(`${targetLanguage.charAt(0).toUpperCase()}${targetLanguage.slice(1)}`) !== -1);
           const targetLanguageIndex = Object.keys(targetLanguageTranslation[0]);
           const targetLanguageText = languages[targetLanguageIndex].text;
 
