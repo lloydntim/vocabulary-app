@@ -39,8 +39,9 @@ const VocabForm = ({
   const targetLanguageLabel = `vocablist_form_label_${isEditMode ? 'targetLanguage' : 'translateTo'}`;
   const targetTextLabel = `vocablist_form_label_${isEditMode ? 'targetText' : 'translation'}`;
 
-  if (!isEditMode) {
-    useEffect(() => {
+
+  useEffect(() => {
+    if (!isEditMode) {
       /* eslint-disable no-undef */
       const sourceLanguageCookieKey = `source-language-${id}`;
       const targetLanguageCookieKey = `target-language-${id}`;
@@ -56,8 +57,8 @@ const VocabForm = ({
       const [sourceLanguage] = languages.filter(({ value }) => value === Cookies.get(sourceLanguageCookieKey).substr(0, 2));
       const targetLanguage = !Cookies.get(targetLanguageCookieKey) ? '' : languages.filter(({ value }) => value === Cookies.get(targetLanguageCookieKey))[0].text;
       setInitFormData({ sourceLanguage: sourceLanguage.text, targetLanguage, sourceText: '' });
-    }, []);
-  }
+    }
+  }, []);
 
   return (
     <form className={`vocab-form ${isEditMode ? 'is-edit-mode' : 'is-add-mode'}`}>

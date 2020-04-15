@@ -181,7 +181,31 @@ const VocabListEditContainer = ({
         }}
         onVocabEditButtonClick={(index, item) => {
           const [sourceLanguage, targetLanguage, sourceText, targetText] = item;
-          editVocabForm.setInitFormData({ sourceLanguage, targetLanguage, sourceText, targetText });
+
+          const languages = [
+            { value: 'en', text: t('common_languages_english') },
+            { value: 'de', text: t('common_languages_german') },
+            { value: 'es', text: t('common_languages_spanish') },
+            { value: 'fr', text: t('common_languages_french') },
+            { value: 'pt', text: t('common_languages_portuguese') },
+          ];
+          const languageMap = [
+            { 0: ['English', 'Englisch', 'Inglés', 'Anglais', 'Inglês'] },
+            { 1: ['German', 'Deutsch', 'Alemán', 'Allemand', 'Alemão'] },
+            { 2: ['Spanish', 'Spanisch', 'Español', 'Espagnol', 'Espanhol'] },
+            { 3: ['French', 'Französisch', 'Français', 'Francés', 'Francês'] },
+            { 4: ['Portuguese', 'Portugiesisch', 'Portugais', 'Portugués', 'Português'] },
+          ];
+
+          const sourceLanguageTranslation = languageMap.filter((item, index) => item[index].indexOf(sourceLanguage) !== -1);
+          const sourceLanguageIndex = Object.keys(sourceLanguageTranslation[0]);
+          const sourceLanguageText = languages[sourceLanguageIndex].text;
+
+          const targetLanguageTranslation = languageMap.filter((item, index) => item[index].indexOf(targetLanguage) !== -1);
+          const targetLanguageIndex = Object.keys(targetLanguageTranslation[0]);
+          const targetLanguageText = languages[targetLanguageIndex].text;
+
+          editVocabForm.setInitFormData({ sourceLanguage: sourceLanguageText, targetLanguage: targetLanguageText, sourceText, targetText });
           setCount(index);
           setVocabEditOverlayVisibility(true);
         }}

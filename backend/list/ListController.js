@@ -24,9 +24,9 @@ const checkTextString = (string, {
   const stringLength = string.length;
   const isStringValid = match ? re && (stringLength < minStringLength) : stringLength < minStringLength
 
-   if (isStringValid) return errorMessage;
-   else if (stringLength > maxStringLength) return string.substr(0, maxStringLength);
-   else return string.trim();
+  if (isStringValid) return errorMessage;
+  else if (stringLength > maxStringLength) return string.substr(0, maxStringLength);
+  else return string.trim();
 };
 
 const sanitizeList = (list) => list
