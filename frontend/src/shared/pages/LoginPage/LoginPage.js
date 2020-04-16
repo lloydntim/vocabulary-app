@@ -37,7 +37,8 @@ const LoginPage = () => {
         push('/vocablists');
       },
       onError: (error) => {
-        Sentry.captureException(error);
+        // Sentry.captureException(error);
+        console.log('Login: ', error);
         setResponseMessage(error.message.split(':')[1].trim());
       },
     },
