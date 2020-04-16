@@ -4,7 +4,7 @@ import gql from 'graphql-tag';
 import { useMutation } from '@apollo/react-hooks';
 import { Link, useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import * as Sentry from '@sentry/browser';
+// import * as Sentry from '@sentry/browser';
 import { useForm } from '../../hooks';
 import { RootLayout } from '../../layouts';
 import { Message, Input, Button } from '../../components';

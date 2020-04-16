@@ -88,11 +88,11 @@ const server = new ApolloServer({
     i18n.changeLanguage(cookies.i18next);
     return { t, currentUser, Sentry };
   },
-  formatError: (error) => {
-    console.log('Error', error);
-    Sentry.captureException(error);
-    throw new Error(error.message);
-  },
+  // formatError: (error) => {
+  //   console.log('Error', error);
+  //   // Sentry.captureException(error);
+  //   // throw new Error(error.message);
+  // },
 });
 const mongoURI = NODE_ENV === 'development' ? MONGODB_DEV_URI : MONGODB_URI;
 
