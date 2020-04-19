@@ -13,6 +13,7 @@
   "author": "Lloyd Ntim",
   "license": "MIT",
   "dependencies": {
+    "@google-cloud/text-to-speech": "^2.3.0",
     "@google-cloud/translate": "^5.3.0",
     "@sentry/node": "^5.15.4",
     "apollo-cache-inmemory": "^1.6.5",
