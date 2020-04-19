@@ -174,7 +174,13 @@
           }
         }
 
-        .icon-button {
+        .icon-type-sound {
+          border: none;
+          position: relative;
+          padding: 4px;
+        }
+
+        .icon-type-edit {
           position: absolute;
           right: 16px;
           display: flex;

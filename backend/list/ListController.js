@@ -1,13 +1,20 @@
-const { resolve } = require('path');
-import { ApolloError, AuthenticationError } from 'apollo-server-express';
+import { resolve } from 'path';
+import fs from 'fs';
+import { promisify } from 'util';
 import dotEnv from 'dotenv';
 import xlsx from 'node-xlsx';
+import AWS from 'aws-sdk';
+import { ApolloError, AuthenticationError } from 'apollo-server-express';
 import { TranslationServiceClient } from '@google-cloud/translate';
+import { TextToSpeechClient } from '@google-cloud/text-to-speech';
 import List from './ListModel';
 
 dotEnv.config(({ debug: process.env.DEBUG }));
 
 const {
+  AWS_ACCESS_KEY_ID,
+  AWS_SECRET_ACCESS_KEY,
+  AWS_BUCKET_NAME,
   GCS_PROJECT_ID,
   GCS_PROJECT_LOCATION,
   GCS_PRIVATE_KEY,
@@ -42,6 +49,55 @@ const sanitizeList = (list) => list
 
     return [srcLang, srcText, tgtLang, tgtText]
   });
+
+export const getListVocabSound = async (parent, args, { currentUser, t, Sentry }) => {
+  Sentry.configureScope((scope) => scope.setUser({ username: currentUser.username }));
+  if (!currentUser.loggedIn) throw new AuthenticationError(t('auth_error_userMustBeLoggedIn'));
+  try {
+    const projectId = GCS_PROJECT_ID;
+    const location = GCS_PROJECT_LOCATION;
+    const { languageCode, text } = args;
+    const ttsClient = new TextToSpeechClient({
+      projectId,
+      credentials: {
+        client_email: GCS_CLIENT_EMAIL,
+        private_key: GCS_PRIVATE_KEY,
+      },
+    });
+
+    const s3 = new AWS.S3({
+      accessKeyId: AWS_ACCESS_KEY_ID,
+      secretAccessKey: AWS_SECRET_ACCESS_KEY,
+      Bucket: AWS_BUCKET_NAME,
+    });
+
+    const request = {
+      input: { text },
+      voice: { languageCode, ssmlGender: 'NEUTRAL' },
+      audioConfig: { audioEncoding: 'MP3'},
+    };
+    const [response] = await ttsClient.synthesizeSpeech(request);
+    // const writeFile = await promisify(fs.writeFile);
+    // const readFile = await promisify(fs.readFile);
+
+    // const fileContent = await writeFile(resolve(__dirname, 'output.mp3'), response.audioContent, 'binary');
+    // const content = await readFile(resolve(__dirname, './output.mp3'));
+    const params = {
+      Bucket: AWS_BUCKET_NAME,
+      Key: `${text}${Date.now()}.mp3`,
+      Body: response.audioContent,
+    };
+    const data = await s3.upload(params).promise();
+
+    return {
+      audioLink: data.Location,
+    };
+  } catch (error) {
+    Sentry.captureException(error);
+
+    throw new ApolloError(t('translate_error_couldNotBeTranslated'));
+  }
+};
 
 export const getListVocabTranslation = async (parent, args, { currentUser, t, Sentry }) => {
   Sentry.configureScope((scope) => scope.setUser({ username: currentUser.username }));
@@ -197,4 +253,5 @@ export default {
   updateList,
   removeList,
   getListVocabTranslation,
+  getListVocabSound,
 };

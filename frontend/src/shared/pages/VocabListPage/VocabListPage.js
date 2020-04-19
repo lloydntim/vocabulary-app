@@ -35,6 +35,14 @@ export const GET_LIST_VOCAB_TRANSLATION = gql`
   }
 `;
 
+export const GET_LIST_VOCAB_SOUND = gql`
+  query GetListVocabSound( $text: String, $languageCode: String) {
+    getListVocabSound(text: $text, languageCode: $languageCode) {
+      audioLink
+    }
+  }
+`;
+
 export const GET_LIST = gql`
   query GetList($id: ID, $name: String) {
     getList(id: $id,  name: $name) {
@@ -140,6 +148,17 @@ const VocabListPage = () => {
     },
   );
 
+  const [getListVocabSound,
+    { getListVocabSoundLoading, getListVocabSoundError }] = useLazyQuery(
+    GET_LIST_VOCAB_SOUND, {
+      onCompleted: ({ getListVocabSound: { audioLink } }) => {
+        const audio = new Audio(audioLink);
+        audio.play();
+      },
+      onError: (error) => setResponseMessage(error.message.split(':')[1].trim()),
+    },
+  );
+
   useEffect(() => {
     /* eslint-disable no-undef */
     // const isVocablistEditModeJoyrideFinishedKey = `isVocablistEditModeJoyrideFinished-${username}`;
@@ -216,6 +235,7 @@ const VocabListPage = () => {
                     addList={addList}
                     updateList={updateList}
                     getListVocabTranslation={getListVocabTranslation}
+                    getListVocabSound={getListVocabSound}
                     setNewVocabData={setNewVocabData}
                     setJoyride={updateJoyride}
                   />
@@ -227,12 +247,14 @@ const VocabListPage = () => {
         {(loading
           || updateListMutationLoading
           || addListMutationLoading
+          || getListVocabSoundLoading
           || getListVocabTransLoading
         ) && <Message type="info" content={t('messages_info_loading')} />}
         {(error
           || updateListMutationError
           || addListMutationError
           || getListVocabTransError
+          || getListVocabSoundError
         ) && <Message type="error" content={responseMessage} />}
       </div>
     </RootLayout>

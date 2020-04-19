@@ -18,6 +18,7 @@ const VocabListEditContainer = ({
   updateList,
   setNewVocabData,
   getListVocabTranslation,
+  getListVocabSound,
   setJoyride,
 }) => {
   const { t } = useTranslation();
@@ -179,6 +180,7 @@ const VocabListEditContainer = ({
           setSelectedVocabs(vocabs);
           setCount(index);
         }}
+        onVocabSoundButtonClick={(languageCode, text) => getListVocabSound({ variables: { languageCode, text } })}
         onVocabEditButtonClick={(index, item) => {
           const [sourceLanguage, targetLanguage, sourceText, targetText] = item;
 
@@ -222,6 +224,7 @@ VocabListEditContainer.propTypes = {
   updateList: func.isRequired,
   setNewVocabData: func.isRequired,
   getListVocabTranslation: func.isRequired,
+  getListVocabSound: func.isRequired,
   setJoyride: func.isRequired,
 };
 

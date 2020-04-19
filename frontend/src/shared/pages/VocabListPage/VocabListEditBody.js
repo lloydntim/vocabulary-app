@@ -1,11 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  number,
-  string,
-  arrayOf,
-  func,
-} from 'prop-types';
+import { number, string, arrayOf, func } from 'prop-types';
 
 import { IconButton, Checkbox } from '../../components';
 
@@ -13,6 +8,7 @@ const VocabListEditBody = ({
   list,
   selectedVocabs,
   onVocabCheckboxChange,
+  onVocabSoundButtonClick,
   onVocabEditButtonClick,
 }) => {
   const { t } = useTranslation();
@@ -54,9 +50,23 @@ const VocabListEditBody = ({
 
             <div className="vocab-content">
               <small>{sourceLanguageText}</small>
-              <span>{sourceText}</span>
+              <span>
+                {sourceText}
+                <IconButton
+                  type="secondary"
+                  icon="sound"
+                  onClick={() => onVocabSoundButtonClick(languages[sourceLanguageIndex].value, sourceText)}
+                />
+              </span>
               <small>{targetLanguageText}</small>
-              <span>{targetText}</span>
+              <span>
+                {targetText}
+                <IconButton
+                  type="secondary"
+                  icon="sound"
+                  onClick={() => onVocabSoundButtonClick(languages[targetLanguageIndex].value, targetText)}
+                />
+              </span>
             </div>
 
             <IconButton
@@ -75,6 +85,7 @@ VocabListEditBody.propTypes = {
   list: arrayOf(arrayOf(string)).isRequired,
   selectedVocabs: arrayOf(number).isRequired,
   onVocabCheckboxChange: func.isRequired,
+  onVocabSoundButtonClick: func.isRequired,
   onVocabEditButtonClick: func.isRequired,
 };
 

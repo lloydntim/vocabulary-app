@@ -10,6 +10,7 @@ import {
 } from '../auth/AuthController';
 
 import {
+  getListVocabSound,
   getListVocabTranslation,
   getList,
   getLists,
@@ -58,6 +59,10 @@ export const typeDefs = gql`
     targetText: String
   }
 
+  type TextToSpeech {
+    audioLink: String
+  }
+
   type Query {
     getPasswordToken(resetPasswordToken: String):Auth
 
@@ -68,6 +73,8 @@ export const typeDefs = gql`
     getList(id: ID, name: String): List
 
     getListVocabTranslation(sourceLanguage: String, targetLanguage: String, sourceText: String):Translation
+
+    getListVocabSound(text: String, languageCode: String): TextToSpeech
   }
 
   type Mutation {
@@ -94,6 +101,7 @@ export const resolvers = {
     getList,
     getLists,
     getListVocabTranslation,
+    getListVocabSound,
   },
   Mutation: {
     login,
