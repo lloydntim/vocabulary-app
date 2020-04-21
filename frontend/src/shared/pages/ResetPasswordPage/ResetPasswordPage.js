@@ -51,11 +51,7 @@ const ResetPasswordPage = () => {
         localStorage.setItem('token', data.updatePassword.token);
         push('/vocablists');
       },
-      onError: (error) => {
-        const message = error.message.includes('email')
-          ? t('messages_error_emailDoesNotExist', { email }) : error.message;
-        setResponseMessage(message);
-      },
+      onError: (error) => setResponseMessage(error.message.split(':')[1].trim()),
     },
   );
 
