@@ -90,7 +90,7 @@ const VocabListEditContainer = ({
                 onChange={addVocabListForm.updateFormData}
               />
               <Button
-                type="secondary"
+                rank="secondary"
                 disabled={!addVocabListForm.isFormValid}
                 text={t('vocablists_form_button_add')}
                 onClick={() => {
@@ -126,7 +126,7 @@ const VocabListEditContainer = ({
             onBlur={newVocabListForm.updateFormData}
           />
           <Button
-            type="secondary"
+            rank="secondary"
             disabled={!newVocabListForm.isFormValid}
             text={t('common_button_create')}
             onClick={() => {

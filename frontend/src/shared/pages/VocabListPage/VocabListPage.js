@@ -113,7 +113,7 @@ const VocabListPage = () => {
     addList,
     { loading: addListMutationLoading, error: addListMutationError },
   ] = useMutation(ADD_LIST, {
-    onCompleted: (data) => push(`/vocablist/${data.addList.id}`),
+    onCompleted: (data) => setTimeout(() => push(`/vocablist/${data.addList.id}`)),
     onError: (error) => setResponseMessage(error.message.split(':')[1].trim()),
     refetchQueries: [{ query: GET_LISTS, variables: { creatorId } }],
   });
@@ -209,8 +209,8 @@ const VocabListPage = () => {
               <h1>{name}</h1>
               <div ref={stickyHeaderRef} className={`sub-header ${isHeaderSticky ? 'is-sticky' : ''}`}>
                 <IconButton
-                  icon="arrow-left"
-                  type="secondary"
+                  type="arrow-left"
+                  rank="secondary"
                   onClick={() => goBack()}
                 />
                 {/* <Link to="/vocablists">

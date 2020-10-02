@@ -5,8 +5,9 @@ import Icon from '../Icon';
 import './IconButton.scss';
 
 const IconButton = ({
-  icon,
+  rank,
   type,
+  tabIndex,
   disabled,
   onClick,
   onMouseUp,
@@ -15,8 +16,9 @@ const IconButton = ({
   onTouchEnd,
 }) => (
   <button
-    className={`icon-button icon-type-${icon} ${disabled ? 'is-disabled' : `icon-button-type-${type}`}`}
+    className={`icon-button icon-type-${type} ${disabled ? 'is-disabled' : `icon-button-rank-${rank}`}`}
     type="button"
+    tabIndex={tabIndex}
     disabled={disabled}
     onClick={onClick}
     onMouseUp={onMouseUp}
@@ -24,13 +26,14 @@ const IconButton = ({
     onTouchStart={onTouchStart}
     onTouchEnd={onTouchEnd}
   >
-    <Icon type={icon} />
+    <Icon type={type} />
   </button>
 );
 
 IconButton.propTypes = {
-  icon: string.isRequired,
   type: string.isRequired,
+  rank: string.isRequired,
+  tabIndex: string,
   disabled: bool,
   onClick: func,
   onMouseUp: func,
@@ -41,6 +44,7 @@ IconButton.propTypes = {
 
 IconButton.defaultProps = {
   disabled: false,
+  tabIndex: null,
   onClick: () => null,
   onMouseUp: () => null,
   onMouseDown: () => null,

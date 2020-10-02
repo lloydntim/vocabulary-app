@@ -17,13 +17,18 @@ const Overlay = ({ children, title, isVisible, onCloseButtonClick }) => (
   <>
     {isVisible && (
       <div className={`overlay ${isVisible ? 'is-visible' : 'is-hidden'}`}>
-        <IconButton
-          icon="close"
-          type="secondary"
-          onClick={onCloseButtonClick}
-        />
-        {title && <h1>{title}</h1>}
-        {children}
+        <div className="overlay-button-close">
+          <IconButton
+            type="close"
+            rank="secondary"
+            onClick={onCloseButtonClick}
+          />
+        </div>
+
+        <div className="overlay-content">
+          {title && <h1>{title}</h1>}
+          {children}
+        </div>
       </div>
     )}
   </>

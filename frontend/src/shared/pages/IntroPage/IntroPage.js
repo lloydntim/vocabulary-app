@@ -17,12 +17,12 @@ const IntroPage = () => {
         <h2>{t('intro_title')}</h2>
         <form>
           <Button
-            type="primary"
+            rank="primary"
             text={t('common_button_signup')}
             onClick={() => push('/signup')}
           />
           <Button
-            type="primary"
+            rank="primary"
             text={t('common_button_login')}
             onClick={() => push('/login')}
           />

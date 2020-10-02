@@ -53,8 +53,8 @@ const VocabListEditBody = ({
               <span>
                 {sourceText}
                 <IconButton
-                  type="secondary"
-                  icon="sound"
+                  rank="secondary"
+                  type="sound"
                   onClick={() => onVocabSoundButtonClick(languages[sourceLanguageIndex].value, sourceText)}
                 />
               </span>
@@ -62,16 +62,16 @@ const VocabListEditBody = ({
               <span>
                 {targetText}
                 <IconButton
-                  type="secondary"
-                  icon="sound"
+                  rank="secondary"
+                  type="sound"
                   onClick={() => onVocabSoundButtonClick(languages[targetLanguageIndex].value, targetText)}
                 />
               </span>
             </div>
 
             <IconButton
-              type="secondary"
-              icon="edit"
+              rank="secondary"
+              type="edit"
               onClick={() => onVocabEditButtonClick(index, item)}
             />
           </li>

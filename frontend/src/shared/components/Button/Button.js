@@ -6,6 +6,8 @@ import './Button.scss';
 const Button = ({
   text,
   type,
+  rank,
+  tabIndex,
   disabled,
   onClick,
   onMouseUp,
@@ -13,11 +15,18 @@ const Button = ({
   onTouchStart,
   onTouchEnd,
 }) => (
+  /* eslint-disable react/button-has-type */
   <button
-    type="button"
-    className={`button button-type-${type} ${disabled ? 'is-disabled' : ''}`}
+    type={type}
+    tabIndex={tabIndex}
+    className={`button button-rank-${rank} ${disabled ? 'is-disabled' : ''}`}
     disabled={disabled}
-    onClick={onClick}
+    onClick={(event) => {
+      if (type === 'submit') {
+        event.preventDefault();
+      }
+      onClick();
+    }}
     onMouseUp={onMouseUp}
     onMouseDown={onMouseDown}
     onTouchStart={onTouchStart}
@@ -28,6 +37,9 @@ const Button = ({
 );
 
 Button.defaultProps = {
+  rank: 'primary',
+  type: 'submit',
+  tabIndex: null,
   disabled: false,
   onClick: null,
   onMouseUp: null,
@@ -38,7 +50,9 @@ Button.defaultProps = {
 
 Button.propTypes = {
   text: string.isRequired,
-  type: string.isRequired,
+  type: string,
+  tabIndex: string,
+  rank: string,
   disabled: bool,
   onClick: func,
   onMouseUp: func,

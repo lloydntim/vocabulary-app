@@ -38,7 +38,7 @@ const VocabListItemEditOverlay = ({
           onBlur={updateFormData}
         />
         <Button
-          type="secondary"
+          rank="secondary"
           disabled={!isFormValid}
           text={t('vocablist_form_button_updateTitle')}
           onClick={() => onUpdateTitleButtonClick(newTitle.value)}

@@ -65,6 +65,7 @@ const VocabForm = ({
       <Input
         label={t(sourceLanguageLabel)}
         inputRef={sourceLanguage.ref}
+        tabIndex={isEditMode ? null : '1'}
         value={sourceLanguage.value}
         required
         requiredErrorMessage={t('messages_error_pleaseSelectLanguage')}
@@ -84,6 +85,7 @@ const VocabForm = ({
       <Input
         label={t(sourceTextLabel)}
         inputRef={sourceText.ref}
+        tabIndex={isEditMode ? null : '2'}
         autoComplete="off"
         name={sourceText.name}
         required
@@ -99,6 +101,7 @@ const VocabForm = ({
       <Input
         label={t(targetLanguageLabel)}
         inputRef={targetLanguage.ref}
+        tabIndex={isEditMode ? null : '1'}
         value={targetLanguage.value}
         required
         requiredErrorMessage={t('messages_error_pleaseSelectLanguage')}
@@ -134,7 +137,7 @@ const VocabForm = ({
         <Button
           tabIndex={-1}
           disabled={!isFormValid}
-          type="secondary"
+          rank="secondary"
           text={t('common_button_update')}
           onClick={() => onSubmitVocabButtonClick({
             sourceLanguage: sourceLanguage.value,
@@ -146,7 +149,8 @@ const VocabForm = ({
       ) : (
         <Button
           disabled={!isFormValid}
-          type="tertiary"
+          rank="tertiary"
+          tabIndex={isEditMode ? null : '2'}
           text={t('common_button_translate')}
           onClick={() => {
             onTranslateVocabButtonClick({

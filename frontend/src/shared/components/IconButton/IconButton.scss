@@ -7,7 +7,7 @@
   border: solid 1px $green;
   cursor: pointer;
 
-  &.icon-button-type-primary {
+  &.icon-button-rank-primary {
     border-color: $dark-green;
     background-color: $green;
     color: $white;
@@ -18,7 +18,7 @@
     }
   }
 
-  &.icon-button-type-secondary {
+  &.icon-button-rank-secondary {
     border: solid 1px $green;
     color: $green;
     background-color: transparent;
@@ -29,7 +29,7 @@
     }
   }
 
-  &.icon-button-type-tertiary {
+  &.icon-button-rank-tertiary {
     border: none;
     color: $dark-green;
     background-color: transparent;

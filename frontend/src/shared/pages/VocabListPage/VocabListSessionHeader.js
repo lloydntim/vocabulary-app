@@ -43,8 +43,8 @@ const VocabListSessionHeader = ({
       <span>{sessionLanguages.sourceLanguage}</span>
       <span>
         <IconButton
-          type="secondary"
-          icon="swap"
+          rank="secondary"
+          type="swap"
           onClick={onToggleLanguageButtonClick}
         />
       </span>

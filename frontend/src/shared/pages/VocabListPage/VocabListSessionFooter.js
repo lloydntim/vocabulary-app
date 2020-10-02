@@ -13,15 +13,15 @@ const VocabListSessionFooter = ({
     <ul className="practice-mode-controls">
       <li>
         <IconButton
-          type="secondary"
-          icon="backward"
+          rank="secondary"
+          type="backward"
           onClick={onPreviousVocabButtonClick}
         />
       </li>
       <li>
         <IconButton
-          type="secondary"
-          icon="view"
+          rank="secondary"
+          type="view"
           onMouseDown={onShowTranslationButtonActive}
           onTouchStart={onShowTranslationButtonActive}
           onMouseUp={onShowTranslationButtonInactive}
@@ -30,8 +30,8 @@ const VocabListSessionFooter = ({
       </li>
       <li>
         <IconButton
-          type="secondary"
-          icon="refresh"
+          rank="secondary"
+          type="refresh"
           onClick={onRestartSessionButtonClick}
         />
       </li>

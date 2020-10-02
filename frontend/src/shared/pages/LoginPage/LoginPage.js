@@ -71,7 +71,7 @@ const LoginPage = () => {
             onBlur={updateFormData}
           />
           <Button
-            type="primary"
+            rank="primary"
             disabled={!isFormValid}
             text={t('common_button_login')}
             onClick={() => login({ variables: {

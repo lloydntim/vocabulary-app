@@ -169,7 +169,7 @@ const UserPage = () => {
               onBlur={updateFormData}
             />
             <Button
-              type="secondary"
+              rank="secondary"
               disabled={!isFormValid}
               text={t('profile_form_button_updateEmail')}
               onClick={() => {
@@ -185,8 +185,8 @@ const UserPage = () => {
             <h1>{t('profile_title')}</h1>
 
             <IconButton
-              icon="edit"
-              type="secondary"
+              type="edit"
+              rank="secondary"
               onClick={() => {
                 updateFormData({ name: email.name, value: data.getUser.email });
                 setOverlayVisibility(true);
@@ -217,7 +217,7 @@ const UserPage = () => {
 
               {currentUser.isVerified === 'false' && (
                 <Button
-                  type="primary"
+                  rank="primary"
                   text={t('profile_button_resendVerificationEmail')}
                   onClick={() => {
                     resendVerificationToken({ variables: { email: currentUser.email, username: currentUser.username } });
@@ -225,7 +225,7 @@ const UserPage = () => {
                 />
               )}
               <Button
-                type="primary"
+                rank="primary"
                 text={t('profile_button_deleteAccount')}
                 onClick={() => setDialogVisibility(true)}
               />

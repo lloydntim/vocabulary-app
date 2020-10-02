@@ -56,6 +56,19 @@
           align-self: center;
           text-decoration: none;
           padding: 16px;
+          color: $dark-green;
+        }
+
+        > span {
+          align-self: center;
+          text-decoration: none;
+          padding: 16px;
+          color: $dark-grey;
+          pointer-events: none;
+        }
+
+        .button {
+          color: $white;
         }
       }
     }
@@ -78,11 +91,14 @@
     }
   }
 
-  .header {
+  > .header {
     display: flex;
     padding: 12px 20px;
     align-items: center;
     justify-content: space-between;
+    width: 100%;
+    max-width: 440px;
+    margin: auto;
 
     .button-circle {
       padding: 0;

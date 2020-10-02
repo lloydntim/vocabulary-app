@@ -58,8 +58,8 @@ const RootLayoutGuestView = ({ children }) => {
           />
         </Dialog>
         <IconButton
-          icon="language"
-          type="primary"
+          type="language"
+          rank="primary"
           onClick={() => setDialogVisibility(true)}
         />
         <p className="language-selector-indicator">{language.toUpperCase()}</p>

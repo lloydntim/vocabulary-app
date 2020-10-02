@@ -13,7 +13,7 @@ import {
 import { Logo, IconButton } from '../../components';
 import Overlay from '../Overlay/Overlay';
 
-/* eslint-disable react/jsx-props-no-spreading */
+/* eslint-disable react/jsx-props-no-spreading, no-undef, no-restricted-globals */
 const RootLayoutUserView = ({
   children,
   currentUser,
@@ -36,10 +36,13 @@ const RootLayoutUserView = ({
         <nav className="menu">
           <ul>
             <li>
-              <Link to={`/user/${currentUser.id}`}>{t('profile_title')}</Link>
+              {!window.location.href.includes('user') ? <Link to={`/user/${currentUser.id}`}>{t('profile_title')}</Link> : <span>{t('profile_title')}</span>}
             </li>
             <li>
-              <Link to="/about">{t('about_title')}</Link>
+              {!window.location.href.includes('vocablists') ? <Link to="/vocablists">{t('vocablists_title')}</Link> : <span>{t('vocablists_title')}</span>}
+            </li>
+            <li>
+              {!window.location.href.includes('about') ? <Link to="/about">{t('about_title')}</Link> : <span>{t('about_title')}</span>}
             </li>
             {currentUser.id && (
               <li>
@@ -52,8 +55,8 @@ const RootLayoutUserView = ({
 
       <div className="header">
         <IconButton
-          icon="menu"
-          type="primary"
+          type="menu"
+          rank="primary"
           onClick={() => {
             setOverlayVisibility(true);
             if (onOpenMenuButtonClick) onOpenMenuButtonClick();

@@ -24,6 +24,19 @@
   a {
     color: $dark-green;
   }
+  .overlay-button-close,
+  .overlay-content {
+    margin: 0 auto;
+    max-width: 440px;
+    width: 100%;
+  }
+
+  .overlay-button-close {
+    max-width: 680px;
+    display: flex;
+    justify-content: right;
+    flex-direction: row-reverse;
+  }
 
   &.is-visible {
     display: flex;

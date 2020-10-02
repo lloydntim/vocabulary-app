@@ -74,7 +74,7 @@ const VocabListsPage = () => {
   const { run, stepIndex, steps, styles, locale, callback, updateJoyride } = useJoyride(vocabListsPageJoyride);
   const { loading, error, data } = useQuery(GET_LISTS, { variables: { creatorId }, onError: (error) => setResponseMessage(error.message.split(':')[1].trim()) });
   const [addList] = useMutation(ADD_LIST, {
-    onCompleted: (data) => push(`/vocablist/${data.addList.id}`),
+    onCompleted: (data) => setTimeout(() => push(`/vocablist/${data.addList.id}`), 1000),
     onError: (error) => setResponseMessage(error.message.split(':')[1].trim()),
     refetchQueries: [{ query: GET_LISTS, variables: { creatorId } }],
   });
@@ -156,7 +156,7 @@ const VocabListsPage = () => {
                   onBlur={updateFormData}
                 />
                 <Button
-                  type="secondary"
+                  rank="secondary"
                   disabled={!isFormValid}
                   text={t(`vocablists_form_button_${isEditTitleMode ? 'edit' : 'add'}`)}
                   onClick={() => {
@@ -189,8 +189,8 @@ const VocabListsPage = () => {
 
               <div ref={stickyHeaderRef} className={`sub-header ${isHeaderSticky ? 'is-sticky' : ''}`}>
                 <IconButton
-                  icon="plus"
-                  type="primary"
+                  type="plus"
+                  rank="primary"
                   onClick={() => {
                     resetFormData();
                     setOverlayVisibility(true);
@@ -204,8 +204,8 @@ const VocabListsPage = () => {
                   <li className="list-item" key={list.id}>
                     <div className="button-group">
                       <IconButton
-                        icon="edit"
-                        type="secondary"
+                        type="edit"
+                        rank="secondary"
                         onClick={() => {
                           updateFormData({ name: title.name, value: list.name });
                           setCurrentList(list);
@@ -214,8 +214,8 @@ const VocabListsPage = () => {
                         }}
                       />
                       <IconButton
-                        icon="delete"
-                        type="secondary"
+                        type="delete"
+                        rank="secondary"
                         onClick={() => {
                           setCurrentList(list);
                           setDialogVisibility(true);

@@ -50,7 +50,7 @@ const ForgotPasswordPage = () => {
           />
 
           <Button
-            type="primary"
+            rank="primary"
             disabled={!isFormValid}
             text={t('common_button_submit')}
             onClick={() => createPasswordToken({ variables: { username: username.value } })}

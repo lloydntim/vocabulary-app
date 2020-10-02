@@ -105,7 +105,7 @@ const ResetPasswordPage = () => {
               { (passwordConfirm.value.length > 0 && !passwordsMatching) && <Message type="error" content={t('messages_error_passwordsNotMatching')} /> }
 
               <Button
-                type="primary"
+                rank="primary"
                 disabled={isSubmitButtonDisabled}
                 text={t('common_button_submit')}
                 onClick={() => updatePassword({ variables: { resetPasswordToken, password: password.value } })}

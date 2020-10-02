@@ -37,8 +37,10 @@
 
     .header {
       padding: 8px 12px;
+      display: flex;
+      justify-content: space-between;
 
-      .icon-type-plus {
+      .icon-button {
         margin: 8px 0 0;
       }
       flex-direction: row-reverse;
@@ -350,7 +352,7 @@
       order: 2;
     }
 
-    .button-type-tertiary:nth-of-type(1) {
+    .button-rank-tertiary:nth-of-type(1) {
       order: 4;
     }
   }

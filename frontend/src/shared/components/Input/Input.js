@@ -55,6 +55,7 @@ const Input = (props) => {
     dataList,
     name,
     type,
+    tabIndex,
     placeholder,
     value,
     pattern,
@@ -98,6 +99,7 @@ const Input = (props) => {
         required={required}
         className="input-element"
         autoComplete={autoComplete}
+        tabIndex={tabIndex}
         name={name}
         type={inputTypeName}
         placeholder={placeholder}
@@ -121,8 +123,9 @@ const Input = (props) => {
       />
       {type === 'password' && (
         <IconButton
-          icon="view"
-          type="primary"
+          type="view"
+          rank="primary"
+          tabIndex="-1"
           onClick={() => setInputType(inputType === 'password' ? 'text' : 'password')}
         />
       )}
@@ -167,6 +170,7 @@ Input.defaultProps = {
   autoComplete: '',
   dataList: null,
   type: 'text',
+  tabIndex: null,
   placeholder: '',
   value: '',
   pattern: null,
@@ -193,6 +197,7 @@ Input.propTypes = {
   })),
   type: string,
   name: string.isRequired,
+  tabIndex: string,
   placeholder: string,
   value: string,
   pattern: object,

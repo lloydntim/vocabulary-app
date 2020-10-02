@@ -17,18 +17,18 @@
     opacity: .5;
   }
 
-  &.button-type-primary {
+  &.button-rank-primary {
     color: $green;
     background-color: $white;
   }
 
-  &.button-type-secondary {
+  &.button-rank-secondary {
     color: $white;
     background-color: $green;
     border-color: $dark-green;
   }
 
-  &.button-type-tertiary {
+  &.button-rank-tertiary {
     color: $white;
     background-color: $dark-blue;
   }
