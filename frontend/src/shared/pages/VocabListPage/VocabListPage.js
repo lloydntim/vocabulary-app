@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import gql from 'graphql-tag';
 import { useQuery, useLazyQuery, useMutation } from '@apollo/react-hooks';
-import { useParams, useHistory, /*  Link, */Redirect } from 'react-router-dom';
+import { useParams, useHistory, Link, Redirect } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Joyride from 'react-joyride';
 import jwtDecode from 'jwt-decode';
@@ -78,6 +78,7 @@ const VocabListPage = () => {
   const { run, stepIndex, steps, styles, callback, updateJoyride, locale } = useJoyride(vocabListPageJoyride);
 
   const [isEditMode, setEditMode] = useState(true);
+  const [vocabVocabAudioURLs, setVocabAudioURLs] = useState([]);
   const [{ name, list, shuffledList }, setVocabListData] = useState({ name: '', list: [], shuffledList: [] });
 
   const [newVocabData, setNewVocabData] = useState([]);
@@ -152,6 +153,7 @@ const VocabListPage = () => {
     { getListVocabSoundLoading, getListVocabSoundError }] = useLazyQuery(
     GET_LIST_VOCAB_SOUND, {
       onCompleted: ({ getListVocabSound: { audioLink } }) => {
+        setVocabAudioURLs([...vocabVocabAudioURLs, audioLink]);
         const audio = new Audio(audioLink);
         audio.play();
       },
@@ -180,6 +182,16 @@ const VocabListPage = () => {
     //   updateJoyride({ run: true, stepIndex: lastStep });
     // }
   }, []);
+
+  const testFn = useCallback(({ variables: { languageCode, text } }) => {
+    const vocabURL = `https://thevocapp-bucket.s3.eu-west-2.amazonaws.com/${text}_${languageCode}.mp3`;
+    if (vocabVocabAudioURLs.includes(vocabURL)) {
+      const audio = new Audio(vocabURL);
+      audio.play();
+    } else {
+      getListVocabSound({ variables: { languageCode, text } });
+    }
+  }, [vocabVocabAudioURLs]);
 
   return (
     <RootLayout>
@@ -235,7 +247,7 @@ const VocabListPage = () => {
                     addList={addList}
                     updateList={updateList}
                     getListVocabTranslation={getListVocabTranslation}
-                    getListVocabSound={getListVocabSound}
+                    getListVocabSound={testFn}
                     setNewVocabData={setNewVocabData}
                     setJoyride={updateJoyride}
                   />
@@ -250,8 +262,14 @@ const VocabListPage = () => {
           || getListVocabSoundLoading
           || getListVocabTransLoading
         ) && <Message type="info" content={t('messages_info_loading')} />}
-        {(error
-          || updateListMutationError
+        {error && (
+          <div className="message message-error">
+            <span className="message-text">{responseMessage}</span>
+            &nbsp;
+            <Link className="message-link" to="/login">{t('common_button_login')}</Link>
+          </div>
+        )}
+        {(updateListMutationError
           || addListMutationError
           || getListVocabTransError
           || getListVocabSoundError

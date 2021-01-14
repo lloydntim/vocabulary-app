@@ -239,8 +239,14 @@ const VocabListsPage = () => {
             </div>
           </>
         )}
-        {(error
-        || removeMutationError
+        {error && (
+          <div className="message message-error">
+            <span className="message-text">{responseMessage}</span>
+            &nbsp;
+            <Link className="message-link" to="/login">{t('common_button_login')}</Link>
+          </div>
+        )}
+        {(removeMutationError
         || updateListMutationError) && <Message type="error" content={responseMessage} />}
 
         {(loading

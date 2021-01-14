@@ -10,6 +10,11 @@ import VocabListSessionHeader from './VocabListSessionHeader';
 import VocabListSessionBody from './VocabListSessionBody';
 import VocabListSessionFooter from './VocabListSessionFooter';
 
+const capitalizeFirstLetter = (word) => {
+  const trimmedWord = word.trim();
+  return `${trimmedWord.substring(0, 1).toLocaleUpperCase()}${trimmedWord.substring(1, trimmedWord.length)}`;
+};
+
 const VocabListSessionContainer = ({ list, joyride }) => {
   const { t } = useTranslation();
   const [count, setCount] = useState(0);
@@ -85,7 +90,9 @@ const VocabListSessionContainer = ({ list, joyride }) => {
         }}
         onVocabTranslationSubmitButtonClick={() => {
           if (status !== 'success') {
-            const statusMessage = targetText.trim() === translationInputValue.trim() ? 'success' : 'error';
+            console.log(capitalizeFirstLetter(targetText));
+            console.log(capitalizeFirstLetter(translationInputValue));
+            const statusMessage = capitalizeFirstLetter(targetText) === capitalizeFirstLetter(translationInputValue) ? 'success' : 'error';
 
             if (statusMessage === 'success') {
               const vocabResultData = {

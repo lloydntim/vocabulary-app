@@ -237,7 +237,14 @@ const UserPage = () => {
             || removeUserMutationLoading
             || removeListMutationLoading)
           && <Message type="info" content={t('messages_info_loading')} /> }
-          { (error
+          {error && (
+            <div className="message message-error">
+              <span className="message-text">{responseMessage}</span>
+              &nbsp;
+              <Link className="message-link" to="/login">{t('common_button_login')}</Link>
+            </div>
+          )}
+          {(error
           || sendVerificationMutationError
           || updateUserMutationError
           || removeUserMutationError

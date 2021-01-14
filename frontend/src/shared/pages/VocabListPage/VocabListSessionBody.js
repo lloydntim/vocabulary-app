@@ -121,9 +121,10 @@ const VocabListSessionBody = ({
             )}
 
             <Button
-              type={`${isVocabTranslationCorrect ? 'tertiary' : 'secondary'}`}
+              rank={`${isVocabTranslationCorrect ? 'tertiary' : 'secondary'}`}
               text={t(`common_button_${isVocabTranslationCorrect ? 'next' : 'submit'}`)}
               onClick={onVocabTranslationSubmitButtonClick}
+              disabled={vocabTranslationInputValue.length === 0}
             />
           </>
         )}

@@ -38,6 +38,11 @@
 
   .message {
     margin: 0 0 16px;
+
+    .message-link {
+      color: $red;
+      font-weight: $bold;
+    }
   }
 
   ul {

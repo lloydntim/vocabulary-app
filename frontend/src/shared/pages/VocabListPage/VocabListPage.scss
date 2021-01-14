@@ -324,7 +324,15 @@
         grid-column-gap: 12px;
         grid-row-gap: 12px;
       }
+    }
+  }
 
+  .message {
+    margin: 0 0 16px;
+
+    .message-link {
+      color: $red;
+      font-weight: $bold;
     }
   }
 }

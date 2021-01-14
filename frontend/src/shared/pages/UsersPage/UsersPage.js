@@ -107,7 +107,14 @@ const UsersPage = () => {
             : <p>There are no users.</p>}
           {mutationData && <Message type="success" content={`User ${currentUser.username} has been removed.`} />}
           {(loading || mutationLoading) && <Message type="info" content="...Loading" />}
-          {(error || mutationError) && <Message type="error" content={responseMessage} />}
+          {(mutationError) && <Message type="error" content={responseMessage} />}
+          {error && (
+            <div className="message message-error">
+              <span className="message-text">{responseMessage}</span>
+              &nbsp;
+              <Link className="message-link" to="/login">{t('common_button_login')}</Link>
+            </div>
+          )}
         </div>
       </div>
     </RootLayout>

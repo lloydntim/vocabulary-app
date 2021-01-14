@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { string, arrayOf, func } from 'prop-types';
 
@@ -34,6 +34,10 @@ const VocabListEditContainer = ({
   const [isDialogVisible, setDialogVisibility] = useState(false);
   const [selectedVocabs, setSelectedVocabs] = useState([]);
 
+  const onVocabSoundButtonClick = useCallback(
+    (languageCode, text) => getListVocabSound({ variables: { languageCode, text } }),
+    [getListVocabSound],
+  );
   return (
     <>
       <VocabEditOverlay
@@ -180,7 +184,7 @@ const VocabListEditContainer = ({
           setSelectedVocabs(vocabs);
           setCount(index);
         }}
-        onVocabSoundButtonClick={(languageCode, text) => getListVocabSound({ variables: { languageCode, text } })}
+        onVocabSoundButtonClick={onVocabSoundButtonClick}
         onVocabEditButtonClick={(index, item) => {
           const [sourceLanguage, targetLanguage, sourceText, targetText] = item;
 
