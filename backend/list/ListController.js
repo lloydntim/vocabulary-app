@@ -83,9 +83,10 @@ export const getListVocabSound = async (parent, args, { currentUser, t, Sentry }
     // const fileContent = await writeFile(resolve(__dirname, 'output.mp3'), response.audioContent, 'binary');
     // const content = await readFile(resolve(__dirname, './output.mp3'));
     // console.log('audio text', text);
+    const textFormatted = text.replace(/ /g, '_');
     const params = {
       Bucket: AWS_BUCKET_NAME,
-      Key: `${text}_${languageCode}.mp3`,
+      Key: `${textFormatted}_${languageCode}.mp3`,
       Body: response.audioContent,
     };
     const data = await s3.upload(params).promise();
