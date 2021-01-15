@@ -154,8 +154,6 @@ const VocabListPage = () => {
     { getListVocabSoundLoading, getListVocabSoundError }] = useLazyQuery(
     GET_LIST_VOCAB_SOUND, {
       onCompleted: ({ getListVocabSound: { audioLink, audioKey } }) => {
-        console.log('audio link', audioLink);
-        console.log('audio key', audioKey);
         setVocabAudioURLs([...vocabVocabAudioURLs, audioKey]);
         const audio = new Audio(audioLink);
         audio.play();
@@ -187,12 +185,9 @@ const VocabListPage = () => {
   }, []);
 
   const testFn = useCallback(({ variables: { languageCode, text } }) => {
-    console.log('vocabVocabAudioURLs', vocabVocabAudioURLs);
-    console.log('text', text);
     const textFormatted = text.replace(/ /g, '_');
     const audioKeyName = `${textFormatted}_${languageCode}.mp3`;
     const vocabURL = `https://thevocapp-bucket.s3.eu-west-2.amazonaws.com/${audioKeyName}`;
-    console.log('vocabURL', vocabURL);
     if (vocabVocabAudioURLs.includes(audioKeyName)) {
       const audio = new Audio(vocabURL);
       audio.play();
