@@ -61,6 +61,7 @@ export const typeDefs = gql`
 
   type TextToSpeech {
     audioLink: String
+    audioKey: String
   }
 
   type Query {

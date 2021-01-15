@@ -93,6 +93,7 @@ export const getListVocabSound = async (parent, args, { currentUser, t, Sentry }
 
     return {
       audioLink: data.Location,
+      audioKey: data.Key,
     };
   } catch (error) {
     Sentry.captureException(error);
