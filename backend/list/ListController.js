@@ -83,7 +83,12 @@ export const getListVocabSound = async (parent, args, { currentUser, t, Sentry }
     // const fileContent = await writeFile(resolve(__dirname, 'output.mp3'), response.audioContent, 'binary');
     // const content = await readFile(resolve(__dirname, './output.mp3'));
     // console.log('audio text', text);
-    const textFormatted = text.replace(/ /g, '_');
+    const textFormatted = text
+      .replace(/[^a-zA-Z ]/g, '')// keep only normal letters
+      .normalize('NFD') // NFD Unicode normal form decomposes combined graphemes into the combination of simple ones. reference: https://stackoverflow.com/questions/990904/remove-accents-diacritics-in-a-string-in-javascript
+      .replace(/[\u0300-\u036f]/g, '') // Remove accents and diactrics; reference: https://stackoverflow.com/questions/990904/remove-accents-diacritics-in-a-string-in-javascript
+      .replace(/ /g, '_');
+
     const params = {
       Bucket: AWS_BUCKET_NAME,
       Key: `${textFormatted}_${languageCode}.mp3`,

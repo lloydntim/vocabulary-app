@@ -185,7 +185,11 @@ const VocabListPage = () => {
   }, []);
 
   const testFn = useCallback(({ variables: { languageCode, text } }) => {
-    const textFormatted = text.replace(/ /g, '_');
+    const textFormatted = text
+      .replace(/[^a-zA-Z ]/g, '')// keep only normal letters
+      .normalize('NFD') // NFD Unicode normal form decomposes combined graphemes into the combination of simple ones. reference: https://stackoverflow.com/questions/990904/remove-accents-diacritics-in-a-string-in-javascript
+      .replace(/[\u0300-\u036f]/g, '') // Remove accents and diactrics; reference: https://stackoverflow.com/questions/990904/remove-accents-diacritics-in-a-string-in-javascript
+      .replace(/ /g, '_');
     const audioKeyName = `${textFormatted}_${languageCode}.mp3`;
     const vocabURL = `https://thevocapp-bucket.s3.eu-west-2.amazonaws.com/${audioKeyName}`;
     if (vocabVocabAudioURLs.includes(audioKeyName)) {
