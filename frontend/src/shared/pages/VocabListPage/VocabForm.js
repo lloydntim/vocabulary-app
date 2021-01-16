@@ -57,6 +57,11 @@ const VocabForm = ({
       const [sourceLanguage] = languages.filter(({ value }) => value === Cookies.get(sourceLanguageCookieKey).substr(0, 2));
       const targetLanguage = !Cookies.get(targetLanguageCookieKey) ? '' : languages.filter(({ value }) => value === Cookies.get(targetLanguageCookieKey))[0].text;
       setInitFormData({ sourceLanguage: sourceLanguage.text, targetLanguage, sourceText: '' });
+
+      // Makes sure input field is focused when both languages have been selected
+      if (sourceLanguage && targetLanguage) {
+        sourceText.ref.current.focus();
+      }
     }
   }, []);
 

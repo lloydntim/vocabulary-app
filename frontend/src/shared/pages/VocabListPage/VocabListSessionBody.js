@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import {
   string,
   number,
@@ -40,6 +40,7 @@ const VocabListSessionBody = ({
   onVocabTranslationSubmitButtonClick,
 }) => {
   const { t } = useTranslation();
+  const translateTextArea = useRef();
   const sumArrayObjectProps = (array, prop) => array
     .map((object) => object[prop])
     .reduce((a, b) => Number(a + b), []);
@@ -54,6 +55,10 @@ const VocabListSessionBody = ({
     totalHints = sumArrayObjectProps(report, 'hintsNeeded');
     totalTime = formattedTime(sumArrayObjectProps(report, 'duration')).getTime();
   }
+
+  useEffect(() => {
+    translateTextArea.current.focus();
+  }, []);
 
   return (
     <>
@@ -110,6 +115,7 @@ const VocabListSessionBody = ({
                 <textarea
                   id="translation"
                   className="textarea-element"
+                  ref={translateTextArea}
                   rows="4"
                   value={vocabTranslationInputValue}
                   placeholder={t('vocablist_form_placeholder_enterTranslation')}

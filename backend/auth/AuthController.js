@@ -126,7 +126,7 @@ export const verify = async (parent, args, { t, Sentry }) => {
           username: user.username,
         },
         JWT_SECRET,
-        { expiresIn: 7* 24 * 60 * 60 }),
+        { expiresIn: '7d' }),
     };
   } catch(error) {
     Sentry.captureException(error);
