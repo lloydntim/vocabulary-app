@@ -91,7 +91,7 @@ export const login = async (parent, args, { t, Sentry }) => {
         },
         JWT_SECRET,
         {
-          expiresIn: 60 * 60,
+          expiresIn: '7d',
         }
       ),
     };
@@ -126,7 +126,7 @@ export const verify = async (parent, args, { t, Sentry }) => {
           username: user.username,
         },
         JWT_SECRET,
-        { expiresIn: '7d' }),
+        { expiresIn: 60 * 60 }),
     };
   } catch(error) {
     Sentry.captureException(error);
