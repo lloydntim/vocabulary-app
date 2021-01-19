@@ -18,6 +18,7 @@ import IconRefresh from './IconRefresh';
 import IconHome from './IconHome';
 import IconLanguage from './IconLanguage';
 import IconSound from './IconSound';
+import IconSearch from './IconSearch';
 
 const Icon = ({ type }) => {
   switch (type) {
@@ -38,6 +39,7 @@ const Icon = ({ type }) => {
     case 'home': return <IconHome />;
     case 'language': return <IconLanguage />;
     case 'sound': return <IconSound />;
+    case 'search': return <IconSearch />;
     default: return <div>Please select valid icon.</div>;
   }
 };

@@ -58,6 +58,7 @@
   "about_introduction": "Esta es una aplicación que le permite guardar listas de vocabulario interactivas que están destinadas a ayudarlo a memorizarlas.",
   "vocablists_title": "Listas de vocabulario",
   "vocablists_numOfVocabs": "Frases {{num}}",
+  "vocablists_form_placeholder_searchList": "Buscar Lista",
   "vocablists_form_title_editTitle": "Editar título de la lista de vocabulario",
   "vocablists_form_title_newList": "Lista nueva",
   "vocablists_form_label_title": "Título",

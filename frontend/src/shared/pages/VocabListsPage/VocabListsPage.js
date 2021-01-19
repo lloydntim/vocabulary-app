@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import gql from 'graphql-tag';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import { Link, Redirect, useHistory } from 'react-router-dom';
@@ -66,6 +66,10 @@ const VocabListsPage = () => {
   const { formData, updateFormData, isFormValid, resetFormData } = useForm(inputNames);
   const { title, listFile } = formData;
 
+  const searchInputNames = ['search'];
+  const { formData: searchFormData, updateFormData: updateSearchFormData } = useForm(searchInputNames);
+  const { search } = searchFormData;
+
   const [isEditTitleMode, setEditTitleMode] = useState(false);
   const [currentList, setCurrentList] = useState({ name: '', id: '' });
   const [isDialogVisible, setDialogVisibility] = useState(false);
@@ -106,6 +110,15 @@ const VocabListsPage = () => {
       updateJoyride({ run: true, stepIndex });
     }
   }, []);
+
+  const filteredList = useMemo(() => {
+    if (data && data.getLists) {
+      const allResults = data.getLists;
+      const filteredResults = allResults.filter((list) => list.name.toLocaleLowerCase().includes(search.value.toLocaleLowerCase()));
+      return search.value.length > 0 ? filteredResults : allResults;
+    }
+    return [];
+  }, [search, data]);
 
   return (
     <RootLayout
@@ -197,10 +210,26 @@ const VocabListsPage = () => {
                     updateJoyride({ run: true, stepIndex: 3 });
                   }}
                 />
+
+                {(data.getLists.length > 0) && (
+                  <form className="search-form">
+                    <Input
+                      className="search-input"
+                      inputRef={search.ref}
+                      autoComplete="off"
+                      type="search"
+                      name={search.name}
+                      placeholder={t('vocablists_form_placeholder_searchList')}
+                      value={search.value}
+                      onChange={updateSearchFormData}
+                      onBlur={updateSearchFormData}
+                    />
+                  </form>
+                )}
               </div>
 
               <ul className="list">
-                {data.getLists.map((list) => (
+                {filteredList.map((list) => (
                   <li className="list-item" key={list.id}>
                     <div className="button-group">
                       <IconButton

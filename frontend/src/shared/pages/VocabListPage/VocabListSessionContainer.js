@@ -90,8 +90,6 @@ const VocabListSessionContainer = ({ list, joyride }) => {
         }}
         onVocabTranslationSubmitButtonClick={() => {
           if (status !== 'success') {
-            console.log(capitalizeFirstLetter(targetText));
-            console.log(capitalizeFirstLetter(translationInputValue));
             const statusMessage = capitalizeFirstLetter(targetText) === capitalizeFirstLetter(translationInputValue) ? 'success' : 'error';
 
             if (statusMessage === 'success') {

@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import './Input.scss';
 import IconButton from '../IconButton/IconButton';
+import Icon from '../Icon';
 import Message from '../Message/Message';
 
 const emailPattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -129,6 +130,8 @@ const Input = (props) => {
           onClick={() => setInputType(inputType === 'password' ? 'text' : 'password')}
         />
       )}
+
+      {type === 'search' && <Icon type="search" />}
 
       {(dataList && isDataListVisible && dataList.length > 1) && (
         <ul className="datalist">

@@ -50,7 +50,31 @@
           border: none;
         }
       }
+
       flex-direction: row-reverse;
+
+      &.is-sticky {
+        width: 40%;
+        position: fixed;
+        z-index: 11;
+        top: -2px;
+        left: 72px;
+        background: $white;
+
+        .icon-type-plus {
+          border-color: transparent;
+        }
+
+        @media (min-width: 768px) {
+          .icon-type-plus {
+            border-color: $green;
+          }
+
+          left: auto;
+          width: 360px;
+          margin: 0 auto;
+        }
+      }
     }
 
     .input-type-file {

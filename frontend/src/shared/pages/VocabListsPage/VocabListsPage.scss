@@ -9,6 +9,10 @@
     margin: 0 0 8px;
     padding: 0 0 12px;
 
+    .icon-type-plus {
+      margin-right: 16px;
+    }
+
     h3 {
       border: none;
       padding: 0;
@@ -115,8 +119,9 @@
       }
     }
   }
-
+  .search-form,
   .overlay {
+    input[type="search"],
     input[type="text"] {
       background-color: $grey;
       border: solid 1px $green;
@@ -127,6 +132,29 @@
 
       &::placeholder {
         color: $green;
+      }
+    }
+  }
+
+  .search-form {
+    display: flex;
+    justify-content: right;
+    width: 100%;
+
+    .input {
+      width: 100%;
+
+      svg {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        right: 12px;
+        top: 24px;
+
+        path {
+          fill: $green;
+        }
       }
     }
   }

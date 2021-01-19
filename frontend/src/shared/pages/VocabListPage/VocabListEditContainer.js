@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { string, arrayOf, func } from 'prop-types';
 
-import { useForm } from '../../hooks';
+import { useForm, useStickyHeader } from '../../hooks';
 import { Overlay, Tabs, Dialog } from '../../layouts';
 import { Input, Button } from '../../components';
 import VocabForm from './VocabForm';
@@ -22,6 +22,7 @@ const VocabListEditContainer = ({
   setJoyride,
 }) => {
   const { t } = useTranslation();
+  const { stickyHeaderRef, isHeaderSticky } = useStickyHeader();
   const newVocabListForm = useForm(['title']);
   const addVocabListForm = useForm(['fileList']);
   const vocabFormInputNames = ['sourceLanguage', 'targetLanguage', 'sourceText', 'targetText'];
@@ -161,6 +162,8 @@ const VocabListEditContainer = ({
         {t('vocablist_dialog_message_deleteVocabsWarning', { numOfVocabsSelected: selectedVocabs.length })}
       </Dialog>
       <VocabListEditHeader
+        ref={stickyHeaderRef}
+        isSticky={isHeaderSticky}
         selectedVocabs={selectedVocabs}
         onDeleteVocabsButtonClick={() => setDialogVisibility(true)}
         onAddVocabButtonClick={() => {

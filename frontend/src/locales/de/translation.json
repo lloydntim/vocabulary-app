@@ -57,6 +57,7 @@
   "about_subTitle": "Schnelle Einführung",
   "about_introduction": "Dies ist eine App, mit der Sie interaktive Vokabellisten speichern können, die Ihnen beim Auswendiglernen helfen sollen.",
   "vocablists_title": "Vokabellisten",
+  "vocablists_form_placeholder_searchList": "Liste Suchen",
   "vocablists_numOfVocabs": "{{num}} Sätze",
   "vocablists_form_title_editTitle": "Titel der Vokabelliste bearbeiten",
   "vocablists_form_title_newList": "Neue Liste",

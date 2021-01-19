@@ -69,6 +69,7 @@
   "about_introduction": "This is an app that allows you to save interactive vocabulary lists that are meant to help you memorise them.",
 
   "vocablists_title": "Vocabulary Lists",
+  "vocablists_form_placeholder_searchList": "Search List",
   "vocablists_numOfVocabs": "{{num}} Phrases",
   "vocablists_form_title_editTitle": "Edit Vocab List Title",
   "vocablists_form_title_newList": "New List",

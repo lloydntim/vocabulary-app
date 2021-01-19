@@ -1,15 +1,16 @@
-import React from 'react';
-import { number, arrayOf, func } from 'prop-types';
+import React, { forwardRef } from 'react';
+import { number, arrayOf, func, bool } from 'prop-types';
 
 import { IconButton } from '../../components';
 
-const VocabListEditHeader = ({
+const VocabListEditHeader = forwardRef(({
+  isSticky,
   selectedVocabs,
   onDeleteVocabsButtonClick,
   onCreateNewVocabListButtonClick,
   onAddVocabButtonClick,
-}) => (
-  <div className="header">
+}, ref) => (
+  <div ref={ref} className={`header ${isSticky ? 'is-sticky' : ''}`}>
     <IconButton
       rank="secondary"
       type="delete"
@@ -28,9 +29,10 @@ const VocabListEditHeader = ({
       onClick={onAddVocabButtonClick}
     />
   </div>
-);
+));
 
 VocabListEditHeader.propTypes = {
+  isSticky: bool.isRequired,
   selectedVocabs: arrayOf(number).isRequired,
   onDeleteVocabsButtonClick: func.isRequired,
   onAddVocabButtonClick: func.isRequired,
