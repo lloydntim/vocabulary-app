@@ -29,7 +29,7 @@ const RootLayoutGuestView = ({ children }) => {
     { value: 'de', label: t('common_languages_german') },
     { value: 'es', label: t('common_languages_spanish') },
     { value: 'pt', label: t('common_languages_portuguese') },
-    { value: 'pt', label: t('common_languages_french') },
+    { value: 'fr', label: t('common_languages_french') },
   ];
   const {
     language,
