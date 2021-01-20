@@ -41,7 +41,11 @@ const RootLayout = ({
             {children}
           </RootLayoutUserView>
         )}
-        <div className="footer">&copy; 2019 - 2020 LN Creative Development Ltd</div>
+        <div className="footer">
+          &copy; 2019 -&nbsp;
+          {new Date().getFullYear()}
+          &nbsp;LN Creative Development Ltd
+        </div>
       </div>
     </>
   );
