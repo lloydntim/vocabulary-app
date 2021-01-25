@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import {
   string,
   number,
@@ -10,8 +10,11 @@ import { useTranslation } from 'react-i18next';
 
 import { Message, Icon, Button } from '../../components';
 
+import VocabListSessionResults from './VocabListSessionResults';
+
+const formatDigits = (value) => ((value < 10) ? `0${value}` : value); // TODO: move to utils
+
 const formattedTime = (time) => {
-  const formatDigits = (value) => ((value < 10) ? `0${value}` : value);
   const seconds = time % 60;
   const minutes = Math.floor((time / 60) % 60);
   const hours = Math.floor((time / 60) / 60);
@@ -24,8 +27,9 @@ const formattedTime = (time) => {
   };
 };
 
-/* eslint-disable react/jsx-props-no-spreading */
+/* eslint-disable react/jsx-props-no-spreading, no-undef */
 const VocabListSessionBody = ({
+  id,
   vocabsTotalCount,
   currentVocab,
   vocabSourceText,
@@ -39,7 +43,9 @@ const VocabListSessionBody = ({
   onVocabTranslationInputFocus,
   onVocabTranslationSubmitButtonClick,
 }) => {
+  const [resultsData, setResultsData] = useState([]);
   const { t } = useTranslation();
+
   const translateTextArea = useRef();
   const sumArrayObjectProps = (array, prop) => array
     .map((object) => object[prop])
@@ -50,15 +56,45 @@ const VocabListSessionBody = ({
   let totalAttempts = 0;
   let totalHints = 0;
   let totalTime = 0;
-  if (isVocabTranslationCorrect && (vocabsTotalCount === currentVocab)) {
-    totalAttempts = sumArrayObjectProps(report, 'attemptsNeeded');
-    totalHints = sumArrayObjectProps(report, 'hintsNeeded');
-    totalTime = formattedTime(sumArrayObjectProps(report, 'duration')).getTime();
-  }
+  let finishDateString = 0;
+  let finishTimeString = 0;
+  // const resultsListId = `results_${id}`;
+  // let resultsList = 0;
+  let results = {};
 
   useEffect(() => {
-    translateTextArea.current.focus();
-  }, []);
+    /* eslint-disable no-undef */
+    // resultsList = localStorage.getItem(resultsListId) !== null ? JSON.parse(localStorage.getItem(resultsListId)) : [];
+    results = localStorage.getItem('resultsList') !== null ? JSON.parse(localStorage.getItem('resultsList')) : { [id]: [] };
+    if (isVocabTranslationCorrect && (vocabsTotalCount === currentVocab)) {
+      totalAttempts = sumArrayObjectProps(report, 'attemptsNeeded');
+      totalHints = sumArrayObjectProps(report, 'hintsNeeded');
+      totalTime = formattedTime(sumArrayObjectProps(report, 'duration')).getTime();
+      finishDateString = `${formatDigits(new Date().getDate())}/${(formatDigits(new Date().getMonth() + 1))}/${new Date().getFullYear()}`;
+      finishTimeString = `${formatDigits(new Date().getHours())}:${formatDigits(new Date().getMinutes())}`;
+      const finalResultsItem = {
+        totalCount: vocabsTotalCount,
+        listId: id,
+        createdAt: Date.now(),
+        totalAttempts,
+        totalHints,
+        totalTime,
+        finishDate: finishDateString,
+        finishTime: finishTimeString,
+      };
+
+      const newResultData = results[id] || [];
+      const newResult = { [id]: [...newResultData, finalResultsItem] };
+      localStorage.setItem('resultsList', JSON.stringify({ ...results, ...newResult }));
+      setResultsData(newResult[id]);
+      // localStorage.setItem(resultsListId, JSON.stringify([...resultsList, finalResultsItem]));
+      // setResultsData([...resultsList, finalResultsItem]);
+    }
+  }, [currentVocab, isVocabTranslationCorrect]);
+
+  useEffect(() => {
+    if (translateTextArea.current && !vocabTranslationInputValue.length) translateTextArea.current.focus();
+  }, [currentVocab, isVocabTranslationCorrect]);
 
   return (
     <>
@@ -69,34 +105,7 @@ const VocabListSessionBody = ({
               type="success"
               content={t('vocablist_message_sessionCompleted')}
             />
-            <h2 className="results-title">{t('vocablist_title_sessionResults')}</h2>
-            <div className="container">
-              <div>
-                {t('vocablist_message_sessionTotalAttempts')}
-                :
-              </div>
-              <div>
-                {totalAttempts}
-              </div>
-
-              <div>
-                {t('vocablist_message_sessionTotalHints')}
-                :
-              </div>
-              <div>
-                {totalHints}
-              </div>
-
-              <div>
-                {t('vocablist_message_sessionTotalTime')}
-                :
-              </div>
-              <div>
-                {totalTime}
-                &nbsp;
-                {t('vocablist_message_sessionTimeSeconds')}
-              </div>
-            </div>
+            <VocabListSessionResults data={resultsData} />
           </>
         ) : (
           <>
@@ -139,6 +148,7 @@ const VocabListSessionBody = ({
 };
 
 VocabListSessionBody.propTypes = {
+  id: string.isRequired,
   vocabsTotalCount: number.isRequired,
   currentVocab: number.isRequired,
   vocabSourceText: string.isRequired,

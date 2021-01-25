@@ -36,7 +36,7 @@ const VocabListSessionHeader = ({
     const targetLanguageIndex = Object.keys(targetLanguageTranslation[0]);
     const targetLanguageText = languages[targetLanguageIndex].text;
     setSessionLanguages({ sourceLanguage: sourceLanguageText, targetLanguage: targetLanguageText });
-  }, []);
+  }, [sourceLanguage]);
 
   return (
     <h5>

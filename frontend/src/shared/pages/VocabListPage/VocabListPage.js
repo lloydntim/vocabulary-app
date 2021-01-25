@@ -245,7 +245,7 @@ const VocabListPage = () => {
                   onChange={({ target }) => setEditMode(!target.checked)}
                 />
               </div>
-              {!isEditMode ? <VocabListSessionContainer list={shuffledList} joyride={vocabListPlayModeJoyride} />
+              {!isEditMode ? <VocabListSessionContainer id={id} list={shuffledList} joyride={vocabListPlayModeJoyride} />
                 : (
                   <VocabListEditContainer
                     id={id}

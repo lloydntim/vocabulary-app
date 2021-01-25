@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { string, arrayOf, object } from 'prop-types';
 import Joyride from 'react-joyride';
 import { useTranslation } from 'react-i18next';
@@ -15,7 +15,7 @@ const capitalizeFirstLetter = (word) => {
   return `${trimmedWord.substring(0, 1).toLocaleUpperCase()}${trimmedWord.substring(1, trimmedWord.length)}`;
 };
 
-const VocabListSessionContainer = ({ list, joyride }) => {
+const VocabListSessionContainer = ({ id, list, joyride }) => {
   const { t } = useTranslation();
   const [count, setCount] = useState(0);
   const [isLanguageSwitched, toggleLanguage] = useState(false);
@@ -26,6 +26,7 @@ const VocabListSessionContainer = ({ list, joyride }) => {
   const [status, setStatusMessage] = useState('');
   const [reportData, setReportData] = useState({});
   const { time, reset } = useStopwatch();
+  const currentCount = useMemo(() => count + 1, [count]);
 
   /* eslint-disable no-undef */
   const token = localStorage.getItem('token');
@@ -53,6 +54,20 @@ const VocabListSessionContainer = ({ list, joyride }) => {
     }
   }, []);
 
+  const onRestartSessionButtonClick = useCallback(
+    () => {
+      setTranslationInputValue('');
+      setStatusMessage('');
+      setCount(0);
+
+      reset();
+      setHintsNeeded(0);
+      setAttemptsNeeded(0);
+      setReportData({});
+    },
+    [count],
+  );
+
   return (
     <>
       <Joyride
@@ -72,8 +87,9 @@ const VocabListSessionContainer = ({ list, joyride }) => {
         onToggleLanguageButtonClick={() => toggleLanguage(!isLanguageSwitched)}
       />
       <VocabListSessionBody
+        id={id}
         vocabsTotalCount={list.length}
-        currentVocab={count + 1}
+        currentVocab={currentCount}
         isTargetTextRevealed={isTargetTextRevealed}
         vocabSourceText={sourceText}
         vocabTargetText={targetText}
@@ -135,22 +151,14 @@ const VocabListSessionContainer = ({ list, joyride }) => {
           setHintsNeeded(hintsNeeded + 1);
           setIsTargetTextRevealed(false);
         }}
-        onRestartSessionButtonClick={() => {
-          setTranslationInputValue('');
-          setStatusMessage('');
-          setCount(0);
-
-          reset();
-          setHintsNeeded(0);
-          setAttemptsNeeded(0);
-          setReportData({});
-        }}
+        onRestartSessionButtonClick={onRestartSessionButtonClick}
       />
     </>
   );
 };
 
 VocabListSessionContainer.propTypes = {
+  id: string.isRequired,
   list: arrayOf(arrayOf(string)).isRequired,
   joyride: object.isRequired,
 };

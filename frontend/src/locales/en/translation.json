@@ -136,6 +136,11 @@
   "vocablist_message_sessionTimeHours": "hours",
   "vocablist_message_sessionTimeMinutes": "minutes",
   "vocablist_message_sessionTimeSeconds": "seconds",
+  "vocablist_message_sessionFinishDate": "Finished on",
+  "vocablist_message_sessionFinishTime": "Finished at",
+  "vocablist_message_sessionTotalVocabs": "Total Vocabularies",
+  "vocablist_button_sessionPreviousResults": "Previous Results",
+  "vocablist_button_sessionNextResults": "Next Results",
 
   "vocablist_joyride_title_home": "Home",
   "vocablist_joyride_content_home": "Click this button to see all your vocabulary lists.",
