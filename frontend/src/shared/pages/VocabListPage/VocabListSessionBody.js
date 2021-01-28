@@ -89,6 +89,7 @@ const VocabListSessionBody = ({
       setResultsData(newResult[id]);
       // localStorage.setItem(resultsListId, JSON.stringify([...resultsList, finalResultsItem]));
       // setResultsData([...resultsList, finalResultsItem]);
+      // remove later
     }
   }, [currentVocab, isVocabTranslationCorrect]);
 
