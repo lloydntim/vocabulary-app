@@ -131,6 +131,12 @@ const VocabListSessionBody = ({
                   placeholder={t('vocablist_form_placeholder_enterTranslation')}
                   onFocus={onVocabTranslationInputFocus}
                   onChange={onVocabTranslationInputChange}
+                  onKeyPress={(event) => {
+                    if (event.key === 'Enter') {
+                      event.preventDefault();
+                      onVocabTranslationSubmitButtonClick();
+                    }
+                  }}
                 />
                 {vocabTranslationStatusMessage && <Icon type={isVocabTranslationCorrect ? 'tick' : 'close'} />}
               </label>
