@@ -44,7 +44,7 @@ const LoginPage = () => {
         <form>
           <Input
             label={t('common_form_label_username')}
-            autocapitalize="off"
+            autoCapitalize="off"
             inputRef={username.ref}
             required
             autoComplete="username"
@@ -56,7 +56,7 @@ const LoginPage = () => {
           />
           <Input
             label={t('common_form_placeholder_password')}
-            autocapitalize="off"
+            autoCapitalize="off"
             inputRef={password.ref}
             required
             name={password.name}
