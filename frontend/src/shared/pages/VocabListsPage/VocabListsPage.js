@@ -9,7 +9,13 @@ import Joyride from 'react-joyride';
 import { vocabListsPageJoyride } from '../../joyrides';
 import { useForm, useStickyHeader, useJoyride } from '../../hooks';
 import { RootLayout, Overlay, Dialog } from '../../layouts';
-import { Button, IconButton, Icon, Message, Input } from '../../components';
+import {
+  Button,
+  IconButton,
+  Icon,
+  Message,
+  Input,
+} from '../../components';
 
 import './VocabListsPage.scss';
 
@@ -63,7 +69,12 @@ const VocabListsPage = () => {
 
   const { id: creatorId, username } = jwtDecode(token);
   const inputNames = ['title', 'listFile'];
-  const { formData, updateFormData, isFormValid, resetFormData } = useForm(inputNames);
+  const {
+    formData,
+    updateFormData,
+    isFormValid,
+    resetFormData,
+  } = useForm(inputNames);
   const { title, listFile } = formData;
 
   const searchInputNames = ['search'];
@@ -75,7 +86,15 @@ const VocabListsPage = () => {
   const [isDialogVisible, setDialogVisibility] = useState(false);
   const [isOverlayVisible, setOverlayVisibility] = useState(false);
   const [responseMessage, setResponseMessage] = useState('');
-  const { run, stepIndex, steps, styles, locale, callback, updateJoyride } = useJoyride(vocabListsPageJoyride);
+  const {
+    run,
+    stepIndex,
+    steps,
+    styles,
+    locale,
+    callback,
+    updateJoyride,
+  } = useJoyride(vocabListsPageJoyride);
   const { loading, error, data } = useQuery(GET_LISTS, { variables: { creatorId }, onError: (error) => setResponseMessage(error.message.split(':')[1].trim()) });
   const [addList] = useMutation(ADD_LIST, {
     onCompleted: (data) => setTimeout(() => push(`/vocablist/${data.addList.id}`), 1000),
@@ -188,7 +207,12 @@ const VocabListsPage = () => {
             <Joyride
               steps={steps(t)}
               run={run}
-              callback={callback({ username, isOverlayVisible, run, updateJoyride })}
+              callback={callback({
+                username,
+                isOverlayVisible,
+                run,
+                updateJoyride,
+              })}
               stepIndex={stepIndex}
               styles={styles}
               locale={locale(t)}
@@ -276,11 +300,11 @@ const VocabListsPage = () => {
           </div>
         )}
         {(removeMutationError
-        || updateListMutationError) && <Message type="error" content={responseMessage} />}
+          || updateListMutationError) && <Message type="error" content={responseMessage} />}
 
         {(loading
-        || removeMutationLoading
-        || updateListMutationLoading) && <Message type="info" content={t('messages_info_loading')} /> }
+          || removeMutationLoading
+          || updateListMutationLoading) && <Message type="info" content={t('messages_info_loading')} />}
       </div>
     </RootLayout>
   );

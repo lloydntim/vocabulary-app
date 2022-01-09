@@ -3,6 +3,7 @@ const { promisify } = require('util');
 const { resolve } = require('path');
 const dotEnv = require('dotenv');
 const { TranslationServiceClient } = require('@google-cloud/translate');
+
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
 dotEnv.config();
@@ -21,10 +22,11 @@ const translationClient = new TranslationServiceClient({
   credentials: {
     client_email: GCS_CLIENT_EMAIL,
     private_key: GCS_PRIVATE_KEY,
-  }
+  },
 });
 
 const translateFile = async (inputPath) => {
+  /* eslint-disable no-useless-catch  */
   try {
     const languages = ['de', 'es', 'pt', 'fr'];
 
@@ -48,6 +50,7 @@ const translateFile = async (inputPath) => {
         .map(({ translatedText }) => translatedText)
         .reduce((object, value, index) => {
           const keyName = contentKeys[index];
+          /* eslint-disable no-param-reassign */
           object[keyName] = value;
           return object;
         }, {});

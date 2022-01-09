@@ -33,29 +33,19 @@ const resolveError = (value, files, props) => {
 
   let error;
   const fileList = files || [];
-  const isFileListPatternValid =
-    fileList.length > 0 && fileList[0].name.match(pattern);
+  const isFileListPatternValid = fileList.length > 0 && fileList[0].name.match(pattern);
   if (type === 'file') {
     if (required && fileList.length < 1) {
-      error =
-        requiredErrorMessage || t(`messages_error_input_${type}_required`);
+      error = requiredErrorMessage || t(`messages_error_input_${type}_required`);
     } else if (fileList.length > 0 && !isFileListPatternValid) {
       error = patternErrorMessage || t(`messages_error_input_${type}_pattern`);
     }
   } else if (required && value.length < 1) {
     error = requiredErrorMessage || t(`messages_error_input_${type}_required`);
   } else if (minLength && value.length > 0 && value.length < minLength) {
-    error =
-      minLengthErrorMessage ||
-      t(`messages_error_input_${type}_minLength`, {
-        minLength,
-      });
+    error = minLengthErrorMessage || t(`messages_error_input_${type}_minLength`, { minLength });
   } else if (maxLength && value.length > maxLength) {
-    error =
-      maxLengthErrorMessage ||
-      t(`messages_error_input_${type}_maxLength`, {
-        maxLength,
-      });
+    error = maxLengthErrorMessage || t(`messages_error_input_${type}_maxLength`, { maxLength });
   } else if (type === 'email' && !value.match(emailPattern)) {
     error = t(`messages_error_input_${type}_pattern`);
   } else if (pattern && !value.match(pattern)) {
@@ -114,12 +104,10 @@ const Input = (props) => {
   };
   return (
     <label
-      className={`input input-type-${inputTypeName} input-is-${
-        !errorMessage ? 'valid' : 'invalid'
-      }`}
+      className={`input input-type-${inputTypeName} input-is-${!errorMessage ? 'valid' : 'invalid'}`}
       htmlFor={name}
     >
-      <span className="input-label"> {label} </span>{' '}
+      <span className="input-label">{label}</span>
       <input
         ref={inputRef}
         required={required}
@@ -133,19 +121,11 @@ const Input = (props) => {
         value={value}
         onChange={({ target: { value, files } }) => {
           const error = resolveError(value, files, validationProps);
-          if (errorMessage || type === 'password' || type === 'file')
-            setErrorMessage(error);
+          if (errorMessage || type === 'password' || type === 'file') setErrorMessage(error);
           if (dataList) setDataListVisibility(true);
           if (type === 'file' && files) setFileName(files[0].name);
-          if ((type === 'file' && error) || (type === 'file' && !files))
-            setFileName('');
-          onChange({
-            value,
-            files,
-            error,
-            required,
-            name,
-          });
+          if ((type === 'file' && error) || (type === 'file' && !files)) setFileName('');
+          onChange({ value, files, error, required, name });
         }}
         onFocus={onFocus}
         onBlur={({ target: { value, files } }) => {
@@ -153,36 +133,23 @@ const Input = (props) => {
 
           if (type === 'file' && !errorMessage) setFileName(fileName);
           setErrorMessage(error);
-          if (onBlur)
-            onBlur({
-              value,
-              files,
-              error,
-              required,
-              name,
-            });
+          if (onBlur) onBlur({ value, files, error, required, name });
         }}
-      />{' '}
+      />
       {type === 'password' && (
         <IconButton
           type="view"
           rank="primary"
           tabIndex="-1"
-          onClick={() =>
-            setInputType(inputType === 'password' ? 'text' : 'password')
-          }
+          onClick={() => setInputType(inputType === 'password' ? 'text' : 'password')}
         />
       )}
       {type === 'search' && <Icon type="search" />}
       {dataList && isDataListVisible && dataList.length > 1 && (
         <ul className="datalist">
-          {' '}
+
           {dataList
-            .filter(
-              (item) =>
-                value.length > 0 &&
-                item.text.toLowerCase().startsWith(value.toLowerCase())
-            )
+            .filter((item) => value.length > 0 && item.text.toLowerCase().startsWith(value.toLowerCase()))
             .map((item, index) => {
               const boldText = item.text.substring(0, value.length);
               const normalText = item.text.substring(value.length);
@@ -198,22 +165,20 @@ const Input = (props) => {
                         name,
                         selectedDataListItem: dataList.indexOf(item),
                       });
-                      onDataListClick({
-                        ...item,
-                        index,
-                      });
+                      onDataListClick({ ...item, index });
                     }}
                   >
-                    <span> {boldText} </span>{' '}
-                    {normalText && <span> {normalText} </span>}{' '}
-                  </button>{' '}
+                    <span>{boldText}</span>
+
+                    {normalText && <span>{normalText}</span>}
+                  </button>
                 </li>
               );
-            })}{' '}
+            })}
         </ul>
-      )}{' '}
-      {!errorMessage && fileName && <Message type="info" content={fileName} />}{' '}
-      {errorMessage && <Message type="error" content={errorMessage} />}{' '}
+      )}
+      {!errorMessage && fileName && <Message type="info" content={fileName} />}
+      {errorMessage && <Message type="error" content={errorMessage} />}
     </label>
   );
 };
@@ -251,7 +216,7 @@ Input.propTypes = {
     shape({
       value: oneOfType([string, number, bool]),
       text: string,
-    })
+    }),
   ),
   type: string,
   name: string.isRequired,
