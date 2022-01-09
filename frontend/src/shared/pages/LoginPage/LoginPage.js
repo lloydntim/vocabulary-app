@@ -33,7 +33,7 @@ const LoginPage = () => {
     },
     onError: (error) => {
       // Sentry.captureException(error);
-      // console.log('Login: ', error);
+      // console.log('Login:  ', error);
       setResponseMessage(error.message.split(':')[1].trim());
     },
   });
@@ -70,14 +70,14 @@ const LoginPage = () => {
             rank="primary"
             disabled={!isFormValid}
             text={t('common_button_login')}
-            onClick={() =>
+            onClick={() => {
               login({
                 variables: {
                   username: username.value.toLowerCase(),
                   password: password.value,
                 },
-              })
-            }
+              });
+            }}
           />
         </form>
 
