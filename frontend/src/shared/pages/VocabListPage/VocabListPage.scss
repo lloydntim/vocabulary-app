@@ -5,8 +5,8 @@
     .sub-header {
       display: flex;
       justify-content: space-between;
-      padding: 8px 0;
-      margin: 0;
+      padding: 0;
+      margin: 4px 0;
       border-bottom: 1px solid $grey;
 
       .icon-type-arrow-left {
@@ -14,8 +14,8 @@
         border: none;
 
         svg {
-          width: 32px;
-          height: 32px;
+          width: 28px;
+          height: 28px;
         }
       }
 
@@ -122,8 +122,9 @@
       margin: 0 0 12px;
 
       button {
-        padding: 8px;
-        margin: 4px 0;
+        padding: 4px;
+        margin: 0;
+        border: none;
 
         path {
           fill: $dark-green;
@@ -146,7 +147,7 @@
     small {
       display: flex;
       justify-content: flex-end;
-      margin: 12px 0;
+      margin: 8px 0;
     }
 
     label {
@@ -244,8 +245,20 @@
   }
 
   &.is-practice-mode {
+    h1 {
+      display: none;
+    }
+
+    h5 {
+      margin: 0 0 8px;
+    }
+
     .content {
       flex: none;
+
+      small {
+        margin: 8px 0;
+      }
 
       .source-text-static {
         display: flex;
@@ -279,7 +292,7 @@
         width: 100%;
         font-size: 18px;
         border-radius: 8px;
-        margin: 0 0 16px;
+        margin: 0 0 12px;
         background-color: $light-yellow;
         border: solid 1px $dark-yellow;
         position: relative;
@@ -360,6 +373,15 @@
 
       .practice-mode-controls {
         flex-direction: row;
+
+        .icon-button {
+          padding: 8px;
+
+          svg {
+            height: 20px;
+            width: 22px;
+          }
+        }
       }
 
       .results-title {
@@ -393,6 +415,8 @@
         width: 48%;
       }
     }
+
+
   }
 
   .message {
@@ -401,6 +425,87 @@
     .message-link {
       color: $red;
       font-weight: $bold;
+    }
+  }
+
+  @media (min-width: 768px) {
+
+    input[type="email"],
+    input[type="text"] {
+      margin: 0 0 12px;
+    }
+
+    .icon-button {
+      padding: 12px
+    }
+
+    .sub-header {
+      padding: 8px 0;
+
+      .icon-type-arrow-left {
+        padding: 0;
+        border: none;
+
+        svg {
+          width: 32px;
+          height: 32px;
+        }
+      }
+    }
+
+    h5 {
+      margin: 0 0 12px;
+
+      button {
+        padding: 8px;
+        margin: 4px 0;
+        border: solid;
+      }
+    }
+
+    .button {
+      margin-top: 0;
+    }
+
+    &.is-practice-mode {
+      h1 {
+        display: block;
+      }
+
+      .source-text {
+        font-size: 24px;
+        line-height: 1;
+        padding: 24px 0 48px;
+        margin: 0 0 12px;
+      }
+
+      .target-text {
+        margin: 0 0 14px;
+      }
+
+      .textarea {
+        position: relative;
+
+        .textarea-element {
+          font-size: 18px;
+          margin-bottom: 12px;
+        }
+      }
+
+      .button {
+        margin-bottom: 16px;
+      }
+    }
+
+    .practice-mode-controls {
+      .icon-button {
+        padding: 12px;
+
+        svg {
+          height: 24px;
+          width: 26px;
+        }
+      }
     }
   }
 }
@@ -438,61 +543,26 @@
       order: 4;
     }
   }
-}
 
-.overlay {
+  .overlay {
+    form {
 
-  form {
+      input[type="email"],
+      input[type="text"] {
+        background-color: $grey;
+        border: solid 1px $green;
+        resize: none;
+        outline: none;
+        color: $dark-green;
+        margin: 0 0 4px;
 
-    input[type="email"],
-    input[type="text"] {
-      background-color: $grey;
-      border: solid 1px $green;
-      resize: none;
-      outline: none;
-      color: $dark-green;
-      margin: 0 0 4px;
-
-      &::placeholder {
-        color: $green;
-      }
-    }
-
-    .button {
-      margin-top: 4px;
-    }
-  }
-
-  @media (min-width: 768px) {
-
-    input[type="email"],
-    input[type="text"] {
-      margin: 0 0 12px;
-    }
-
-    .button {
-      margin-top: 0;
-    }
-
-    &.is-practice-mode {
-      .source-text {
-        font-size: 24px;
-        line-height: 1;
-        padding: 24px 0 48px;
-        margin: 0 0 12px;
-      }
-
-      .textarea {
-        position: relative;
-
-        .textarea-element {
-          font-size: 18px;
-          margin-bottom: 12px;
+        &::placeholder {
+          color: $green;
         }
       }
 
       .button {
-        margin-bottom: 16px;
+        margin-top: 4px;
       }
     }
   }
