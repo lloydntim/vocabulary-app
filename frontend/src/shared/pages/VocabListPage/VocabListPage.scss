@@ -439,71 +439,73 @@
       padding: 12px
     }
 
-    .sub-header {
-      padding: 8px 0;
-
-      .icon-type-arrow-left {
-        padding: 0;
-        border: none;
-
-        svg {
-          width: 32px;
-          height: 32px;
-        }
-      }
-    }
-
-    h5 {
-      margin: 0 0 12px;
-
-      button {
-        padding: 8px;
-        margin: 4px 0;
-        border: solid;
-      }
-    }
-
     .button {
       margin-top: 0;
     }
 
     &.is-practice-mode {
-      h1 {
-        display: block;
-      }
+      .content {
+        .sub-header {
+          padding: 8px 0;
 
-      .source-text {
-        font-size: 24px;
-        line-height: 1;
-        padding: 24px 0 48px;
-        margin: 0 0 12px;
-      }
+          .icon-type-arrow-left {
+            padding: 0;
+            border: none;
 
-      .target-text {
-        margin: 0 0 14px;
-      }
-
-      .textarea {
-        position: relative;
-
-        .textarea-element {
-          font-size: 18px;
-          margin-bottom: 12px;
+            svg {
+              width: 32px;
+              height: 32px;
+            }
+          }
         }
-      }
 
-      .button {
-        margin-bottom: 16px;
-      }
-    }
+        h1 {
+          display: block;
+        }
 
-    .practice-mode-controls {
-      .icon-button {
-        padding: 12px;
+        h5 {
+          margin: 0 0 12px;
 
-        svg {
-          height: 24px;
-          width: 26px;
+          button {
+            padding: 8px;
+            margin: 4px 0;
+            border: 1px solid;
+          }
+        }
+
+        .source-text {
+          font-size: 24px;
+          line-height: 1;
+          padding: 24px 0 48px;
+          margin: 0 0 12px;
+        }
+
+        .target-text {
+          margin: 0 0 14px;
+        }
+
+        .textarea {
+          position: relative;
+
+          .textarea-element {
+            font-size: 18px;
+            margin-bottom: 12px;
+          }
+        }
+
+        .button {
+          margin-bottom: 16px;
+        }
+
+        .practice-mode-controls {
+          .icon-button {
+            padding: 12px;
+
+            svg {
+              height: 24px;
+              width: 26px;
+            }
+          }
         }
       }
     }
