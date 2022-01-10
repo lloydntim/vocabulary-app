@@ -11,10 +11,12 @@
   width: 100%;
   z-index: 15;
   flex-direction: column;
-  padding: 28px;
+  padding: 12px 28px;
 
   .icon-button {
     align-self: flex-end;
+    position: relative;
+    z-index: 5;
 
     svg {
       height: 24px;
@@ -24,11 +26,17 @@
   a {
     color: $dark-green;
   }
+
   .overlay-button-close,
   .overlay-content {
     margin: 0 auto;
     max-width: 440px;
     width: 100%;
+  }
+
+  .overlay-content {
+    position: relative;
+    bottom: 50px;
   }
 
   .overlay-button-close {
@@ -40,5 +48,13 @@
 
   &.is-visible {
     display: flex;
+  }
+
+  @media (min-width: 768px) {
+    padding: 28px;
+
+    .overlay-content {
+      bottom: 0;
+    }
   }
 }
