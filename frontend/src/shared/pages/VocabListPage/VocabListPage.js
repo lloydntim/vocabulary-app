@@ -71,7 +71,7 @@ export const ADD_LIST = gql`
     }
   }
 `;
-
+/* eslint-disable indent  */
 const VocabListPage = () => {
   const { t } = useTranslation();
   const { stickyHeaderRef, isHeaderSticky } = useStickyHeader();
@@ -104,7 +104,7 @@ const VocabListPage = () => {
     },
   );
 
-  /* eslint-disable  no-undef */
+  /* eslint-disable  no-undef  */
   const token = localStorage.getItem('token');
 
   if (!token) return <Redirect to="/" />;
@@ -139,7 +139,7 @@ const VocabListPage = () => {
 
   const [getListVocabTranslation,
     { getListVocabTransLoading, getListVocabTransError }] = useLazyQuery(
-    GET_LIST_VOCAB_TRANSLATION, {
+      GET_LIST_VOCAB_TRANSLATION, {
       onCompleted: ({ getListVocabTranslation: { targetText } }) => {
         const newVocabItem = [...newVocabData, targetText];
         const data = list.concat([newVocabItem]);
@@ -148,11 +148,11 @@ const VocabListPage = () => {
       },
       onError: (error) => setResponseMessage(error.message.split(':')[1].trim()),
     },
-  );
+    );
 
   const [getListVocabSound,
     { getListVocabSoundLoading, getListVocabSoundError }] = useLazyQuery(
-    GET_LIST_VOCAB_SOUND, {
+      GET_LIST_VOCAB_SOUND, {
       onCompleted: ({ getListVocabSound: { audioLink, audioKey } }) => {
         setVocabAudioURLs([...vocabVocabAudioURLs, audioKey]);
         const audio = new Audio(audioLink);
@@ -160,7 +160,7 @@ const VocabListPage = () => {
       },
       onError: (error) => setResponseMessage(error.message.split(':')[1].trim()),
     },
-  );
+    );
 
   useEffect(() => {
     /* eslint-disable no-undef */
@@ -255,6 +255,8 @@ const VocabListPage = () => {
                     updateList={updateList}
                     getListVocabTranslation={getListVocabTranslation}
                     getListVocabSound={testFn}
+                    vocabListData={{ name, list, shuffledList }}
+                    setVocabListData={setVocabListData}
                     setNewVocabData={setNewVocabData}
                     setJoyride={updateJoyride}
                   />

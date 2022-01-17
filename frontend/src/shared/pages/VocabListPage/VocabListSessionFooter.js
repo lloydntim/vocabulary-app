@@ -25,6 +25,7 @@ const VocabListSessionFooter = ({
           onMouseDown={onShowTranslationButtonActive}
           onTouchStart={onShowTranslationButtonActive}
           onMouseUp={onShowTranslationButtonInactive}
+          onMouseLeave={onShowTranslationButtonInactive}
           onTouchEnd={onShowTranslationButtonInactive}
         />
       </li>

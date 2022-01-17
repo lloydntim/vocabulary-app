@@ -103,6 +103,7 @@ const VocabListSessionContainer = ({ id, list, joyride }) => {
         }}
         onVocabTranslationInputFocus={() => {
           if (status) setStatusMessage('');
+          setIsTargetTextRevealed(false);
         }}
         onVocabTranslationSubmitButtonClick={() => {
           if (status !== 'success') {

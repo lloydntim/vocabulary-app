@@ -13,12 +13,16 @@ import IconEdit from './IconEdit';
 import IconPlus from './IconPlus';
 import IconMenu from './IconMenu';
 import IconClose from './IconClose';
+import IconClipboard from './IconClipboard';
 import IconAddList from './IconAddList';
 import IconRefresh from './IconRefresh';
 import IconHome from './IconHome';
 import IconLanguage from './IconLanguage';
 import IconSound from './IconSound';
 import IconSearch from './IconSearch';
+import IconCut from './IconCut';
+import IconCopy from './IconCopy';
+import IconMove from './IconMove';
 
 const Icon = ({ type }) => {
   switch (type) {
@@ -34,6 +38,10 @@ const Icon = ({ type }) => {
     case 'plus': return <IconPlus />;
     case 'menu': return <IconMenu />;
     case 'close': return <IconClose />;
+    case 'clipboard': return <IconClipboard />;
+    case 'cut': return <IconCut />;
+    case 'move': return <IconMove />;
+    case 'copy': return <IconCopy />;
     case 'add-list': return <IconAddList />;
     case 'refresh': return <IconRefresh />;
     case 'home': return <IconHome />;

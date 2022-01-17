@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { string, arrayOf, func } from 'prop-types';
+import { string, arrayOf, func, object } from 'prop-types';
 
 import { useForm, useStickyHeader } from '../../hooks';
 import { Overlay, Tabs, Dialog } from '../../layouts';
@@ -16,11 +16,14 @@ const VocabListEditContainer = ({
   list,
   addList,
   updateList,
+  vocabListData,
+  setVocabListData,
   setNewVocabData,
   getListVocabTranslation,
   getListVocabSound,
   setJoyride,
 }) => {
+  /* eslint-disable no-undef */
   const { t } = useTranslation();
   const { stickyHeaderRef, isHeaderSticky } = useStickyHeader();
   const newVocabListForm = useForm(['title']);
@@ -124,7 +127,7 @@ const VocabListEditContainer = ({
             name={newVocabListForm.formData.title.name}
             minLength={3}
             maxLength={35}
-            pattern={/^[A-Za-zÀ-ÖØ-öø-ÿ0-9_-]/g}
+            pattern={/^['A-Za-zÀ-ÖØ-öø-ÿ0-9_-]/g}
             placeholder={t('vocablist_form_placeholder_newVocabListTitle')}
             value={newVocabListForm.formData.title.value}
             onChange={newVocabListForm.updateFormData}
@@ -174,6 +177,54 @@ const VocabListEditContainer = ({
         onCreateNewVocabListButtonClick={() => {
           setJoyride({ stepIndex: 3, run: true });
           setCreateVocabListOverlayVisibility(true);
+        }}
+        onCopyVocabsButtonClick={() => {
+          const selectedData = list.filter((val, index) => selectedVocabs.indexOf(index) !== -1);
+
+          setSelectedVocabs([]);
+          sessionStorage.setItem('clipboard', JSON.stringify(selectedData));
+        }}
+        onCutVocabsButtonClick={() => {
+          const cutData = list.filter((val, index) => selectedVocabs.indexOf(index) === -1);
+          const selectedData = list.filter((val, index) => selectedVocabs.indexOf(index) !== -1);
+
+          setSelectedVocabs([]);
+          sessionStorage.setItem('clipboard', JSON.stringify(selectedData));
+          sessionStorage.setItem('cutData', JSON.stringify(cutData));
+          sessionStorage.setItem('cutId', id);
+
+          setVocabListData({ ...vocabListData, list: cutData });
+        }}
+        onPasteVocabsButtonClick={() => {
+          const clipboardVocabs = JSON.parse(sessionStorage.getItem('clipboard') || '[]');
+          const cutId = sessionStorage.getItem('cutId') || '';
+          const cutData = JSON.parse(sessionStorage.getItem('cutData') || '[]');
+          const pasteData = [...list, ...clipboardVocabs];
+
+          console.log('onPaste data', pasteData);
+          setSelectedVocabs([]);
+
+          if (!cutId) {
+            updateList({ variables: { id, data: pasteData } });
+            sessionStorage.setItem('clipboard', '[]');
+          }
+
+          if (cutId === id) {
+            setVocabListData({ ...vocabListData, list: pasteData });
+            sessionStorage.setItem('cutId', '');
+            sessionStorage.setItem('clipboard', '[]');
+            return;
+          }
+
+          if (sessionStorage.getItem('cutId') && typeof sessionStorage.getItem('cutId') !== 'undefined') {
+            console.log('Paste in different list');
+            if (cutData.length) {
+              updateList({ variables: { id: cutId, data: cutData } });
+            }
+            updateList({ variables: { id, data: pasteData } });
+            sessionStorage.setItem('cutId', '');
+            sessionStorage.setItem('clipboard', '[]');
+          }
         }}
         onEditVocabListTitleButtonClick={() => setAddVocabOverlayVisibility(true)}
       />
@@ -229,6 +280,8 @@ VocabListEditContainer.propTypes = {
   list: arrayOf(arrayOf(string)).isRequired,
   addList: func.isRequired,
   updateList: func.isRequired,
+  vocabListData: object.isRequired,
+  setVocabListData: func.isRequired,
   setNewVocabData: func.isRequired,
   getListVocabTranslation: func.isRequired,
   getListVocabSound: func.isRequired,

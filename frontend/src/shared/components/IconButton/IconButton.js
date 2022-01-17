@@ -12,6 +12,7 @@ const IconButton = ({
   onClick,
   onMouseUp,
   onMouseDown,
+  onMouseLeave,
   onTouchStart,
   onTouchEnd,
 }) => (
@@ -23,6 +24,7 @@ const IconButton = ({
     onClick={onClick}
     onMouseUp={onMouseUp}
     onMouseDown={onMouseDown}
+    onMouseLeave={onMouseLeave}
     onTouchStart={onTouchStart}
     onTouchEnd={onTouchEnd}
   >
@@ -38,6 +40,7 @@ IconButton.propTypes = {
   onClick: func,
   onMouseUp: func,
   onMouseDown: func,
+  onMouseLeave: func,
   onTouchStart: func,
   onTouchEnd: func,
 };
@@ -48,6 +51,7 @@ IconButton.defaultProps = {
   onClick: () => null,
   onMouseUp: () => null,
   onMouseDown: () => null,
+  onMouseLeave: () => null,
   onTouchStart: () => null,
   onTouchEnd: () => null,
 };
