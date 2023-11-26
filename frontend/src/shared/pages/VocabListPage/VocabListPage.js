@@ -8,7 +8,7 @@ import jwtDecode from 'jwt-decode';
 
 import { useStickyHeader, useJoyride } from '../../hooks';
 import { RootLayout } from '../../layouts';
-import { Switch, Message, IconButton/* , Icon */ } from '../../components';
+import { Switch, Message, IconButton /* , Icon */ } from '../../components';
 
 import { vocabListPageJoyride, vocabListSessionJoyride } from '../../joyrides';
 import VocabListSessionContainer from './VocabListSessionContainer';
@@ -28,25 +28,33 @@ export const GET_LISTS = gql`
 `;
 
 export const GET_LIST_VOCAB_TRANSLATION = gql`
-  query GetListVocabTranslation($sourceLanguage: String, $targetLanguage: String, $sourceText: String) {
-    getListVocabTranslation(sourceLanguage: $sourceLanguage, targetLanguage: $targetLanguage, sourceText: $sourceText) {
+  query GetListVocabTranslation(
+    $sourceLanguage: String
+    $targetLanguage: String
+    $sourceText: String
+  ) {
+    getListVocabTranslation(
+      sourceLanguage: $sourceLanguage
+      targetLanguage: $targetLanguage
+      sourceText: $sourceText
+    ) {
       targetText
     }
   }
 `;
 
 export const GET_LIST_VOCAB_SOUND = gql`
-  query GetListVocabSound( $text: String, $languageCode: String) {
+  query GetListVocabSound($text: String, $languageCode: String) {
     getListVocabSound(text: $text, languageCode: $languageCode) {
-      audioLink,
-      audioKey,
+      audioLink
+      audioKey
     }
   }
 `;
 
 export const GET_LIST = gql`
   query GetList($id: ID, $name: String) {
-    getList(id: $id,  name: $name) {
+    getList(id: $id, name: $name) {
       name
       data
     }
@@ -54,7 +62,12 @@ export const GET_LIST = gql`
 `;
 
 export const UPDATE_LIST = gql`
-  mutation UpdateList($id: ID!, $name: String, $file: Upload, $data: [[String]]) {
+  mutation UpdateList(
+    $id: ID!
+    $name: String
+    $file: Upload
+    $data: [[String]]
+  ) {
     updateList(id: $id, name: $name, file: $file, data: $data) {
       id
       name
@@ -64,7 +77,12 @@ export const UPDATE_LIST = gql`
 `;
 
 export const ADD_LIST = gql`
-  mutation AddList($name: String!, $file: Upload, $data: [[String]], $creatorId: ID!) {
+  mutation AddList(
+    $name: String!
+    $file: Upload
+    $data: [[String]]
+    $creatorId: ID!
+  ) {
     addList(name: $name, file: $file, data: $data, creatorId: $creatorId) {
       id
       name
@@ -76,11 +94,23 @@ const VocabListPage = () => {
   const { t } = useTranslation();
   const { stickyHeaderRef, isHeaderSticky } = useStickyHeader();
   const vocabListPlayModeJoyride = useJoyride(vocabListSessionJoyride);
-  const { run, stepIndex, steps, styles, callback, updateJoyride, locale } = useJoyride(vocabListPageJoyride);
+  const {
+    run,
+    stepIndex,
+    steps,
+    styles,
+    callback,
+    updateJoyride,
+    locale,
+  } = useJoyride(vocabListPageJoyride);
 
   const [isEditMode, setEditMode] = useState(true);
   const [vocabVocabAudioURLs, setVocabAudioURLs] = useState([]);
-  const [{ name, list, shuffledList }, setVocabListData] = useState({ name: '', list: [], shuffledList: [] });
+  const [{ name, list, shuffledList }, setVocabListData] = useState({
+    name: '',
+    list: [],
+    shuffledList: [],
+  });
 
   const [newVocabData, setNewVocabData] = useState([]);
   const [isOverlayVisible, setOverlayVisibility] = useState(false);
@@ -88,21 +118,17 @@ const VocabListPage = () => {
 
   const { id } = useParams();
   const { push, goBack } = useHistory();
-  const { loading, error, data } = useQuery(
-    GET_LIST,
-    {
-      variables: { id },
-      onCompleted: (data) => {
-        const { data: list, name } = data.getList;
-        const shuffledList = list
-          ? list
-            .map((translation) => translation)
-            .sort(() => (0.5 - Math.random())) : [];
-        setVocabListData({ name, list, shuffledList });
-      },
-      onError: (error) => setResponseMessage(error.message.split(':')[1].trim()),
+  const { loading, error, data } = useQuery(GET_LIST, {
+    variables: { id },
+    onCompleted: (data) => {
+      const { data: list, name } = data.getList;
+      const shuffledList = list
+        ? list.map((translation) => translation).sort(() => 0.5 - Math.random())
+        : [];
+      setVocabListData({ name, list, shuffledList });
     },
-  );
+    onError: (error) => setResponseMessage(error.message.split(':')[1].trim()),
+  });
 
   /* eslint-disable  no-undef  */
   const token = localStorage.getItem('token');
@@ -115,7 +141,8 @@ const VocabListPage = () => {
     addList,
     { loading: addListMutationLoading, error: addListMutationError },
   ] = useMutation(ADD_LIST, {
-    onCompleted: (data) => setTimeout(() => push(`/vocablist/${data.addList.id}`)),
+    onCompleted: (data) =>
+      setTimeout(() => push(`/vocablist/${data.addList.id}`)),
     onError: (error) => setResponseMessage(error.message.split(':')[1].trim()),
     refetchQueries: [{ query: GET_LISTS, variables: { creatorId } }],
   });
@@ -127,9 +154,8 @@ const VocabListPage = () => {
     onCompleted: (data) => {
       const { data: list } = data.updateList;
       const shuffledList = list
-        ? list
-          .map((translation) => translation)
-          .sort(() => (0.5 - Math.random())) : [];
+        ? list.map((translation) => translation).sort(() => 0.5 - Math.random())
+        : [];
       setVocabListData({ name, list, shuffledList });
       updateJoyride({ run: true, stepIndex: 1 });
     },
@@ -137,37 +163,40 @@ const VocabListPage = () => {
     refetchQueries: [{ query: GET_LIST, variables: { id } }],
   });
 
-  const [getListVocabTranslation,
-    { getListVocabTransLoading, getListVocabTransError }] = useLazyQuery(
-      GET_LIST_VOCAB_TRANSLATION, {
-      onCompleted: ({ getListVocabTranslation: { targetText } }) => {
-        const newVocabItem = [...newVocabData, targetText];
-        const data = list.concat([newVocabItem]);
-        updateJoyride({ run: true, stepIndex: 8 });
-        updateList({ variables: { id, data } });
-      },
-      onError: (error) => setResponseMessage(error.message.split(':')[1].trim()),
+  const [
+    getListVocabTranslation,
+    { getListVocabTransLoading, getListVocabTransError },
+  ] = useLazyQuery(GET_LIST_VOCAB_TRANSLATION, {
+    onCompleted: ({ getListVocabTranslation: { targetText } }) => {
+      const newVocabItem = [...newVocabData, targetText];
+      const data = list.concat([newVocabItem]);
+      updateJoyride({ run: true, stepIndex: 8 });
+      updateList({ variables: { id, data } });
     },
-    );
+    onError: (error) => setResponseMessage(error.message.split(':')[1].trim()),
+  });
 
-  const [getListVocabSound,
-    { getListVocabSoundLoading, getListVocabSoundError }] = useLazyQuery(
-      GET_LIST_VOCAB_SOUND, {
-      onCompleted: ({ getListVocabSound: { audioLink, audioKey } }) => {
-        setVocabAudioURLs([...vocabVocabAudioURLs, audioKey]);
-        const audio = new Audio(audioLink);
-        audio.play();
-      },
-      onError: (error) => setResponseMessage(error.message.split(':')[1].trim()),
+  const [
+    getListVocabSound,
+    { getListVocabSoundLoading, getListVocabSoundError },
+  ] = useLazyQuery(GET_LIST_VOCAB_SOUND, {
+    onCompleted: ({ getListVocabSound: { audioLink, audioKey } }) => {
+      setVocabAudioURLs([...vocabVocabAudioURLs, audioKey]);
+      const audio = new Audio(`${audioLink}/${audioKey}`);
+
+      audio.play();
     },
-    );
+    onError: (error) => setResponseMessage(error.message.split(':')[1].trim()),
+  });
 
   useEffect(() => {
     /* eslint-disable no-undef */
     // const isVocablistEditModeJoyrideFinishedKey = `isVocablistEditModeJoyrideFinished-${username}`;
     // const isVocablistEditModeJoyrideFinished = localStorage.getItem(isVocablistEditModeJoyrideFinishedKey);
     const isVocablistEditModeJoyrideProgressKey = `isVocablistEditModeJoyrideProgress-${username}`;
-    const isVocablistEditModeJoyrideProgress = localStorage.getItem(isVocablistEditModeJoyrideProgressKey);
+    const isVocablistEditModeJoyrideProgress = localStorage.getItem(
+      isVocablistEditModeJoyrideProgressKey
+    );
     // if (isVocablistEditModeJoyrideFinished === null) {
     //   updateJoyride({ run: true, stepIndex });
     //   localStorage.setItem(isVocablistEditModeJoyrideFinishedKey, false);
@@ -184,25 +213,33 @@ const VocabListPage = () => {
     // }
   }, []);
 
-  const testFn = useCallback(({ variables: { languageCode, text } }) => {
-    const textFormatted = text
-      .replace(/[^a-zA-Z ]/g, '')// keep only normal letters
-      .normalize('NFD') // NFD Unicode normal form decomposes combined graphemes into the combination of simple ones. reference: https://stackoverflow.com/questions/990904/remove-accents-diacritics-in-a-string-in-javascript
-      .replace(/[\u0300-\u036f]/g, '') // Remove accents and diactrics; reference: https://stackoverflow.com/questions/990904/remove-accents-diacritics-in-a-string-in-javascript
-      .replace(/ /g, '_');
-    const audioKeyName = `${textFormatted}_${languageCode}.mp3`;
-    const vocabURL = `https://thevocapp-bucket.s3.eu-west-2.amazonaws.com/${audioKeyName}`;
-    if (vocabVocabAudioURLs.includes(audioKeyName)) {
-      const audio = new Audio(vocabURL);
-      audio.play();
-    } else {
-      getListVocabSound({ variables: { languageCode, text } });
-    }
-  }, [vocabVocabAudioURLs]);
+  const testFn = useCallback(
+    ({ variables: { languageCode, text } }) => {
+      const textFormatted = text
+        .replace(/[^a-zA-Z ]/g, '') // keep only normal letters
+        .normalize('NFD') // NFD Unicode normal form decomposes combined graphemes into the combination of simple ones. reference: https://stackoverflow.com/questions/990904/remove-accents-diacritics-in-a-string-in-javascript
+        .replace(/[\u0300-\u036f]/g, '') // Remove accents and diactrics; reference: https://stackoverflow.com/questions/990904/remove-accents-diacritics-in-a-string-in-javascript
+        .replace(/ /g, '_');
+      const audioKeyName = `${textFormatted}_${languageCode}.mp3`;
+      const vocabURL = `https://thevocapp-bucket.s3.eu-west-2.amazonaws.com/${audioKeyName}`;
+      if (vocabVocabAudioURLs.includes(audioKeyName)) {
+        const audio = new Audio(vocabURL);
+
+        audio.play();
+      } else {
+        getListVocabSound({ variables: { languageCode, text } });
+      }
+    },
+    [vocabVocabAudioURLs]
+  );
 
   return (
     <RootLayout>
-      <div className={`vocab-list-page page ${isEditMode ? 'is-edit-mode' : 'is-practice-mode'}`}>
+      <div
+        className={`vocab-list-page page ${
+          isEditMode ? 'is-edit-mode' : 'is-practice-mode'
+        }`}
+      >
         {data && (
           <>
             <VocabListEditOverlay
@@ -217,7 +254,12 @@ const VocabListPage = () => {
               <Joyride
                 steps={steps(t)}
                 run={run}
-                callback={callback({ isOverlayVisible, username, run, updateJoyride })}
+                callback={callback({
+                  isOverlayVisible,
+                  username,
+                  run,
+                  updateJoyride,
+                })}
                 stepIndex={stepIndex}
                 styles={styles}
                 locale={locale(t)}
@@ -226,7 +268,10 @@ const VocabListPage = () => {
                 showSkipButton
               />
               <h1>{name}</h1>
-              <div ref={stickyHeaderRef} className={`sub-header ${isHeaderSticky ? 'is-sticky' : ''}`}>
+              <div
+                ref={stickyHeaderRef}
+                className={`sub-header ${isHeaderSticky ? 'is-sticky' : ''}`}
+              >
                 <IconButton
                   type="arrow-left"
                   rank="secondary"
@@ -245,44 +290,53 @@ const VocabListPage = () => {
                   onChange={({ target }) => setEditMode(!target.checked)}
                 />
               </div>
-              {!isEditMode ? <VocabListSessionContainer id={id} list={shuffledList} joyride={vocabListPlayModeJoyride} />
-                : (
-                  <VocabListEditContainer
-                    id={id}
-                    creatorId={creatorId}
-                    list={list}
-                    addList={addList}
-                    updateList={updateList}
-                    getListVocabTranslation={getListVocabTranslation}
-                    getListVocabSound={testFn}
-                    vocabListData={{ name, list, shuffledList }}
-                    setVocabListData={setVocabListData}
-                    setNewVocabData={setNewVocabData}
-                    setJoyride={updateJoyride}
-                  />
-                )}
+              {!isEditMode ? (
+                <VocabListSessionContainer
+                  id={id}
+                  list={shuffledList}
+                  joyride={vocabListPlayModeJoyride}
+                />
+              ) : (
+                <VocabListEditContainer
+                  id={id}
+                  creatorId={creatorId}
+                  list={list}
+                  addList={addList}
+                  updateList={updateList}
+                  getListVocabTranslation={getListVocabTranslation}
+                  getListVocabSound={testFn}
+                  vocabListData={{ name, list, shuffledList }}
+                  setVocabListData={setVocabListData}
+                  setNewVocabData={setNewVocabData}
+                  setJoyride={updateJoyride}
+                />
+              )}
             </div>
           </>
         )}
 
-        {(loading
-          || updateListMutationLoading
-          || addListMutationLoading
-          || getListVocabSoundLoading
-          || getListVocabTransLoading
-        ) && <Message type="info" content={t('messages_info_loading')} />}
+        {(loading ||
+          updateListMutationLoading ||
+          addListMutationLoading ||
+          getListVocabSoundLoading ||
+          getListVocabTransLoading) && (
+          <Message type="info" content={t('messages_info_loading')} />
+        )}
         {error && (
           <div className="message message-error">
             <span className="message-text">{responseMessage}</span>
             &nbsp;
-            <Link className="message-link" to="/login">{t('common_button_login')}</Link>
+            <Link className="message-link" to="/login">
+              {t('common_button_login')}
+            </Link>
           </div>
         )}
-        {(updateListMutationError
-          || addListMutationError
-          || getListVocabTransError
-          || getListVocabSoundError
-        ) && <Message type="error" content={responseMessage} />}
+        {(updateListMutationError ||
+          addListMutationError ||
+          getListVocabTransError ||
+          getListVocabSoundError) && (
+          <Message type="error" content={responseMessage} />
+        )}
       </div>
     </RootLayout>
   );

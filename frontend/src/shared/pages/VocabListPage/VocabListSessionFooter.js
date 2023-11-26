@@ -22,11 +22,16 @@ const VocabListSessionFooter = ({
         <IconButton
           rank="secondary"
           type="view"
-          onMouseDown={onShowTranslationButtonActive}
-          onTouchStart={onShowTranslationButtonActive}
-          onMouseUp={onShowTranslationButtonInactive}
-          onMouseLeave={onShowTranslationButtonInactive}
-          onTouchEnd={onShowTranslationButtonInactive}
+          {...('ontouchstart' in window
+            ? {
+                onTouchStart: onShowTranslationButtonActive,
+                onTouchEnd: onShowTranslationButtonInactive,
+              }
+            : {
+                onMouseDown: onShowTranslationButtonActive,
+                onMouseUp: onShowTranslationButtonInactive,
+                onMouseLeave: onShowTranslationButtonInactive,
+              })}
         />
       </li>
       <li>

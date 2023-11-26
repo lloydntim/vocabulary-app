@@ -12,7 +12,9 @@ import VocabListSessionFooter from './VocabListSessionFooter';
 
 const capitalizeFirstLetter = (word) => {
   const trimmedWord = word.trim();
-  return `${trimmedWord.substring(0, 1).toLocaleUpperCase()}${trimmedWord.substring(1, trimmedWord.length)}`;
+  return `${trimmedWord
+    .substring(0, 1)
+    .toLocaleUpperCase()}${trimmedWord.substring(1, trimmedWord.length)}`;
 };
 
 const VocabListSessionContainer = ({ id, list, joyride }) => {
@@ -32,7 +34,15 @@ const VocabListSessionContainer = ({ id, list, joyride }) => {
   const token = localStorage.getItem('token');
   const { username } = jwtDecode(token);
 
-  const { run, stepIndex, steps, styles, callback, updateJoyride, locale } = joyride;
+  const {
+    run,
+    stepIndex,
+    steps,
+    styles,
+    callback,
+    updateJoyride,
+    locale,
+  } = joyride;
   const currentVocab = list.length > 0 ? list[count] : [];
   const [langA, langB, textA, textB] = currentVocab;
 
@@ -44,7 +54,9 @@ const VocabListSessionContainer = ({ id, list, joyride }) => {
   useEffect(() => {
     /* eslint-disable no-undef */
     const isVocablistPlayModeJoyrideFinishedKey = `isVocablistPlayModeJoyrideFinished-${username}`;
-    const isVocablistPlayModeJoyrideFinished = localStorage.getItem(isVocablistPlayModeJoyrideFinishedKey);
+    const isVocablistPlayModeJoyrideFinished = localStorage.getItem(
+      isVocablistPlayModeJoyrideFinishedKey
+    );
     if (isVocablistPlayModeJoyrideFinished === null) {
       updateJoyride({ run: true, stepIndex });
       localStorage.setItem(isVocablistPlayModeJoyrideFinishedKey, false);
@@ -54,19 +66,16 @@ const VocabListSessionContainer = ({ id, list, joyride }) => {
     }
   }, []);
 
-  const onRestartSessionButtonClick = useCallback(
-    () => {
-      setTranslationInputValue('');
-      setStatusMessage('');
-      setCount(0);
+  const onRestartSessionButtonClick = useCallback(() => {
+    setTranslationInputValue('');
+    setStatusMessage('');
+    setCount(0);
 
-      reset();
-      setHintsNeeded(0);
-      setAttemptsNeeded(0);
-      setReportData({});
-    },
-    [count],
-  );
+    reset();
+    setHintsNeeded(0);
+    setAttemptsNeeded(0);
+    setReportData({});
+  }, [count]);
 
   return (
     <>
@@ -107,7 +116,11 @@ const VocabListSessionContainer = ({ id, list, joyride }) => {
         }}
         onVocabTranslationSubmitButtonClick={() => {
           if (status !== 'success') {
-            const statusMessage = capitalizeFirstLetter(targetText) === capitalizeFirstLetter(translationInputValue) ? 'success' : 'error';
+            const statusMessage =
+              capitalizeFirstLetter(targetText) ===
+              capitalizeFirstLetter(translationInputValue)
+                ? 'success'
+                : 'error';
 
             if (statusMessage === 'success') {
               const vocabResultData = {
@@ -117,7 +130,10 @@ const VocabListSessionContainer = ({ id, list, joyride }) => {
                 attemptsNeeded,
                 hintsNeeded,
               };
-              const result = { ...reportData, ...{ [`vocab_${count}`]: vocabResultData } };
+              const result = {
+                ...reportData,
+                ...{ [`vocab_${count}`]: vocabResultData },
+              };
               setReportData(result);
             } else {
               setAttemptsNeeded(attemptsNeeded + 1);
