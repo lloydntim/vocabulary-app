@@ -16,7 +16,7 @@ const VocabListEditHeader = forwardRef(
       onCutVocabsButtonClick,
       onPasteVocabsButtonClick,
     },
-    ref
+    ref,
   ) => {
     return (
       <div ref={ref} className={`header ${isSticky ? 'is-sticky' : ''}`}>
@@ -59,7 +59,7 @@ const VocabListEditHeader = forwardRef(
         />
       </div>
     );
-  }
+  },
 );
 
 VocabListEditHeader.propTypes = {

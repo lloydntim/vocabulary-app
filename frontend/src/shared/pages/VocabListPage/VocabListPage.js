@@ -120,14 +120,14 @@ const VocabListPage = () => {
   const { push, goBack } = useHistory();
   const { loading, error, data } = useQuery(GET_LIST, {
     variables: { id },
-    onCompleted: (data) => {
+    onCompleted: data => {
       const { data: list, name } = data.getList;
       const shuffledList = list
-        ? list.map((translation) => translation).sort(() => 0.5 - Math.random())
+        ? list.map(translation => translation).sort(() => 0.5 - Math.random())
         : [];
       setVocabListData({ name, list, shuffledList });
     },
-    onError: (error) => setResponseMessage(error.message.split(':')[1].trim()),
+    onError: error => setResponseMessage(error.message.split(':')[1].trim()),
   });
 
   /* eslint-disable  no-undef  */
@@ -141,9 +141,9 @@ const VocabListPage = () => {
     addList,
     { loading: addListMutationLoading, error: addListMutationError },
   ] = useMutation(ADD_LIST, {
-    onCompleted: (data) =>
+    onCompleted: data =>
       setTimeout(() => push(`/vocablist/${data.addList.id}`)),
-    onError: (error) => setResponseMessage(error.message.split(':')[1].trim()),
+    onError: error => setResponseMessage(error.message.split(':')[1].trim()),
     refetchQueries: [{ query: GET_LISTS, variables: { creatorId } }],
   });
 
@@ -151,15 +151,15 @@ const VocabListPage = () => {
     updateList,
     { loading: updateListMutationLoading, error: updateListMutationError },
   ] = useMutation(UPDATE_LIST, {
-    onCompleted: (data) => {
+    onCompleted: data => {
       const { data: list } = data.updateList;
       const shuffledList = list
-        ? list.map((translation) => translation).sort(() => 0.5 - Math.random())
+        ? list.map(translation => translation).sort(() => 0.5 - Math.random())
         : [];
       setVocabListData({ name, list, shuffledList });
       updateJoyride({ run: true, stepIndex: 1 });
     },
-    onError: (error) => setResponseMessage(error.message.split(':')[1].trim()),
+    onError: error => setResponseMessage(error.message.split(':')[1].trim()),
     refetchQueries: [{ query: GET_LIST, variables: { id } }],
   });
 
@@ -173,7 +173,7 @@ const VocabListPage = () => {
       updateJoyride({ run: true, stepIndex: 8 });
       updateList({ variables: { id, data } });
     },
-    onError: (error) => setResponseMessage(error.message.split(':')[1].trim()),
+    onError: error => setResponseMessage(error.message.split(':')[1].trim()),
   });
 
   const [
@@ -186,7 +186,7 @@ const VocabListPage = () => {
 
       audio.play();
     },
-    onError: (error) => setResponseMessage(error.message.split(':')[1].trim()),
+    onError: error => setResponseMessage(error.message.split(':')[1].trim()),
   });
 
   useEffect(() => {
@@ -195,7 +195,7 @@ const VocabListPage = () => {
     // const isVocablistEditModeJoyrideFinished = localStorage.getItem(isVocablistEditModeJoyrideFinishedKey);
     const isVocablistEditModeJoyrideProgressKey = `isVocablistEditModeJoyrideProgress-${username}`;
     const isVocablistEditModeJoyrideProgress = localStorage.getItem(
-      isVocablistEditModeJoyrideProgressKey
+      isVocablistEditModeJoyrideProgressKey,
     );
     // if (isVocablistEditModeJoyrideFinished === null) {
     //   updateJoyride({ run: true, stepIndex });
@@ -230,7 +230,7 @@ const VocabListPage = () => {
         getListVocabSound({ variables: { languageCode, text } });
       }
     },
-    [vocabVocabAudioURLs]
+    [vocabVocabAudioURLs],
   );
 
   return (
@@ -245,7 +245,7 @@ const VocabListPage = () => {
             <VocabListEditOverlay
               isVisible={isOverlayVisible}
               onCloseButtonClick={() => setOverlayVisibility(false)}
-              onUpdateTitleButtonClick={(name) => {
+              onUpdateTitleButtonClick={name => {
                 setOverlayVisibility(false);
                 updateList({ variables: { id, name } });
               }}

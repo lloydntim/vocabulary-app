@@ -38,10 +38,10 @@ const VocabListEditContainer = ({
   const editVocabForm = useForm(vocabFormInputNames);
   const [count, setCount] = useState(0);
   const [isVocabEditOverlayVisible, setVocabEditOverlayVisibility] = useState(
-    false
+    false,
   );
   const [isAddVocabOverlayVisible, setAddVocabOverlayVisibility] = useState(
-    false
+    false,
   );
   const [
     isCreateVocabListOverlayVisible,
@@ -53,7 +53,7 @@ const VocabListEditContainer = ({
   const onVocabSoundButtonClick = useCallback(
     (languageCode, text) =>
       getListVocabSound({ variables: { languageCode, text } }),
-    [getListVocabSound]
+    [getListVocabSound],
   );
   return (
     <>
@@ -79,7 +79,7 @@ const VocabListEditContainer = ({
             targetText,
           ];
           const data = list.map((item, index) =>
-            count === index ? vocabInputData : item
+            count === index ? vocabInputData : item,
           );
           updateList({ variables: { id, data } });
           setVocabEditOverlayVisibility(false);
@@ -92,7 +92,7 @@ const VocabListEditContainer = ({
       >
         <Tabs
           titles={[t('common_button_create'), t('common_button_upload')]}
-          onTabClick={(index) => {
+          onTabClick={index => {
             if (index === 1) setJoyride({ stepIndex: 2, run: true });
           }}
         >
@@ -174,7 +174,7 @@ const VocabListEditContainer = ({
             text={t('common_button_create')}
             onClick={() => {
               const data = list.filter(
-                (val, index) => selectedVocabs.indexOf(index) !== -1
+                (val, index) => selectedVocabs.indexOf(index) !== -1,
               );
               addList({
                 variables: {
@@ -200,7 +200,7 @@ const VocabListEditContainer = ({
         onContinueButtonClick={() => {
           setCount(0);
           const data = list.filter(
-            (val, index) => selectedVocabs.indexOf(index) === -1
+            (val, index) => selectedVocabs.indexOf(index) === -1,
           );
           updateList({ variables: { id, data } });
           setDialogVisibility(false);
@@ -227,7 +227,7 @@ const VocabListEditContainer = ({
         }}
         onCopyVocabsButtonClick={() => {
           const selectedData = list.filter(
-            (val, index) => selectedVocabs.indexOf(index) !== -1
+            (val, index) => selectedVocabs.indexOf(index) !== -1,
           );
 
           setSelectedVocabs([]);
@@ -235,10 +235,10 @@ const VocabListEditContainer = ({
         }}
         onCutVocabsButtonClick={() => {
           const cutData = list.filter(
-            (val, index) => selectedVocabs.indexOf(index) === -1
+            (val, index) => selectedVocabs.indexOf(index) === -1,
           );
           const selectedData = list.filter(
-            (val, index) => selectedVocabs.indexOf(index) !== -1
+            (val, index) => selectedVocabs.indexOf(index) !== -1,
           );
           updateList({ variables: { id, data: cutData } });
           setSelectedVocabs([]);
@@ -250,7 +250,7 @@ const VocabListEditContainer = ({
         }}
         onPasteVocabsButtonClick={() => {
           const clipboardVocabs = JSON.parse(
-            sessionStorage.getItem('clipboard') || '[]'
+            sessionStorage.getItem('clipboard') || '[]',
           );
           const cutId = sessionStorage.getItem('cutId') || '';
           const cutData = JSON.parse(sessionStorage.getItem('cutData') || '[]');
@@ -289,10 +289,10 @@ const VocabListEditContainer = ({
       <VocabListEditBody
         list={list}
         selectedVocabs={selectedVocabs}
-        onVocabCheckboxChange={(index) => {
+        onVocabCheckboxChange={index => {
           const vocabs =
             selectedVocabs.indexOf(index) !== -1
-              ? selectedVocabs.filter((vocab) => vocab !== index)
+              ? selectedVocabs.filter(vocab => vocab !== index)
               : selectedVocabs.concat(index);
           setSelectedVocabs(vocabs);
           setCount(index);
@@ -329,8 +329,8 @@ const VocabListEditContainer = ({
               item[index].indexOf(
                 `${sourceLanguage
                   .charAt(0)
-                  .toUpperCase()}${sourceLanguage.slice(1)}`
-              ) !== -1
+                  .toUpperCase()}${sourceLanguage.slice(1)}`,
+              ) !== -1,
           );
           const sourceLanguageIndex = Object.keys(sourceLanguageTranslation[0]);
           const sourceLanguageText = languages[sourceLanguageIndex].text;
@@ -340,8 +340,8 @@ const VocabListEditContainer = ({
               item[index].indexOf(
                 `${targetLanguage
                   .charAt(0)
-                  .toUpperCase()}${targetLanguage.slice(1)}`
-              ) !== -1
+                  .toUpperCase()}${targetLanguage.slice(1)}`,
+              ) !== -1,
           );
           const targetLanguageIndex = Object.keys(targetLanguageTranslation[0]);
           const targetLanguageText = languages[targetLanguageIndex].text;

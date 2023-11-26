@@ -55,7 +55,7 @@ const VocabListSessionContainer = ({ id, list, joyride }) => {
     /* eslint-disable no-undef */
     const isVocablistPlayModeJoyrideFinishedKey = `isVocablistPlayModeJoyrideFinished-${username}`;
     const isVocablistPlayModeJoyrideFinished = localStorage.getItem(
-      isVocablistPlayModeJoyrideFinishedKey
+      isVocablistPlayModeJoyrideFinishedKey,
     );
     if (isVocablistPlayModeJoyrideFinished === null) {
       updateJoyride({ run: true, stepIndex });
@@ -117,8 +117,7 @@ const VocabListSessionContainer = ({ id, list, joyride }) => {
         onVocabTranslationSubmitButtonClick={() => {
           if (status !== 'success') {
             const statusMessage =
-              capitalizeFirstLetter(targetText) ===
-              capitalizeFirstLetter(translationInputValue)
+              capitalizeFirstLetter(targetText) === capitalizeFirstLetter(translationInputValue)
                 ? 'success'
                 : 'error';
 

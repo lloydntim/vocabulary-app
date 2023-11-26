@@ -1,16 +1,19 @@
-
 import React from 'react';
 import { STATUS, EVENTS, ACTIONS } from 'react-joyride';
 
 import locale from './joyrideLocale';
 import styles from './joyrideStyling';
 
-const steps = (t) => [
+const steps = t => [
   {
     title: t('vocablist_joyride_title_playmodeIntro'),
     target: 'body',
     placement: 'center',
-    content: <div><h4>{t('vocablist_joyride_content_playmodeIntro')}</h4></div>,
+    content: (
+      <>
+        <h4>{t('vocablist_joyride_content_playmodeIntro')}</h4>
+      </>
+    ),
     disableBeacon: true,
     disableOverlayClose: true,
   },
@@ -52,7 +55,6 @@ const steps = (t) => [
     target: '.icon-type-backward',
     content: t('vocablist_joyride_content_playmodeBackButtonText'),
     spotlightClicks: true,
-
   },
   {
     title: t('vocablist_joyride_title_revealAnswer'),
@@ -71,7 +73,7 @@ const steps = (t) => [
   },
 ];
 
-const callback = (props) => (data) => {
+const callback = props => data => {
   const { index, status, type, action } = data;
   const { run, updateJoyride, username } = props;
   const finishedStatuses = [STATUS.FINISHED, STATUS.SKIPPED];
@@ -80,7 +82,10 @@ const callback = (props) => (data) => {
     updateJoyride({ stepIndex: index + (action === ACTIONS.PREV ? -1 : 1) });
   } else if (finishedStatuses.includes(status)) {
     /* eslint-disable no-undef */
-    localStorage.setItem(`isVocablistPlayModeJoyrideFinished-${username}`, true);
+    localStorage.setItem(
+      `isVocablistPlayModeJoyrideFinished-${username}`,
+      true,
+    );
     updateJoyride({ run: !run, stepIndex: 0 });
   }
 };
