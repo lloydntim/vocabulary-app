@@ -1,10 +1,11 @@
-FROM node:latest
+FROM node:9-slim
 
 WORKDIR /app
 
-COPY package.json /app
+COPY package.json package-lock.json /app
 
-RUN rm -rf node_modules/ && npm i
+RUN npm ci && npm cache clean --force
+# RUN rm -rf node_modules/ && npm i
 
 COPY . /app
 
