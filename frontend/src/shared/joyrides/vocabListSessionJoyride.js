@@ -42,7 +42,6 @@ const steps = t => [
     title: t('vocablist_joyride_title_playmodeTargetTextField'),
     target: 'textarea',
     content: t('vocablist_joyride_content_playmodeTargetTextField'),
-
   },
   {
     title: t('vocablist_joyride_title_playmodeSubmitButton'),
