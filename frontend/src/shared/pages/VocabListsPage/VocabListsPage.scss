@@ -31,8 +31,8 @@
 
     .search-form,
     .overlay {
-      input[type="search"],
-      input[type="text"] {
+      input[type='search'],
+      input[type='text'] {
         background-color: $grey;
         border: solid 1px $green;
         resize: none;
@@ -41,7 +41,7 @@
         margin: 0 0 12px;
 
         &::placeholder {
-          color: $green;
+          color: $light-green;
         }
       }
     }

@@ -1,5 +1,14 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { string, arrayOf, object } from 'prop-types';
+import {
+  string,
+  arrayOf,
+  object,
+  objectOf,
+  func,
+  number,
+  shape,
+  array,
+} from 'prop-types';
 import Joyride from 'react-joyride';
 import { useTranslation } from 'react-i18next';
 import jwtDecode from 'jwt-decode';
@@ -10,14 +19,20 @@ import VocabListSessionHeader from './VocabListSessionHeader';
 import VocabListSessionBody from './VocabListSessionBody';
 import VocabListSessionFooter from './VocabListSessionFooter';
 
-const capitalizeFirstLetter = (word) => {
+const capitalizeFirstLetter = word => {
   const trimmedWord = word.trim();
   return `${trimmedWord
     .substring(0, 1)
     .toLocaleUpperCase()}${trimmedWord.substring(1, trimmedWord.length)}`;
 };
 
-const VocabListSessionContainer = ({ id, list, joyride }) => {
+const VocabListSessionContainer = ({
+  id,
+  list,
+  joyride,
+  updateList,
+  results,
+}) => {
   const { t } = useTranslation();
   const [count, setCount] = useState(0);
   const [isLanguageSwitched, toggleLanguage] = useState(false);
@@ -106,7 +121,9 @@ const VocabListSessionContainer = ({ id, list, joyride }) => {
         vocabTranslationInputValue={translationInputValue}
         vocabTranslationStatusMessage={status}
         vocabsReport={reportData}
-        onVocabTranslationInputChange={(event) => {
+        results={results}
+        updateList={updateList}
+        onVocabTranslationInputChange={event => {
           setTranslationInputValue(event.target.value);
           if (status) setStatusMessage('');
         }}
@@ -117,7 +134,8 @@ const VocabListSessionContainer = ({ id, list, joyride }) => {
         onVocabTranslationSubmitButtonClick={() => {
           if (status !== 'success') {
             const statusMessage =
-              capitalizeFirstLetter(targetText) === capitalizeFirstLetter(translationInputValue)
+              capitalizeFirstLetter(targetText) ===
+              capitalizeFirstLetter(translationInputValue)
                 ? 'success'
                 : 'error';
 
@@ -133,6 +151,7 @@ const VocabListSessionContainer = ({ id, list, joyride }) => {
                 ...reportData,
                 ...{ [`vocab_${count}`]: vocabResultData },
               };
+
               setReportData(result);
             } else {
               setAttemptsNeeded(attemptsNeeded + 1);
@@ -174,6 +193,19 @@ const VocabListSessionContainer = ({ id, list, joyride }) => {
 };
 
 VocabListSessionContainer.propTypes = {
+  results: arrayOf(
+    objectOf(
+      shape({
+        reports: array,
+        totalCount: number,
+        totalAttempts: number,
+        totalHints: number,
+        totalTime: number,
+        createdAt: number,
+      }),
+    ),
+  ).isRequired,
+  updateList: func.isRequired,
   id: string.isRequired,
   list: arrayOf(arrayOf(string)).isRequired,
   joyride: object.isRequired,

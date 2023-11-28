@@ -57,6 +57,22 @@ export const GET_LIST = gql`
     getList(id: $id, name: $name) {
       name
       data
+      sourceLang
+      targetLang
+      results {
+        reports {
+          index
+          duration
+          textLength
+          attemptsNeeded
+          hintsNeeded
+        }
+        totalCount
+        totalAttempts
+        totalHints
+        totalTime
+        createdAt
+      }
     }
   }
 `;
@@ -65,13 +81,40 @@ export const UPDATE_LIST = gql`
   mutation UpdateList(
     $id: ID!
     $name: String
+    $sourceLang: String
+    $targetLang: String
     $file: Upload
     $data: [[String]]
+    $results: [ResultInput]
   ) {
-    updateList(id: $id, name: $name, file: $file, data: $data) {
+    updateList(
+      id: $id
+      name: $name
+      sourceLang: $sourceLang
+      targetLang: $targetLang
+      file: $file
+      data: $data
+      results: $results
+    ) {
       id
       name
       data
+      results {
+        reports {
+          index
+          duration
+          textLength
+          attemptsNeeded
+          hintsNeeded
+        }
+        totalCount
+        totalAttempts
+        totalHints
+        totalTime
+        createdAt
+      }
+      sourceLang
+      targetLang
     }
   }
 `;
@@ -136,7 +179,6 @@ const VocabListPage = () => {
   if (!token) return <Redirect to="/" />;
 
   const { id: creatorId, username } = jwtDecode(token);
-
   const [
     addList,
     { loading: addListMutationLoading, error: addListMutationError },
@@ -295,11 +337,15 @@ const VocabListPage = () => {
                   id={id}
                   list={shuffledList}
                   joyride={vocabListPlayModeJoyride}
+                  updateList={updateList}
+                  results={data.getList.results}
                 />
               ) : (
                 <VocabListEditContainer
                   id={id}
                   creatorId={creatorId}
+                  sourceLang={data.getList.sourceLang}
+                  targetLang={data.getList.targetLang}
                   list={list}
                   addList={addList}
                   updateList={updateList}

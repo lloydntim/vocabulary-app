@@ -14,6 +14,8 @@ const VocabListEditContainer = ({
   id,
   creatorId,
   list,
+  sourceLang,
+  targetLang,
   addList,
   updateList,
   vocabListData,
@@ -55,6 +57,7 @@ const VocabListEditContainer = ({
       getListVocabSound({ variables: { languageCode, text } }),
     [getListVocabSound],
   );
+  console.log('sourceLage', sourceLang);
   return (
     <>
       <VocabEditOverlay
@@ -100,6 +103,9 @@ const VocabListEditContainer = ({
             <VocabForm
               id={id}
               form={addVocabForm}
+              sourceLang={sourceLang}
+              targetLang={targetLang}
+              updateList={updateList}
               onTranslateVocabButtonClick={({
                 sourceLanguage,
                 targetLanguage,
@@ -360,12 +366,19 @@ const VocabListEditContainer = ({
   );
 };
 
+VocabListEditContainer.defaultProps = {
+  sourceLang: '',
+  targetLang: '',
+};
+
 VocabListEditContainer.propTypes = {
   id: string.isRequired,
   creatorId: string.isRequired,
   list: arrayOf(arrayOf(string)).isRequired,
   addList: func.isRequired,
   updateList: func.isRequired,
+  sourceLang: string,
+  targetLang: string,
   vocabListData: object.isRequired,
   setVocabListData: func.isRequired,
   setNewVocabData: func.isRequired,

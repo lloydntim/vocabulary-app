@@ -36,7 +36,6 @@
         .switch .switch-label-text {
           display: none;
         }
-
       }
     }
 
@@ -88,7 +87,6 @@
             display: block;
           }
 
-
           left: auto;
           width: 360px;
         }
@@ -110,7 +108,7 @@
         outline: none;
 
         &:before {
-          content: "Upload File";
+          content: 'Upload File';
           display: none;
           outline: none;
           color: $white;
@@ -127,7 +125,6 @@
         }
       }
     }
-
 
     h1 {
       margin: 0;
@@ -433,8 +430,6 @@
         width: 48%;
       }
     }
-
-
   }
 
   .message {
@@ -447,14 +442,13 @@
   }
 
   @media (min-width: 768px) {
-
-    input[type="email"],
-    input[type="text"] {
+    input[type='email'],
+    input[type='text'] {
       margin: 0 0 12px;
     }
 
     .icon-button {
-      padding: 12px
+      padding: 12px;
     }
 
     .button {
@@ -567,9 +561,8 @@
 
 .overlay {
   form {
-
-    input[type="email"],
-    input[type="text"] {
+    input[type='email'],
+    input[type='text'] {
       background-color: $grey;
       border: solid 1px $green;
       resize: none;
@@ -578,7 +571,7 @@
       margin: 0 0 4px;
 
       &::placeholder {
-        color: $green;
+        color: $light-green;
       }
     }
 

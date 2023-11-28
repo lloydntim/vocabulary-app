@@ -1,18 +1,19 @@
 // Color
+$light-green: #529591;
 $green: #006462;
 $dark-green: #003635;
-$blue: #0087BA;
+$blue: #0087ba;
 $dark-blue: #004964;
-$light-blue: #CBE9F5;
-$yellow: #F7CE00;
+$light-blue: #cbe9f5;
+$yellow: #f7ce00;
 $dark-yellow: #887100;
 $light-yellow: #f5eec6;
-$red: #B10000;
-$light-red: #F6C3C3;
+$red: #b10000;
+$light-red: #f6c3c3;
 $dark-red: #360000;
-$white: #FFF;
-$grey: #EEE;
-$dark-grey: #AAA;
+$white: #fff;
+$grey: #eee;
+$dark-grey: #aaa;
 
 // fonts
 
@@ -35,8 +36,6 @@ body {
     }
   }
 
-  ;
-
   a {
     color: $white;
     text-decoration: underline;
@@ -47,10 +46,10 @@ body {
   }
 
   textarea,
-  input[type=search],
-  input[type=text],
-  input[type=email],
-  input[type=password] {
+  input[type='search'],
+  input[type='text'],
+  input[type='email'],
+  input[type='password'] {
     outline: none;
     background-color: $green;
     border: 1px solid $white;
@@ -68,27 +67,27 @@ body {
 
   // Removes `x` icon from search input; reference: https://medium.com/@rion.mrk/how-to-remove-x-icon-from-search-input-field-or-input-type-search-db3c808405fb
   /* clears the ‘X’ from Internet Explorer */
-  input[type=search]::-ms-clear {
+  input[type='search']::-ms-clear {
     display: none;
     width: 0;
     height: 0;
   }
 
-  input[type=search]::-ms-reveal {
+  input[type='search']::-ms-reveal {
     display: none;
     width: 0;
     height: 0;
   }
 
   /* clears the ‘X’ from Chrome */
-  input[type="search"]::-webkit-search-decoration,
-  input[type="search"]::-webkit-search-cancel-button,
-  input[type="search"]::-webkit-search-results-button,
-  input[type="search"]::-webkit-search-results-decoration {
+  input[type='search']::-webkit-search-decoration,
+  input[type='search']::-webkit-search-cancel-button,
+  input[type='search']::-webkit-search-results-button,
+  input[type='search']::-webkit-search-results-decoration {
     display: none;
   }
 
-  button[type=submit] {
+  button[type='submit'] {
     outline: none;
     color: $green;
     padding: 12px;
@@ -153,7 +152,7 @@ body {
     cursor: pointer;
 
     &.is-disabled {
-      opacity: .5;
+      opacity: 0.5;
     }
 
     &.button-primary {
@@ -181,7 +180,7 @@ body {
     cursor: pointer;
 
     &.is-disabled {
-      opacity: .5;
+      opacity: 0.5;
     }
 
     &.button-circle-primary {
@@ -215,7 +214,7 @@ body {
     padding: 0;
     justify-content: space-between;
 
-    >li {
+    > li {
       display: inline-flex;
     }
   }
@@ -228,10 +227,10 @@ body {
     }
 
     textarea,
-    input[type=search],
-    input[type=text],
-    input[type=email],
-    input[type=password] {
+    input[type='search'],
+    input[type='text'],
+    input[type='email'],
+    input[type='password'] {
       font-size: 16px;
     }
 

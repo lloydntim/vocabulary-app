@@ -13,18 +13,21 @@ const VocabForm = ({
   onSourceLanguageDataListClick,
   onTargetLanguageDataListClick,
   isEditMode,
+  updateList,
+  targetLang,
+  sourceLang,
   onTranslateVocabButtonClick,
   onSubmitVocabButtonClick,
 }) => {
   const {
-    formData: {
-      sourceLanguage, targetLanguage, sourceText, targetText,
-    },
+    formData: { sourceLanguage, targetLanguage, sourceText, targetText },
     updateFormData,
     setInitFormData,
     isFormValid,
   } = form;
   const { t, i18n } = useTranslation();
+  console.log('targetLang', targetLang);
+  console.log('sourceLang', sourceLang);
 
   const languages = [
     { value: 'en', text: t('common_languages_english') },
@@ -34,11 +37,26 @@ const VocabForm = ({
     { value: 'pt', text: t('common_languages_portuguese') },
   ];
 
-  const sourceLanguageLabel = `vocablist_form_label_${isEditMode ? 'sourceLanguage' : 'translateFrom'}`;
-  const sourceTextLabel = `vocablist_form_label_${isEditMode ? 'sourceText' : 'text'}`;
-  const targetLanguageLabel = `vocablist_form_label_${isEditMode ? 'targetLanguage' : 'translateTo'}`;
-  const targetTextLabel = `vocablist_form_label_${isEditMode ? 'targetText' : 'translation'}`;
+  const langMapper = {
+    en: t('common_languages_english'),
+    de: t('common_languages_german'),
+    es: t('common_languages_spanish'),
+    fr: t('common_languages_french'),
+    pt: t('common_languages_portuguese'),
+  };
 
+  const sourceLanguageLabel = `vocablist_form_label_${
+    isEditMode ? 'sourceLanguage' : 'translateFrom'
+  }`;
+  const sourceTextLabel = `vocablist_form_label_${
+    isEditMode ? 'sourceText' : 'text'
+  }`;
+  const targetLanguageLabel = `vocablist_form_label_${
+    isEditMode ? 'targetLanguage' : 'translateTo'
+  }`;
+  const targetTextLabel = `vocablist_form_label_${
+    isEditMode ? 'targetText' : 'translation'
+  }`;
 
   useEffect(() => {
     if (!isEditMode) {
@@ -54,9 +72,20 @@ const VocabForm = ({
         Cookies.set(targetLanguageCookieKey, '');
       }
 
-      const [sourceLanguage] = languages.filter(({ value }) => value === Cookies.get(sourceLanguageCookieKey).substr(0, 2));
-      const targetLanguage = !Cookies.get(targetLanguageCookieKey) ? '' : languages.filter(({ value }) => value === Cookies.get(targetLanguageCookieKey))[0].text;
-      setInitFormData({ sourceLanguage: sourceLanguage.text, targetLanguage, sourceText: '' });
+      const [sourceLanguage] = languages.filter(
+        ({ value }) =>
+          value === Cookies.get(sourceLanguageCookieKey).substring(0, 2),
+      );
+      const targetLanguage = !Cookies.get(targetLanguageCookieKey)
+        ? ''
+        : languages.filter(
+            ({ value }) => value === Cookies.get(targetLanguageCookieKey),
+          )[0].text;
+      setInitFormData({
+        sourceLanguage: langMapper[sourceLang] || sourceLanguage.text,
+        targetLanguage: langMapper[targetLang] || targetLanguage,
+        sourceText: '',
+      });
 
       // Makes sure input field is focused when both languages have been selected
       if (sourceLanguage && targetLanguage) {
@@ -66,7 +95,9 @@ const VocabForm = ({
   }, []);
 
   return (
-    <form className={`vocab-form ${isEditMode ? 'is-edit-mode' : 'is-add-mode'}`}>
+    <form
+      className={`vocab-form ${isEditMode ? 'is-edit-mode' : 'is-add-mode'}`}
+    >
       <Input
         label={t(sourceLanguageLabel)}
         inputRef={sourceLanguage.ref}
@@ -77,14 +108,17 @@ const VocabForm = ({
         placeholder={t('vocablist_form_placeholder_selectSourceLanguage')}
         autoComplete="off"
         name={sourceLanguage.name}
+        disabled={isEditMode}
         dataList={languages}
-        onChange={(data) => {
+        onChange={data => {
           updateFormData(data);
           if (onSourceLanguageChange) onSourceLanguageChange(data);
         }}
         onDataListClick={({ value }) => {
           Cookies.set(`source-language-${id}`, value);
-          if (onSourceLanguageDataListClick) onSourceLanguageDataListClick({ value });
+          if (onSourceLanguageDataListClick)
+            onSourceLanguageDataListClick({ value });
+          updateList({ variables: { id, sourceLang: value } });
         }}
       />
       <Input
@@ -114,13 +148,17 @@ const VocabForm = ({
         placeholder={t('vocablist_form_placeholder_selectTargetLanguage')}
         name={targetLanguage.name}
         dataList={languages}
-        onChange={(data) => {
+        disabled={isEditMode}
+        onChange={data => {
           updateFormData(data);
           if (onTargetLanguageChange) onTargetLanguageChange(data);
         }}
         onDataListClick={({ value }) => {
           Cookies.set(`target-language-${id}`, value);
-          if (onTargetLanguageDataListClick) onTargetLanguageDataListClick({ value });
+          if (onTargetLanguageDataListClick)
+            onTargetLanguageDataListClick({ value });
+          console.log('value target lang', value);
+          updateList({ variables: { id, targetLang: value } });
         }}
       />
       {isEditMode && (
@@ -144,12 +182,14 @@ const VocabForm = ({
           disabled={!isFormValid}
           rank="secondary"
           text={t('common_button_update')}
-          onClick={() => onSubmitVocabButtonClick({
-            sourceLanguage: sourceLanguage.value,
-            targetLanguage: targetLanguage.value,
-            sourceText: sourceText.value,
-            targetText: targetText.value,
-          })}
+          onClick={() =>
+            onSubmitVocabButtonClick({
+              sourceLanguage: sourceLanguage.value,
+              targetLanguage: targetLanguage.value,
+              sourceText: sourceText.value,
+              targetText: targetText.value,
+            })
+          }
         />
       ) : (
         <Button
@@ -168,11 +208,13 @@ const VocabForm = ({
           }}
         />
       )}
-
     </form>
   );
 };
 VocabForm.defaultProps = {
+  sourceLang: '',
+  targetLang: '',
+  updateList: null,
   onTranslateVocabButtonClick: null,
   onSubmitVocabButtonClick: null,
   onSourceLanguageChange: null,
@@ -185,6 +227,9 @@ VocabForm.defaultProps = {
 VocabForm.propTypes = {
   id: string.isRequired,
   form: object.isRequired,
+  updateList: func,
+  sourceLang: string,
+  targetLang: string,
   onSourceLanguageChange: func,
   onTargetLanguageChange: func,
   onSourceLanguageDataListClick: func,

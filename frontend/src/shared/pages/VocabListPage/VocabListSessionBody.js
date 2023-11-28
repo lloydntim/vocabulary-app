@@ -1,35 +1,34 @@
-import React, { useRef, useEffect, useState } from 'react';
-import {
-  string,
-  number,
-  bool,
-  func,
-  object,
-} from 'prop-types';
+import React, { useRef, useEffect } from 'react';
+import { string, number, bool, array, func, object } from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
 import { Message, Icon, Button } from '../../components';
 
 import VocabListSessionResults from './VocabListSessionResults';
 
-const formatDigits = (value) => ((value < 10) ? `0${value}` : value); // TODO: move to utils
+const formatDigits = value => (value < 10 ? `0${value}` : value); // TODO: move to utils
 
-const formattedTime = (time) => {
+const formattedTime = time => {
   const seconds = time % 60;
   const minutes = Math.floor((time / 60) % 60);
-  const hours = Math.floor((time / 60) / 60);
+  const hours = Math.floor(time / 60 / 60);
 
   return {
-    getTime: () => `${formatDigits(hours)}:${formatDigits(minutes)}:${formatDigits(seconds)}`,
+    getTime: () =>
+      `${formatDigits(hours)}:${formatDigits(minutes)}:${formatDigits(
+        seconds,
+      )}`,
     getHours: () => hours,
     getMinutes: () => minutes,
     getSeconds: () => seconds,
   };
 };
 
-/* eslint-disable react/jsx-props-no-spreading, no-undef */
+/* eslint-disable react/jsx-props-no-spreading, no-undef,no-console,react/jsx-one-expression-per-line */
 const VocabListSessionBody = ({
   id,
+  results: resultList,
+  updateList,
   vocabsTotalCount,
   currentVocab,
   vocabSourceText,
@@ -43,119 +42,113 @@ const VocabListSessionBody = ({
   onVocabTranslationInputFocus,
   onVocabTranslationSubmitButtonClick,
 }) => {
-  const [resultsData, setResultsData] = useState([]);
   const { t } = useTranslation();
 
   const translateTextArea = useRef();
-  const sumArrayObjectProps = (array, prop) => array
-    .map((object) => object[prop])
-    .reduce((a, b) => Number(a + b), []);
+  const sumArrayObjectProps = (array, prop) =>
+    array.map(object => object[prop]).reduce((a, b) => Number(a + b), []);
 
   const report = vocabsReport.vocab_0 ? Object.values(vocabsReport) : [];
 
-  let totalAttempts = 0;
-  let totalHints = 0;
-  let totalTime = 0;
-  let finishDateString = 0;
-  let finishTimeString = 0;
-  // const resultsListId = `results_${id}`;
-  // let resultsList = 0;
-  let results = {};
-
   useEffect(() => {
     /* eslint-disable no-undef */
-    // resultsList = localStorage.getItem(resultsListId) !== null ? JSON.parse(localStorage.getItem(resultsListId)) : [];
-    results = localStorage.getItem('resultsList') !== null ? JSON.parse(localStorage.getItem('resultsList')) : { [id]: [] };
-    if (isVocabTranslationCorrect && (vocabsTotalCount === currentVocab)) {
-      totalAttempts = sumArrayObjectProps(report, 'attemptsNeeded');
-      totalHints = sumArrayObjectProps(report, 'hintsNeeded');
-      totalTime = formattedTime(sumArrayObjectProps(report, 'duration')).getTime();
-      finishDateString = `${formatDigits(new Date().getDate())}/${(formatDigits(new Date().getMonth() + 1))}/${new Date().getFullYear()}`;
-      finishTimeString = `${formatDigits(new Date().getHours())}:${formatDigits(new Date().getMinutes())}`;
+    if (isVocabTranslationCorrect && vocabsTotalCount === currentVocab) {
+      const totalAttempts = sumArrayObjectProps(report, 'attemptsNeeded');
+      const totalHints = sumArrayObjectProps(report, 'hintsNeeded');
+      const totalTime = formattedTime(
+        sumArrayObjectProps(report, 'duration'),
+      ).getTime();
+
       const finalResultsItem = {
+        reports: report,
         totalCount: vocabsTotalCount,
-        listId: id,
         createdAt: Date.now(),
         totalAttempts,
         totalHints,
         totalTime,
-        finishDate: finishDateString,
-        finishTime: finishTimeString,
       };
 
-      const newResultData = results[id] || [];
-      const newResult = { [id]: [...newResultData, finalResultsItem] };
-      localStorage.setItem('resultsList', JSON.stringify({ ...results, ...newResult }));
-      setResultsData(newResult[id]);
-      // localStorage.setItem(resultsListId, JSON.stringify([...resultsList, finalResultsItem]));
-      // setResultsData([...resultsList, finalResultsItem]);
-      // remove later
+      updateList({
+        variables: { id, results: [...resultList, finalResultsItem] },
+      });
     }
   }, [currentVocab, isVocabTranslationCorrect]);
 
   useEffect(() => {
-    if (translateTextArea.current && !vocabTranslationInputValue.length) translateTextArea.current.focus();
+    if (translateTextArea.current && !vocabTranslationInputValue.length)
+      translateTextArea.current.focus();
   }, [currentVocab, isVocabTranslationCorrect]);
 
   return (
     <>
-      {(isVocabTranslationCorrect && (vocabsTotalCount === currentVocab))
-        ? (
-          <>
-            <Message
-              type="success"
-              content={t('vocablist_message_sessionCompleted')}
-            />
-            <VocabListSessionResults data={resultsData} />
-          </>
-        ) : (
-          <>
-            <small>{`${t('vocablist_sessionProgress')}: ${currentVocab} / ${vocabsTotalCount}`}</small>
-            <p className="source-text">{vocabSourceText}</p>
+      {isVocabTranslationCorrect && vocabsTotalCount === currentVocab ? (
+        <>
+          <Message
+            type="success"
+            content={t('vocablist_message_sessionCompleted')}
+          />
+          <VocabListSessionResults data={resultList} />
+        </>
+      ) : (
+        <>
+          <small>
+            {`${t(
+              'vocablist_sessionProgress',
+            )}: ${currentVocab} / ${vocabsTotalCount}`}
+          </small>
+          <p className="source-text">{vocabSourceText}</p>
 
-            {isTargetTextRevealed ? (
-              <p className="target-text">
-                <span>
-                  {vocabTargetText}
-                </span>
-                <Icon type="view" />
-              </p>
-            ) : (
-              <label className={`textarea ${vocabTranslationStatusMessage ? `textarea-status-${vocabTranslationStatusMessage}` : ''}`} htmlFor="translation">
-                <textarea
-                  id="translation"
-                  className="textarea-element"
-                  ref={translateTextArea}
-                  rows="3"
-                  value={vocabTranslationInputValue}
-                  placeholder={t('vocablist_form_placeholder_enterTranslation')}
-                  onFocus={onVocabTranslationInputFocus}
-                  onChange={onVocabTranslationInputChange}
-                  onKeyPress={(event) => {
-                    if (event.key === 'Enter') {
-                      event.preventDefault();
-                      onVocabTranslationSubmitButtonClick();
-                    }
-                  }}
-                />
-                {vocabTranslationStatusMessage && <Icon type={isVocabTranslationCorrect ? 'tick' : 'close'} />}
-              </label>
+          {isTargetTextRevealed ? (
+            <p className="target-text">
+              <span>{vocabTargetText}</span>
+              <Icon type="view" />
+            </p>
+          ) : (
+            <label
+              className={`textarea ${vocabTranslationStatusMessage &&
+                `textarea-status-${vocabTranslationStatusMessage}`}`}
+              htmlFor="translation"
+            >
+              <textarea
+                id="translation"
+                className="textarea-element"
+                ref={translateTextArea}
+                rows="3"
+                value={vocabTranslationInputValue}
+                placeholder={t('vocablist_form_placeholder_enterTranslation')}
+                onFocus={onVocabTranslationInputFocus}
+                onChange={onVocabTranslationInputChange}
+                onKeyPress={event => {
+                  if (event.key === 'Enter') {
+                    event.preventDefault();
+                    onVocabTranslationSubmitButtonClick();
+                  }
+                }}
+              />
+              {vocabTranslationStatusMessage && (
+                <Icon type={isVocabTranslationCorrect ? 'tick' : 'close'} />
+              )}
+            </label>
+          )}
+
+          <Button
+            rank={`${isVocabTranslationCorrect ? 'tertiary' : 'secondary'}`}
+            text={t(
+              `common_button_${isVocabTranslationCorrect ? 'next' : 'submit'}`,
             )}
-
-            <Button
-              rank={`${isVocabTranslationCorrect ? 'tertiary' : 'secondary'}`}
-              text={t(`common_button_${isVocabTranslationCorrect ? 'next' : 'submit'}`)}
-              onClick={onVocabTranslationSubmitButtonClick}
-              disabled={vocabTranslationInputValue.length === 0}
-            />
-          </>
-        )}
+            onClick={onVocabTranslationSubmitButtonClick}
+            disabled={vocabTranslationInputValue.length === 0}
+          />
+        </>
+      )}
     </>
   );
 };
 
 VocabListSessionBody.propTypes = {
   id: string.isRequired,
+  results: array.isRequired,
+  updateList: func.isRequired,
   vocabsTotalCount: number.isRequired,
   currentVocab: number.isRequired,
   vocabSourceText: string.isRequired,
